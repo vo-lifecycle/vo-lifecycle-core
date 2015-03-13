@@ -6,6 +6,8 @@ import java.util.Map;
  * State interface
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
+ * 
+ * @param <T> value object type
  *
  */
 public interface LifeCycleState<T> {

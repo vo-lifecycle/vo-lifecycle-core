@@ -5,8 +5,7 @@ package org.volifecycle.lifecycle;
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
- * @param <T>
- *            objet métier
+ * @param <T> value object type
  */
 public interface LifeCycleChecker<T> {
 	/**
