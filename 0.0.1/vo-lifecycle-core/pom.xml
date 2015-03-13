@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>vo-lifecycle</groupId>
+	<artifactId>vo-lifecycle-core</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>VO LifeCycle</name>
+	<description>A value object lifecycle framework</description>
+	<packaging>jar</packaging>
+
+	<properties>
+		<log4j.version>2.2</log4j.version>
+		<commons.version>3.2.1</commons.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<optional>true</optional>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>${commons.version}</version>
+		</dependency>
+	</dependencies>
+</project>
