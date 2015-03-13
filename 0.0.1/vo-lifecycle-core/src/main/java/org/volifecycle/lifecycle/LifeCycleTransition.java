@@ -3,26 +3,25 @@ package org.volifecycle.lifecycle;
 import java.util.List;
 
 /**
- * Interface pour les transitions
+ * Transition interface
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
+ * 
+ * @param <T> valueObject type
  *
  */
 public interface LifeCycleTransition<T> {
-    static final String AUTO = "auto";
-    static final String MANUEL = "manuel";
-
     /**
-     * Exécuter la liste des checker et changer l'état
+     * Verify all checker
      * 
      * @param valueObject
      * 
-     * @return String "true" ou "false" par défaut
+     * @return "true" if success or "false"
      */
     public String changeState(T valueObject);
 
     /**
-     * Exécuter la liste des checker et changer l'état
+     * Verify all checker with a forced id list
      * 
      * @param valueObject
      * @param forcedCheckers

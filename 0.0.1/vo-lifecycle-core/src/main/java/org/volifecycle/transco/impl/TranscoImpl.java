@@ -8,9 +8,7 @@ import java.util.Set;
 import org.volifecycle.transco.Transco;
 
 /**
- * AbstractTransco afin de manipuler une Transco comme une Map<br />
- * Les tables de transco sont insensibles à la casse pour la recherche d'une
- * clef
+ * Transco table implementation
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
@@ -36,7 +34,7 @@ public class TranscoImpl implements Transco {
     }
 
     /**
-     * Formater la clef pour être insensible à la casse
+     * Case insensitive formater
      * 
      * @param key
      * @return String
@@ -46,7 +44,7 @@ public class TranscoImpl implements Transco {
     }
 
     /**
-     * Formater la clef pour être insensible à la casse
+     * Case insensitive formater
      * 
      * @param key
      * @return String
@@ -132,7 +130,7 @@ public class TranscoImpl implements Transco {
     }
 
     /**
-     * Retourner une map avec des clefs formatées
+     * Return a map with formated key
      * 
      * @param m
      * @return
@@ -153,7 +151,7 @@ public class TranscoImpl implements Transco {
     }
 
     /**
-     * Retourner la map inversée
+     * Return the reversed map
      * 
      * @param m
      * @return

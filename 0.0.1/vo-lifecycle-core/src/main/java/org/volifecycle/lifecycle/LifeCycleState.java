@@ -3,7 +3,7 @@ package org.volifecycle.lifecycle;
 import java.util.Map;
 
 /**
- * Interface pour les états
+ * State interface
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *

@@ -11,11 +11,11 @@ import org.volifecycle.lifecycle.LifeCycleChecker;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
 /**
- * Implémentation du service de transition
+ * Transition implementation
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
- * @param <T>
+ * @param <T> value object type
  */
 public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
     private static final Logger LOGGER = LogManager.getLogger(LifeCycleTransitionImpl.class);

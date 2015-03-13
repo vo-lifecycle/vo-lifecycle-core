@@ -10,11 +10,11 @@ import org.volifecycle.lifecycle.LifeCycleState;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
 /**
- * Manager des transitions
+ * Implementation of manager
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
- * @param <T> valueObjectType
+ * @param <T> valueObject type
  */
 public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements LifeCycleManager<T, LifeCycleAdapter<T>> {
     /**
