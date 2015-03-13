@@ -3,29 +3,28 @@ package org.volifecycle.transco;
 import java.util.Map;
 
 /**
- * Interface pour les tables de transco (potentiellement initialisés dans une
- * conf Spring ou depuis une bdd)
+ * Transco table interface
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
  */
 public interface Transco extends Map<String, String> {
     /**
-     * Retourner la map (définie dans une conf spring)
+     * Return the initial map definition
      * 
      * @return Map<String, String>
      */
     Map<String, String> getMap();
 
     /**
-     * Définir la map dans une conf Spring
+     * Set the initial map definition
      * 
      * @param map
      */
     void setMap(Map<String, String> map);
 
     /**
-     * Retourne la clef si valeur non trouvée
+     * Return the key if not found
      * 
      * @param key
      * @return
@@ -33,7 +32,7 @@ public interface Transco extends Map<String, String> {
     String getQuietly(String key);
 
     /**
-     * Retourne la clef pour une valeur donnée
+     * Return the key if not found
      * 
      * @param value
      * @return
@@ -41,7 +40,7 @@ public interface Transco extends Map<String, String> {
     String getKey(String value);
 
     /**
-     * Retourne la valeur si clef non trouvée
+     * Return the key if not found
      * 
      * @param value
      * @return

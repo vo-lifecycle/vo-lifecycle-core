@@ -1,11 +1,11 @@
 package org.volifecycle.lifecycle;
 
 /**
- * Interface permettant de retourner l'état d'un objet métier
+ * Value object's adapter interface
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
- * @param <T> objet métier
+ * @param <T> value object type
  */
 public interface LifeCycleAdapter<T> {
     /**

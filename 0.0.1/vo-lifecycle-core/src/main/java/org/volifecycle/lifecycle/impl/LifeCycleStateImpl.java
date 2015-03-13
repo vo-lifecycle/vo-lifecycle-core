@@ -6,7 +6,7 @@ import org.volifecycle.lifecycle.LifeCycleState;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
 /**
- * Implementation des états (générique)
+ * States implementation
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
@@ -14,7 +14,7 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  */
 public class LifeCycleStateImpl<T> implements LifeCycleState<T> {
     /**
-     * Les transitions
+     * Transitions by id
      */
     protected Map<String, LifeCycleTransition<T>> transitionsById;
 
@@ -68,10 +68,10 @@ public class LifeCycleStateImpl<T> implements LifeCycleState<T> {
     }
 
     /**
-     * Les tâches à réaliser TODO
+     * TODO task trash
      */
 
     /**
-     * Les champs modifiables pour cet état TODO
+     * TODO allowed fields
      */
 }

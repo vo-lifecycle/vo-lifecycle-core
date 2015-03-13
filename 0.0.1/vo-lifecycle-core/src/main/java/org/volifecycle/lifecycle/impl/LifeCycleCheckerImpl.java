@@ -3,15 +3,15 @@ package org.volifecycle.lifecycle.impl;
 import org.volifecycle.lifecycle.LifeCycleChecker;
 
 /**
- * Impl�mentation g�n�rique du checker
+ * Implementation of checker
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
- * @param <T>
+ * @param <T> valueObject
  */
 public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
     /**
-     * Id pour pouvoir forcer le passage du checker
+     * Id which is used for forced the result of this checker
      */
     protected String id;
 
