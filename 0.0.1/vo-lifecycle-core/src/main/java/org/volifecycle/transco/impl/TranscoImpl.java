@@ -18,6 +18,14 @@ public class TranscoImpl implements Transco {
 	protected Map<String, String> v2k;
 
 	/**
+	 * Constructor
+	 */
+	public TranscoImpl() {
+		k2v = new HashMap<String, String>();
+		v2k = new HashMap<String, String>();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -39,7 +47,7 @@ public class TranscoImpl implements Transco {
 	 * @param key
 	 * @return String
 	 */
-	private String getFormatedKey(Object key) {
+	private Object getFormatedKey(Object key) {
 		return (!(key instanceof String) || null == key) ? null
 				: ((String) key).toUpperCase();
 	}
@@ -116,8 +124,8 @@ public class TranscoImpl implements Transco {
 	 */
 	@Override
 	public String put(String key, String value) {
-		v2k.put(value, key);
-		return k2v.put(key, value);
+		v2k.put(getFormatedKey(value), getFormatedKey(key));
+		return k2v.put(getFormatedKey(key), getFormatedKey(value));
 	}
 
 	/**
