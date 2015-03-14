@@ -13,21 +13,31 @@ public class Event {
 	 * Type of event (issue, etc)
 	 */
 	private String typeEvent;
-	
+
 	/**
 	 * when ?
 	 */
 	private Calendar date;
-	
+
 	/**
 	 * what ?
 	 */
 	private String message;
-	
+
 	/**
 	 * who ?
 	 */
 	private String actor;
+
+	/**
+	 * Value object impacted
+	 */
+	private String idValueObject;
+
+	/**
+	 * Type of value object impacted
+	 */
+	private String typeValueObject;
 
 	/**
 	 * @return the typeEvent
@@ -37,7 +47,8 @@ public class Event {
 	}
 
 	/**
-	 * @param typeEvent the typeEvent to set
+	 * @param typeEvent
+	 *            the typeEvent to set
 	 */
 	public void setTypeEvent(String typeEvent) {
 		this.typeEvent = typeEvent;
@@ -51,7 +62,8 @@ public class Event {
 	}
 
 	/**
-	 * @param date the date to set
+	 * @param date
+	 *            the date to set
 	 */
 	public void setDate(Calendar date) {
 		this.date = date;
@@ -65,7 +77,8 @@ public class Event {
 	}
 
 	/**
-	 * @param message the message to set
+	 * @param message
+	 *            the message to set
 	 */
 	public void setMessage(String message) {
 		this.message = message;
@@ -79,9 +92,40 @@ public class Event {
 	}
 
 	/**
-	 * @param actor the actor to set
+	 * @param actor
+	 *            the actor to set
 	 */
 	public void setActor(String actor) {
 		this.actor = actor;
+	}
+
+	/**
+	 * @return the idValueObject
+	 */
+	public String getIdValueObject() {
+		return idValueObject;
+	}
+
+	/**
+	 * @param idValueObject
+	 *            the idValueObject to set
+	 */
+	public void setIdValueObject(String idValueObject) {
+		this.idValueObject = idValueObject;
+	}
+
+	/**
+	 * @return the typeValueObject
+	 */
+	public String getTypeValueObject() {
+		return typeValueObject;
+	}
+
+	/**
+	 * @param typeValueObject
+	 *            the typeValueObject to set
+	 */
+	public void setTypeValueObject(String typeValueObject) {
+		this.typeValueObject = typeValueObject;
 	}
 }
