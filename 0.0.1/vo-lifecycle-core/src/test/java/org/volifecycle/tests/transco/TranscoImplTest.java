@@ -2,6 +2,9 @@ package org.volifecycle.tests.transco;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.volifecycle.tests.AbstractTest;
@@ -16,6 +19,7 @@ import org.volifecycle.transco.impl.TranscoImpl;
  */
 public class TranscoImplTest extends AbstractTest {
 	Transco t;
+	Transco t2;
 
 	/**
 	 * Init datas
@@ -35,6 +39,12 @@ public class TranscoImplTest extends AbstractTest {
 
 		t.put(key, value);
 		assertEquals(value.toUpperCase(), t.get(key));
+
+		Map<String, String> m = new HashMap<String, String>();
+		m.put(key, value);
+		t2 = new TranscoImpl();
+		t2.setMap(m);
+		assertEquals(value.toUpperCase(), t2.get(key));
 	}
 
 	/**
@@ -47,10 +57,16 @@ public class TranscoImplTest extends AbstractTest {
 
 		t.put(key, value);
 		assertEquals(key.toUpperCase(), t.getKey(value));
+
+		Map<String, String> m = new HashMap<String, String>();
+		m.put(key, value);
+		t2 = new TranscoImpl();
+		t2.setMap(m);
+		assertEquals(key.toUpperCase(), t2.getKey(value));
 	}
 
 	/**
-	 * Test searching value by key
+	 * Test searching value by key quietly
 	 */
 	@Test
 	public final void testGetQuietlyNotExists() {
