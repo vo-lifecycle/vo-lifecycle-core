@@ -1,5 +1,7 @@
 package org.volifecycle.lifecycle.impl;
 
+import static org.volifecycle.utils.DateUtils.getCurrentTime;
+
 import java.util.List;
 import java.util.Map;
 
@@ -7,9 +9,11 @@ import org.volifecycle.constants.Constants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.impl.Log4jEventManagerImpl;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
+import org.volifecycle.lifecycle.LifeCycleChangeSaver;
 import org.volifecycle.lifecycle.LifeCycleManager;
 import org.volifecycle.lifecycle.LifeCycleState;
 import org.volifecycle.lifecycle.LifeCycleTransition;
+import org.volifecycle.lifecycle.vo.LifeCycleChange;
 
 /**
  * Implementation of manager
@@ -35,6 +39,16 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 	 * The event manager
 	 */
 	protected EventManager evtManager;
+
+	/**
+	 * The life cycle change saver
+	 */
+	protected LifeCycleChangeSaver saver;
+
+	/**
+	 * Id
+	 */
+	protected String id;
 
 	/**
 	 * Description
@@ -74,8 +88,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 		// allowed transitions
 		if (null == transitionsById
 				|| !transitionsById.containsKey(idTransition)) {
-			throw new IllegalStateException("Transition inexistante ("
-					+ idTransition + ") pour l'état " + currentState);
+			throw new IllegalStateException("Unknown transition ("
+					+ idTransition + ") for state " + currentState);
 		}
 
 		LifeCycleTransition<T> transition = transitionsById.get(idTransition);
@@ -86,9 +100,37 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 		// Change state (in database or other persistence support)
 		if (null != targetState && !Constants.FALSE.equalsIgnoreCase(rtn)) {
 			adapter.setState(valueObject, targetState);
+			logChangeCustom(valueObject, idTransition, keyState, adapter,
+					targetState);
 		}
 
 		return rtn;
+	}
+
+	/**
+	 * Log change
+	 * 
+	 * @param valueObject
+	 * @param transitionId
+	 * @param stateIn
+	 * @param adapter
+	 * @param stateOut
+	 */
+	private void logChangeCustom(T valueObject, String transitionId,
+			String stateIn, LifeCycleAdapter<T> adapter, String stateOut) {
+		LifeCycleChangeSaver s = getSaver();
+		if (null == s) {
+			s = new Log4jLifeCycleChangeSaverImpl();
+		}
+
+		LifeCycleChange c = new LifeCycleChange();
+		c.setDate(getCurrentTime());
+		c.setStateIn(stateIn);
+		c.setStateIn(stateOut);
+		c.setValueObjectId(adapter.getId(valueObject));
+		c.setValueObjectType(adapter.getType(valueObject));
+		c.setTransitionId(transitionId);
+		s.logChange(c);
 	}
 
 	/**
@@ -158,5 +200,35 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 	 */
 	public void setEvtManager(EventManager evtManager) {
 		this.evtManager = evtManager;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the saver
+	 */
+	public LifeCycleChangeSaver getSaver() {
+		return saver;
+	}
+
+	/**
+	 * @param saver
+	 *            the saver to set
+	 */
+	public void setSaver(LifeCycleChangeSaver saver) {
+		this.saver = saver;
 	}
 }
