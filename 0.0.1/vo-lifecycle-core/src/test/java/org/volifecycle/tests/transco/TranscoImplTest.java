@@ -48,4 +48,22 @@ public class TranscoImplTest extends AbstractTest {
 		t.put(key, value);
 		assertEquals(key.toUpperCase(), t.getKey(value));
 	}
+
+	/**
+	 * Test searching value by key
+	 */
+	@Test
+	public final void testGetQuietlyNotExists() {
+		String key = "k";
+		assertEquals(key.toUpperCase(), t.getQuietly(key));
+	}
+
+	/**
+	 * Test searching key quietly
+	 */
+	@Test
+	public final void testGetKeyQuietlyNotExists() {
+		String value = "v";
+		assertEquals(value.toUpperCase(), t.getKeyQuietly(value));
+	}
 }
