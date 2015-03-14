@@ -69,14 +69,15 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 		}
 
 		if (null == valueObject) {
-			throw new IllegalStateException("Objet inexistant : " + valueObject);
+			throw new IllegalStateException("Value object must not be null");
 		}
 
 		String keyState = adapter.getState(valueObject);
 
 		// Searching current state in transco
 		if (null == keyState || !statesById.containsKey(keyState)) {
-			throw new IllegalStateException("Etat inexistant : " + keyState);
+			throw new IllegalStateException("Unknown state "
+					+ ((null == keyState) ? "<null>" : keyState));
 		}
 		LifeCycleState<T> currentState = statesById.get(keyState);
 
