@@ -2,6 +2,8 @@ package org.volifecycle.lifecycle;
 
 import java.util.List;
 
+import org.volifecycle.event.EventManager;
+
 /**
  * Transition interface
  * 
@@ -15,10 +17,11 @@ public interface LifeCycleTransition<T> {
      * Verify all checker
      * 
      * @param valueObject
+     * @param evtManager
      * 
      * @return "true" if success or "false"
      */
-    public String changeState(T valueObject);
+    public String changeState(T valueObject, EventManager evtManager);
 
     /**
      * Verify all checker with a forced id list
@@ -27,7 +30,7 @@ public interface LifeCycleTransition<T> {
      * @param forcedCheckers
      * @return
      */
-    String changeState(T valueObject, List<String> forcedCheckers);
+    String changeState(T valueObject, EventManager evtManager, List<String> forcedCheckers);
 
     /**
      * @return the type

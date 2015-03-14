@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.volifecycle.constants.Constants;
+import org.volifecycle.event.EventManager;
+import org.volifecycle.event.impl.Log4jEventManagerImpl;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleManager;
 import org.volifecycle.lifecycle.LifeCycleState;
@@ -22,7 +24,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
      */
     protected Map<String, LifeCycleState<T>> statesById;
     protected A adapter;
-
+    protected EventManager evtManager;
+    
     /**
      * Description
      */
@@ -33,7 +36,14 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
      */
     @Override
     public String runTransition(String idTransition, T valueObject, List<String> forcedCheckers) {
-        if (null == valueObject) {
+    	EventManager eManager = getEvtManager();
+    	
+    	// Default EventManager
+    	if(null == eManager){
+    		eManager = new Log4jEventManagerImpl();
+    	}
+    	
+    	if (null == valueObject) {
             throw new IllegalStateException("Objet inexistant : " + valueObject);
         }
 
@@ -55,7 +65,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
         }
 
         LifeCycleTransition<T> transition = transitionsById.get(idTransition);
-        String rtn = transition.changeState(valueObject, forcedCheckers);
+        String rtn = transition.changeState(valueObject, eManager, forcedCheckers);
         String targetState = transition.getTarget();
 
         // Mise à jour en bdd
@@ -116,4 +126,18 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     public void setDescription(String description) {
         this.description = description;
     }
+
+	/**
+	 * @return the evtManager
+	 */
+	public EventManager getEvtManager() {
+		return evtManager;
+	}
+
+	/**
+	 * @param evtManager the evtManager to set
+	 */
+	public void setEvtManager(EventManager evtManager) {
+		this.evtManager = evtManager;
+	}
 }

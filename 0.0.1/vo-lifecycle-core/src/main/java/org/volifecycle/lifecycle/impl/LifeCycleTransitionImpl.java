@@ -1,12 +1,13 @@
 package org.volifecycle.lifecycle.impl;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.volifecycle.utils.DateUtils.getCurrentTime;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.volifecycle.constants.Constants;
+import org.volifecycle.event.EventManager;
+import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleChecker;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
@@ -18,8 +19,6 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  * @param <T> value object type
  */
 public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
-    private static final Logger LOGGER = LogManager.getLogger(LifeCycleTransitionImpl.class);
-
     protected List<LifeCycleChecker<T>> checkers;
     protected String target;
 
@@ -96,15 +95,15 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
      * {@inheritDoc}
      */
     @Override
-    public String changeState(T valueObject) {
-        return changeState(valueObject, null);
+    public String changeState(T valueObject, EventManager evtManager) {
+        return changeState(valueObject, evtManager, null);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String changeState(T valueObject, List<String> forcedCheckers) {
+    public String changeState(T valueObject, EventManager evtManager, List<String> forcedCheckers) {
         String rtn = Constants.TRUE;
 
         for (LifeCycleChecker<T> checker : checkers) {
@@ -126,12 +125,27 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
                     rtn = Constants.FALSE;
                     break;
                 } else {
-                    // Log à remplacer par une insertion en bdd
-                    LOGGER.debug("Forced checker : " + checker.getId());
+                	String message = "Forced checker : " + checker.getId();
+                	logCustomEvent(evtManager, Constants.EVENT_TYPE_FORCED_CHECKER, message);
                 }
             }
         }
 
         return rtn;
+    }
+    
+    
+    /**
+     * Log custom event
+     * @param typeEvent
+     * @param message
+     */
+    private void logCustomEvent(EventManager evtManager, String typeEvent, String message){
+    	Event event = new Event();
+    	event.setTypeEvent(typeEvent);
+    	event.setDate(getCurrentTime());
+    	event.setMessage(message);
+    	event.setActor(Constants.SYS_ACTOR);
+    	evtManager.logEvent(event);
     }
 }
