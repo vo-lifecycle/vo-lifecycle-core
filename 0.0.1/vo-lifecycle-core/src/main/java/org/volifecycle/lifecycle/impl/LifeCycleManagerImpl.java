@@ -79,7 +79,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 		}
 
 		LifeCycleTransition<T> transition = transitionsById.get(idTransition);
-		String rtn = transition.changeState(valueObject, eManager,
+		String rtn = transition.changeState(valueObject, adapter, eManager,
 				forcedCheckers);
 		String targetState = transition.getTarget();
 

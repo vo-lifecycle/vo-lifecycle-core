@@ -8,6 +8,7 @@ import java.util.List;
 import org.volifecycle.constants.Constants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.vo.Event;
+import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChecker;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
@@ -100,16 +101,17 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String changeState(T valueObject, EventManager evtManager) {
-		return changeState(valueObject, evtManager, null);
+	public String changeState(T valueObject, LifeCycleAdapter<T> adapter,
+			EventManager evtManager) {
+		return changeState(valueObject, adapter, evtManager, null);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String changeState(T valueObject, EventManager evtManager,
-			List<String> forcedCheckers) {
+	public String changeState(T valueObject, LifeCycleAdapter<T> adapter,
+			EventManager evtManager, List<String> forcedCheckers) {
 		String rtn = Constants.TRUE;
 
 		for (LifeCycleChecker<T> checker : checkers) {
@@ -133,7 +135,7 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 					break;
 				} else {
 					String message = "Forced checker : " + checker.getId();
-					logCustomEvent(evtManager,
+					logCustomEvent(valueObject, adapter, evtManager,
 							Constants.EVENT_TYPE_FORCED_CHECKER, message);
 				}
 			}
@@ -148,13 +150,15 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 	 * @param typeEvent
 	 * @param message
 	 */
-	private void logCustomEvent(EventManager evtManager, String typeEvent,
-			String message) {
+	private void logCustomEvent(T valueObject, LifeCycleAdapter<T> adapter,
+			EventManager evtManager, String typeEvent, String message) {
 		Event event = new Event();
 		event.setTypeEvent(typeEvent);
 		event.setDate(getCurrentTime());
 		event.setMessage(message);
 		event.setActor(Constants.SYS_ACTOR);
+		event.setIdValueObject(adapter.getId(valueObject));
+		event.setTypeValueObject(adapter.getType(valueObject));
 		evtManager.logEvent(event);
 	}
 }
