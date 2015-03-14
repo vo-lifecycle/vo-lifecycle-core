@@ -114,29 +114,31 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 			EventManager evtManager, List<String> forcedCheckers) {
 		String rtn = Constants.TRUE;
 
-		for (LifeCycleChecker<T> checker : checkers) {
-			boolean filter = false;
+		if (isNotEmpty(checkers)) {
+			for (LifeCycleChecker<T> checker : checkers) {
+				boolean filter = false;
 
-			// Recherche des checker à ignorer
-			if (isNotEmpty(forcedCheckers)) {
-				for (String idChecker : forcedCheckers) {
-					if (null != checker.getId()
-							&& idChecker.equalsIgnoreCase(checker.getId())) {
-						filter = true;
-						break;
+				// Recherche des checker à ignorer
+				if (isNotEmpty(forcedCheckers)) {
+					for (String idChecker : forcedCheckers) {
+						if (null != checker.getId()
+								&& idChecker.equalsIgnoreCase(checker.getId())) {
+							filter = true;
+							break;
+						}
 					}
 				}
-			}
 
-			String result = checker.getResult(valueObject);
-			if (null == result || Constants.FALSE.equalsIgnoreCase(result)) {
-				if (!filter) {
-					rtn = Constants.FALSE;
-					break;
-				} else {
-					String message = "Forced checker : " + checker.getId();
-					logCustomEvent(valueObject, adapter, evtManager,
-							Constants.EVENT_TYPE_FORCED_CHECKER, message);
+				String result = checker.getResult(valueObject);
+				if (null == result || Constants.FALSE.equalsIgnoreCase(result)) {
+					if (!filter) {
+						rtn = Constants.FALSE;
+						break;
+					} else {
+						String message = "Forced checker : " + checker.getId();
+						logCustomEvent(valueObject, adapter, evtManager,
+								Constants.EVENT_TYPE_FORCED_CHECKER, message);
+					}
 				}
 			}
 		}
