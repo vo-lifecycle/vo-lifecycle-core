@@ -15,117 +15,135 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  * Implementation of manager
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
- *
- * @param <T> valueObject type
+ * 
+ * @param <T>
+ *            valueObject type
  */
-public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements LifeCycleManager<T, LifeCycleAdapter<T>> {
-    /**
-     * Etats par ids
-     */
-    protected Map<String, LifeCycleState<T>> statesById;
-    protected A adapter;
-    protected EventManager evtManager;
-    
-    /**
-     * Description
-     */
-    protected String description;
+public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
+		LifeCycleManager<T, LifeCycleAdapter<T>> {
+	/**
+	 * States by id
+	 */
+	protected Map<String, LifeCycleState<T>> statesById;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String runTransition(String idTransition, T valueObject, List<String> forcedCheckers) {
-    	EventManager eManager = getEvtManager();
-    	
-    	// Default EventManager
-    	if(null == eManager){
-    		eManager = new Log4jEventManagerImpl();
-    	}
-    	
-    	if (null == valueObject) {
-            throw new IllegalStateException("Objet inexistant : " + valueObject);
-        }
+	/**
+	 * The adapter
+	 */
+	protected A adapter;
 
-        String keyState = adapter.getState(valueObject);
+	/**
+	 * The event manager
+	 */
+	protected EventManager evtManager;
 
-        // Recherche de l'état courrant de l'objet dans la table de transco
-        if (null == keyState || !statesById.containsKey(keyState)) {
-            throw new IllegalStateException("Etat inexistant : " + keyState);
-        }
-        LifeCycleState<T> currentState = statesById.get(keyState);
+	/**
+	 * Description
+	 */
+	protected String description;
 
-        // Récupération de toutes les transitions associées à l'état courrant
-        Map<String, LifeCycleTransition<T>> transitionsById = currentState.getTransitionsById();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String runTransition(String idTransition, T valueObject,
+			List<String> forcedCheckers) {
+		EventManager eManager = getEvtManager();
 
-        // Recherche de la transition demandée dans les transitions autorisées
-        // pour l'object courrant
-        if (null == transitionsById || !transitionsById.containsKey(idTransition)) {
-            throw new IllegalStateException("Transition inexistante (" + idTransition + ") pour l'état " + currentState);
-        }
+		// Default EventManager
+		if (null == eManager) {
+			eManager = new Log4jEventManagerImpl();
+		}
 
-        LifeCycleTransition<T> transition = transitionsById.get(idTransition);
-        String rtn = transition.changeState(valueObject, eManager, forcedCheckers);
-        String targetState = transition.getTarget();
+		if (null == valueObject) {
+			throw new IllegalStateException("Objet inexistant : " + valueObject);
+		}
 
-        // Mise à jour en bdd
-        if (null != targetState && !Constants.FALSE.equalsIgnoreCase(rtn)) {
-            adapter.setState(valueObject, targetState);
-        }
+		String keyState = adapter.getState(valueObject);
 
-        return rtn;
-    }
+		// Searching current state in transco
+		if (null == keyState || !statesById.containsKey(keyState)) {
+			throw new IllegalStateException("Etat inexistant : " + keyState);
+		}
+		LifeCycleState<T> currentState = statesById.get(keyState);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String runTransition(String idTransition, T valueObject) {
-        return runTransition(idTransition, valueObject, null);
-    }
+		// Searching the current state's transitions
+		Map<String, LifeCycleTransition<T>> transitionsById = currentState
+				.getTransitionsById();
 
-    /**
-     * @return the statesById
-     */
-    public Map<String, LifeCycleState<T>> getStatesById() {
-        return statesById;
-    }
+		// Searching the requested id of transition in the current state's
+		// allowed transitions
+		if (null == transitionsById
+				|| !transitionsById.containsKey(idTransition)) {
+			throw new IllegalStateException("Transition inexistante ("
+					+ idTransition + ") pour l'état " + currentState);
+		}
 
-    /**
-     * @param statesById the statesById to set
-     */
-    public void setStatesById(Map<String, LifeCycleState<T>> statesById) {
-        this.statesById = statesById;
-    }
+		LifeCycleTransition<T> transition = transitionsById.get(idTransition);
+		String rtn = transition.changeState(valueObject, eManager,
+				forcedCheckers);
+		String targetState = transition.getTarget();
 
-    /**
-     * @return the adapter
-     */
-    public A getAdapter() {
-        return adapter;
-    }
+		// Change state (in database or other persistence support)
+		if (null != targetState && !Constants.FALSE.equalsIgnoreCase(rtn)) {
+			adapter.setState(valueObject, targetState);
+		}
 
-    /**
-     * @param adapter the adapter to set
-     */
-    public void setAdapter(A adapter) {
-        this.adapter = adapter;
-    }
+		return rtn;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String runTransition(String idTransition, T valueObject) {
+		return runTransition(idTransition, valueObject, null);
+	}
 
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * @return the statesById
+	 */
+	public Map<String, LifeCycleState<T>> getStatesById() {
+		return statesById;
+	}
+
+	/**
+	 * @param statesById
+	 *            the statesById to set
+	 */
+	public void setStatesById(Map<String, LifeCycleState<T>> statesById) {
+		this.statesById = statesById;
+	}
+
+	/**
+	 * @return the adapter
+	 */
+	public A getAdapter() {
+		return adapter;
+	}
+
+	/**
+	 * @param adapter
+	 *            the adapter to set
+	 */
+	public void setAdapter(A adapter) {
+		this.adapter = adapter;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	/**
 	 * @return the evtManager
@@ -135,7 +153,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
 	}
 
 	/**
-	 * @param evtManager the evtManager to set
+	 * @param evtManager
+	 *            the evtManager to set
 	 */
 	public void setEvtManager(EventManager evtManager) {
 		this.evtManager = evtManager;

@@ -15,137 +15,146 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  * Transition implementation
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
- *
- * @param <T> value object type
+ * 
+ * @param <T>
+ *            value object type
  */
 public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
-    protected List<LifeCycleChecker<T>> checkers;
-    protected String target;
+	protected List<LifeCycleChecker<T>> checkers;
+	protected String target;
 
-    /**
-     * Automatique | manuel
-     */
-    protected String type;
+	/**
+	 * auto | manual
+	 */
+	protected String type;
 
-    /**
-     * Description
-     */
-    protected String description;
+	/**
+	 * Description
+	 */
+	protected String description;
 
-    /**
-     * @return the checkers
-     */
-    public List<LifeCycleChecker<T>> getCheckers() {
-        return checkers;
-    }
+	/**
+	 * @return the checkers
+	 */
+	public List<LifeCycleChecker<T>> getCheckers() {
+		return checkers;
+	}
 
-    /**
-     * @param checkers the checkers to set
-     */
-    public void setCheckers(List<LifeCycleChecker<T>> checkers) {
-        this.checkers = checkers;
-    }
+	/**
+	 * @param checkers
+	 *            the checkers to set
+	 */
+	public void setCheckers(List<LifeCycleChecker<T>> checkers) {
+		this.checkers = checkers;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTarget() {
-        return target;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getTarget() {
+		return target;
+	}
 
-    /**
-     * @param target the target to set
-     */
-    public void setTarget(String target) {
-        this.target = target;
-    }
+	/**
+	 * @param target
+	 *            the target to set
+	 */
+	public void setTarget(String target) {
+		this.target = target;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getType() {
-        return type;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getType() {
+		return type;
+	}
 
-    /**
-     * @param type the type to set
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDescription() {
+		return description;
+	}
 
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String changeState(T valueObject, EventManager evtManager) {
-        return changeState(valueObject, evtManager, null);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String changeState(T valueObject, EventManager evtManager) {
+		return changeState(valueObject, evtManager, null);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String changeState(T valueObject, EventManager evtManager, List<String> forcedCheckers) {
-        String rtn = Constants.TRUE;
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String changeState(T valueObject, EventManager evtManager,
+			List<String> forcedCheckers) {
+		String rtn = Constants.TRUE;
 
-        for (LifeCycleChecker<T> checker : checkers) {
-            boolean filter = false;
+		for (LifeCycleChecker<T> checker : checkers) {
+			boolean filter = false;
 
-            // Recherche des checker à ignorer
-            if (isNotEmpty(forcedCheckers)) {
-                for (String idChecker : forcedCheckers) {
-                    if (null != checker.getId() && idChecker.equalsIgnoreCase(checker.getId())) {
-                        filter = true;
-                        break;
-                    }
-                }
-            }
+			// Recherche des checker à ignorer
+			if (isNotEmpty(forcedCheckers)) {
+				for (String idChecker : forcedCheckers) {
+					if (null != checker.getId()
+							&& idChecker.equalsIgnoreCase(checker.getId())) {
+						filter = true;
+						break;
+					}
+				}
+			}
 
-            String result = checker.getResult(valueObject);
-            if (null == result || Constants.FALSE.equalsIgnoreCase(result)) {
-                if (!filter) {
-                    rtn = Constants.FALSE;
-                    break;
-                } else {
-                	String message = "Forced checker : " + checker.getId();
-                	logCustomEvent(evtManager, Constants.EVENT_TYPE_FORCED_CHECKER, message);
-                }
-            }
-        }
+			String result = checker.getResult(valueObject);
+			if (null == result || Constants.FALSE.equalsIgnoreCase(result)) {
+				if (!filter) {
+					rtn = Constants.FALSE;
+					break;
+				} else {
+					String message = "Forced checker : " + checker.getId();
+					logCustomEvent(evtManager,
+							Constants.EVENT_TYPE_FORCED_CHECKER, message);
+				}
+			}
+		}
 
-        return rtn;
-    }
-    
-    
-    /**
-     * Log custom event
-     * @param typeEvent
-     * @param message
-     */
-    private void logCustomEvent(EventManager evtManager, String typeEvent, String message){
-    	Event event = new Event();
-    	event.setTypeEvent(typeEvent);
-    	event.setDate(getCurrentTime());
-    	event.setMessage(message);
-    	event.setActor(Constants.SYS_ACTOR);
-    	evtManager.logEvent(event);
-    }
+		return rtn;
+	}
+
+	/**
+	 * Log custom event
+	 * 
+	 * @param typeEvent
+	 * @param message
+	 */
+	private void logCustomEvent(EventManager evtManager, String typeEvent,
+			String message) {
+		Event event = new Event();
+		event.setTypeEvent(typeEvent);
+		event.setDate(getCurrentTime());
+		event.setMessage(message);
+		event.setActor(Constants.SYS_ACTOR);
+		evtManager.logEvent(event);
+	}
 }
