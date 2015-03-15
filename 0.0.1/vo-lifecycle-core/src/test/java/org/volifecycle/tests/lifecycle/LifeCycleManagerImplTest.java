@@ -1,8 +1,10 @@
 package org.volifecycle.tests.lifecycle;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -16,9 +18,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.volifecycle.constants.Constants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
+import org.volifecycle.lifecycle.LifeCycleChangeSaver;
 import org.volifecycle.lifecycle.LifeCycleState;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 import org.volifecycle.lifecycle.impl.LifeCycleManagerImpl;
+import org.volifecycle.lifecycle.vo.LifeCycleChange;
 import org.volifecycle.tests.AbstractTest;
 import org.volifecycle.tests.inputs.ValueObjectStub;
 
@@ -46,6 +50,9 @@ public class LifeCycleManagerImplTest extends AbstractTest {
 	@Mock
 	EventManager evtManagerMock;
 
+	@Mock
+	LifeCycleChangeSaver saverMock;
+
 	String transitionId = "id1";
 	String stateId = "idState";
 
@@ -60,6 +67,7 @@ public class LifeCycleManagerImplTest extends AbstractTest {
 		manager = new LifeCycleManagerImpl<ValueObjectStub, LifeCycleAdapter<ValueObjectStub>>();
 		manager.setAdapter(adapterMock);
 		manager.setEvtManager(evtManagerMock);
+		manager.setSaver(saverMock);
 
 		statesById = new HashMap<String, LifeCycleState<ValueObjectStub>>();
 		statesById.put(stateId, stateMock);
@@ -73,6 +81,18 @@ public class LifeCycleManagerImplTest extends AbstractTest {
 				transitionMock.changeState(eq(valueObject), eq(adapterMock),
 						eq(evtManagerMock), anyListOf(String.class)))
 				.thenReturn(Constants.TRUE);
+	}
+
+	/**
+	 * Test function logChangeCustom
+	 */
+	@Test
+	public final void testLogChangeCustomNominal() {
+		manager.logChangeCustom(valueObject, transitionId, "satein",
+				adapterMock, "state-out");
+		verify(adapterMock).getId(valueObject);
+		verify(adapterMock).getType(valueObject);
+		verify(saverMock).logChange(any(LifeCycleChange.class));
 	}
 
 	/**
