@@ -152,7 +152,7 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 	 * @param typeEvent
 	 * @param message
 	 */
-	private void logCustomEvent(T valueObject, LifeCycleAdapter<T> adapter,
+	public void logCustomEvent(T valueObject, LifeCycleAdapter<T> adapter,
 			EventManager evtManager, String typeEvent, String message) {
 		Event event = new Event();
 		event.setTypeEvent(typeEvent);

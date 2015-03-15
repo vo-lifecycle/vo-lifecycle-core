@@ -117,7 +117,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 	 * @param adapter
 	 * @param stateOut
 	 */
-	private void logChangeCustom(T valueObject, String transitionId,
+	public void logChangeCustom(T valueObject, String transitionId,
 			String stateIn, LifeCycleAdapter<T> adapter, String stateOut) {
 		LifeCycleChangeSaver s = getSaver();
 		if (null == s) {
