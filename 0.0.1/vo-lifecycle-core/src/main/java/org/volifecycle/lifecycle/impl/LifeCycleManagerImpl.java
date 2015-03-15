@@ -5,11 +5,11 @@ import static org.volifecycle.utils.DateUtils.getCurrentTime;
 import java.util.List;
 import java.util.Map;
 
-import org.volifecycle.constants.Constants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.impl.Log4jEventManagerImpl;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChangeSaver;
+import org.volifecycle.lifecycle.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleManager;
 import org.volifecycle.lifecycle.LifeCycleState;
 import org.volifecycle.lifecycle.LifeCycleTransition;
@@ -99,7 +99,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 		String targetState = transition.getTarget();
 
 		// Change state (in database or other persistence support)
-		if (null != targetState && !Constants.FALSE.equalsIgnoreCase(rtn)) {
+		if (null != targetState && !LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
 			adapter.setState(valueObject, targetState);
 			logChangeCustom(valueObject, idTransition, keyState, adapter,
 					targetState);
