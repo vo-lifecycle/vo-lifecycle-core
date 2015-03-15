@@ -5,11 +5,11 @@ import static org.volifecycle.utils.DateUtils.getCurrentTime;
 
 import java.util.List;
 
-import org.volifecycle.constants.Constants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChecker;
+import org.volifecycle.lifecycle.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
 /**
@@ -112,7 +112,7 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 	@Override
 	public String changeState(T valueObject, LifeCycleAdapter<T> adapter,
 			EventManager evtManager, List<String> forcedCheckers) {
-		String rtn = Constants.TRUE;
+		String rtn = LifeCycleConstants.TRUE;
 
 		if (isNotEmpty(checkers)) {
 			for (LifeCycleChecker<T> checker : checkers) {
@@ -130,14 +130,14 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 				}
 
 				String result = checker.getResult(valueObject);
-				if (null == result || Constants.FALSE.equalsIgnoreCase(result)) {
+				if (null == result || LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
 					if (!filter) {
-						rtn = Constants.FALSE;
+						rtn = LifeCycleConstants.FALSE;
 						break;
 					} else {
 						String message = "Forced checker : " + checker.getId();
 						logCustomEvent(valueObject, adapter, evtManager,
-								Constants.EVENT_TYPE_FORCED_CHECKER, message);
+								LifeCycleConstants.EVENT_TYPE_FORCED_CHECKER, message);
 					}
 				}
 			}
@@ -158,7 +158,7 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 		event.setTypeEvent(typeEvent);
 		event.setDate(getCurrentTime());
 		event.setMessage(message);
-		event.setActor(Constants.SYS_ACTOR);
+		event.setActor(LifeCycleConstants.SYS_ACTOR);
 		event.setIdValueObject(adapter.getId(valueObject));
 		event.setTypeValueObject(adapter.getType(valueObject));
 		evtManager.logEvent(event);

@@ -13,11 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.volifecycle.constants.Constants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChecker;
+import org.volifecycle.lifecycle.LifeCycleConstants;
 import org.volifecycle.lifecycle.impl.LifeCycleTransitionImpl;
 import org.volifecycle.tests.AbstractTest;
 import org.volifecycle.tests.inputs.ValueObjectStub;
@@ -65,7 +65,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 
 		// mocks configuration
 		when(checkerMock.getResult(any(ValueObjectStub.class))).thenReturn(
-				Constants.FALSE);
+				LifeCycleConstants.FALSE);
 		when(checkerMock.getId()).thenReturn(idChecker);
 
 		when(adapterMock.getState(any(ValueObjectStub.class))).thenReturn(
@@ -82,7 +82,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 	public final void testChangeStateNominal() {
 		String result = transition.changeState(valueObject, adapterMock,
 				evtManagerMock);
-		assertEquals(Constants.FALSE, result);
+		assertEquals(LifeCycleConstants.FALSE, result);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 	public final void testChangeStateWithForcedChecker() {
 		String result = transition.changeState(valueObject, adapterMock,
 				evtManagerMock, forcedCheckers);
-		assertEquals(Constants.TRUE, result);
+		assertEquals(LifeCycleConstants.TRUE, result);
 		verify(evtManagerMock).logEvent(any(Event.class));
 	}
 }
