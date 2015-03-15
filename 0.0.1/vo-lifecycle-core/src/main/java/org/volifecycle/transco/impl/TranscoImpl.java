@@ -75,7 +75,7 @@ public class TranscoImpl implements Transco {
 	 */
 	@Override
 	public boolean containsValue(Object value) {
-		return k2v.containsValue(value);
+		return v2k.containsKey(getFormatedKey(value));
 	}
 
 	/**
@@ -197,6 +197,7 @@ public class TranscoImpl implements Transco {
 	@Override
 	public void clear() {
 		k2v.clear();
+		v2k.clear();
 	}
 
 	/**
