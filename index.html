@@ -42,6 +42,30 @@
 </ul>
 
 <h1>
+<a id="installation-with-maven" class="anchor" href="#installation-with-maven" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation with maven</h1>
+
+<h2>
+<a id="maven-repository" class="anchor" href="#maven-repository" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maven repository</h2>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">repository</span>&gt;
+    &lt;<span class="pl-ent">id</span>&gt;vo-lifecycle-mvn-repo&lt;/<span class="pl-ent">id</span>&gt;
+    &lt;<span class="pl-ent">url</span>&gt;https://raw.github.com/idrissneumann/vo-lifecycle/mvn-repo/&lt;/<span class="pl-ent">url</span>&gt;
+    &lt;<span class="pl-ent">snapshots</span>&gt;
+        &lt;<span class="pl-ent">enabled</span>&gt;true&lt;/<span class="pl-ent">enabled</span>&gt;
+        &lt;<span class="pl-ent">updatePolicy</span>&gt;always&lt;/<span class="pl-ent">updatePolicy</span>&gt;
+    &lt;/<span class="pl-ent">snapshots</span>&gt;
+&lt;/<span class="pl-ent">repository</span>&gt;</pre></div>
+
+<h2>
+<a id="maven-dependency" class="anchor" href="#maven-dependency" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maven dependency</h2>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;vo-lifecycle&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;vo-lifecycle-core&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;${vo-lifecycle.version}&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
+
+<h1>
 <a id="see-also" class="anchor" href="#see-also" aria-hidden="true"><span class="octicon octicon-link"></span></a>See also</h1>
 
 <ul>
