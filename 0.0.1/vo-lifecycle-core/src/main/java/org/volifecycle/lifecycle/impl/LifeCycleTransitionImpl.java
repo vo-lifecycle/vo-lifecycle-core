@@ -111,7 +111,7 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
             for (LifeCycleChecker<T> checker : checkers) {
                 boolean filter = false;
 
-                // Recherche des checker à ignorer
+                // Searching if is a checker to ignore
                 if (isNotEmpty(forcedCheckers)) {
                     for (String idChecker : forcedCheckers) {
                         if (null != checker.getId() && idChecker.equalsIgnoreCase(checker.getId())) {
@@ -143,13 +143,13 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
      * Log custom event
      * 
      * @param typeEvent
-     * @param message
+     * @param details
      */
-    public void logCustomEvent(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, String typeEvent, String message) {
+    public void logCustomEvent(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, String typeEvent, String details) {
         Event event = new Event();
         event.setTypeEvent(typeEvent);
         event.setDate(getCurrentTime());
-        event.setMessage(message);
+        event.setDetails(details);
         event.setActor(LifeCycleConstants.SYS_ACTOR);
         event.setIdValueObject(adapter.getId(valueObject));
         event.setTypeValueObject(adapter.getType(valueObject));

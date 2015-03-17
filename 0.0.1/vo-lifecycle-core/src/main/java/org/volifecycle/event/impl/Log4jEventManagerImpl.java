@@ -14,18 +14,15 @@ import org.volifecycle.event.vo.Event;
  * 
  */
 public class Log4jEventManagerImpl implements EventManager {
-	private static final Logger LOGGER = LogManager
-			.getLogger(Log4jEventManagerImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(Log4jEventManagerImpl.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void logEvent(Event e) {
-		LOGGER.info("type = " + e.getTypeEvent() + ", actor = " + e.getActor()
-				+ ", date = " + calendarToString(e.getDate()));
-		LOGGER.info("VO id = " + e.getIdValueObject(),
-				"VO type = " + e.getTypeValueObject());
-		LOGGER.info("message = " + e.getMessage());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void logEvent(Event e) {
+        LOGGER.info("type = " + e.getTypeEvent() + ", actor = " + e.getActor() + ", date = " + calendarToString(e.getDate()));
+        LOGGER.info("VO id = " + e.getIdValueObject(), "VO type = " + e.getTypeValueObject());
+        LOGGER.info("message = " + e.getDetails());
+    }
 }
