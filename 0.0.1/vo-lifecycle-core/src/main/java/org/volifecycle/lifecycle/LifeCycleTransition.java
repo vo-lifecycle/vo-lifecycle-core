@@ -52,4 +52,9 @@ public interface LifeCycleTransition<T> {
 	 * @return the target state
 	 */
 	String getTarget();
+
+	/**
+	 * @return the checkers
+	 */
+	List<LifeCycleChecker<T>> getCheckers();
 }
