@@ -192,8 +192,9 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 	}
 
 	/**
-	 * @return the evtManager
+	 * {@inheritDoc}
 	 */
+	@Override
 	public EventManager getEvtManager() {
 		return evtManager;
 	}
@@ -207,8 +208,9 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 	}
 
 	/**
-	 * @return the id
+	 * {@inheritDoc}
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}

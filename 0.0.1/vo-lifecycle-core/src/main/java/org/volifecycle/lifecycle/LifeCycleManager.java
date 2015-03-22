@@ -3,6 +3,8 @@ package org.volifecycle.lifecycle;
 import java.util.List;
 import java.util.Map;
 
+import org.volifecycle.event.EventManager;
+
 /**
  * Manager interface
  * 
@@ -41,9 +43,19 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
 	String getDescription();
 
 	/**
+	 * @return the id
+	 */
+	String getId();
+
+	/**
 	 * @return the saver
 	 */
 	LifeCycleChangeSaver getSaver();
+
+	/**
+	 * @return the evtManager
+	 */
+	EventManager getEvtManager();
 
 	/**
 	 * @return the adapter
