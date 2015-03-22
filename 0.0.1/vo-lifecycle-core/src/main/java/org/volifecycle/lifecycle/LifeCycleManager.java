@@ -1,6 +1,7 @@
 package org.volifecycle.lifecycle;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Manager interface
@@ -42,10 +43,15 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
 	/**
 	 * @return the saver
 	 */
-	public LifeCycleChangeSaver getSaver();
+	LifeCycleChangeSaver getSaver();
 
 	/**
 	 * @return the adapter
 	 */
-	public A getAdapter();
+	A getAdapter();
+
+	/**
+	 * @return the statesById
+	 */
+	Map<String, LifeCycleState<T>> getStatesById();
 }

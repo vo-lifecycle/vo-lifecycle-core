@@ -144,8 +144,9 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements
 	}
 
 	/**
-	 * @return the statesById
+	 * {@inheritDoc}
 	 */
+	@Override
 	public Map<String, LifeCycleState<T>> getStatesById() {
 		return statesById;
 	}
