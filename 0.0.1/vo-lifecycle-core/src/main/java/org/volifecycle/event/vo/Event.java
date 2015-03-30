@@ -1,5 +1,6 @@
 package org.volifecycle.event.vo;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
@@ -8,118 +9,126 @@ import java.util.Calendar;
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
  */
-public class Event {
-    /**
-     * Type of event (issue, etc)
-     */
-    private String typeEvent;
+public class Event implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * when ?
-     */
-    private Calendar date;
+	/**
+	 * Type of event (issue, etc)
+	 */
+	protected String typeEvent;
 
-    /**
-     * what ?
-     */
-    private String details;
+	/**
+	 * when ?
+	 */
+	protected Calendar date;
 
-    /**
-     * who ?
-     */
-    private String actor;
+	/**
+	 * what ?
+	 */
+	protected String details;
 
-    /**
-     * Value object impacted
-     */
-    private String idValueObject;
+	/**
+	 * who ?
+	 */
+	protected String actor;
 
-    /**
-     * Type of value object impacted
-     */
-    private String typeValueObject;
+	/**
+	 * Value object impacted
+	 */
+	protected String idValueObject;
 
-    /**
-     * @return the typeEvent
-     */
-    public String getTypeEvent() {
-        return typeEvent;
-    }
+	/**
+	 * Type of value object impacted
+	 */
+	protected String typeValueObject;
 
-    /**
-     * @param typeEvent the typeEvent to set
-     */
-    public void setTypeEvent(String typeEvent) {
-        this.typeEvent = typeEvent;
-    }
+	/**
+	 * @return the typeEvent
+	 */
+	public String getTypeEvent() {
+		return typeEvent;
+	}
 
-    /**
-     * @return the date
-     */
-    public Calendar getDate() {
-        return date;
-    }
+	/**
+	 * @param typeEvent
+	 *            the typeEvent to set
+	 */
+	public void setTypeEvent(String typeEvent) {
+		this.typeEvent = typeEvent;
+	}
 
-    /**
-     * @param date the date to set
-     */
-    public void setDate(Calendar date) {
-        this.date = date;
-    }
+	/**
+	 * @return the date
+	 */
+	public Calendar getDate() {
+		return date;
+	}
 
-    /**
-     * @return the details
-     */
-    public String getDetails() {
-        return details;
-    }
+	/**
+	 * @param date
+	 *            the date to set
+	 */
+	public void setDate(Calendar date) {
+		this.date = date;
+	}
 
-    /**
-     * @param details the details to set
-     */
-    public void setDetails(String details) {
-        this.details = details;
-    }
+	/**
+	 * @return the details
+	 */
+	public String getDetails() {
+		return details;
+	}
 
-    /**
-     * @return the actor
-     */
-    public String getActor() {
-        return actor;
-    }
+	/**
+	 * @param details
+	 *            the details to set
+	 */
+	public void setDetails(String details) {
+		this.details = details;
+	}
 
-    /**
-     * @param actor the actor to set
-     */
-    public void setActor(String actor) {
-        this.actor = actor;
-    }
+	/**
+	 * @return the actor
+	 */
+	public String getActor() {
+		return actor;
+	}
 
-    /**
-     * @return the idValueObject
-     */
-    public String getIdValueObject() {
-        return idValueObject;
-    }
+	/**
+	 * @param actor
+	 *            the actor to set
+	 */
+	public void setActor(String actor) {
+		this.actor = actor;
+	}
 
-    /**
-     * @param idValueObject the idValueObject to set
-     */
-    public void setIdValueObject(String idValueObject) {
-        this.idValueObject = idValueObject;
-    }
+	/**
+	 * @return the idValueObject
+	 */
+	public String getIdValueObject() {
+		return idValueObject;
+	}
 
-    /**
-     * @return the typeValueObject
-     */
-    public String getTypeValueObject() {
-        return typeValueObject;
-    }
+	/**
+	 * @param idValueObject
+	 *            the idValueObject to set
+	 */
+	public void setIdValueObject(String idValueObject) {
+		this.idValueObject = idValueObject;
+	}
 
-    /**
-     * @param typeValueObject the typeValueObject to set
-     */
-    public void setTypeValueObject(String typeValueObject) {
-        this.typeValueObject = typeValueObject;
-    }
+	/**
+	 * @return the typeValueObject
+	 */
+	public String getTypeValueObject() {
+		return typeValueObject;
+	}
+
+	/**
+	 * @param typeValueObject
+	 *            the typeValueObject to set
+	 */
+	public void setTypeValueObject(String typeValueObject) {
+		this.typeValueObject = typeValueObject;
+	}
 }

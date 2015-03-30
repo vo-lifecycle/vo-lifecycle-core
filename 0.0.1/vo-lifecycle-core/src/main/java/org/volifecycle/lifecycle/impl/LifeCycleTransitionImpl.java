@@ -1,15 +1,14 @@
 package org.volifecycle.lifecycle.impl;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
-import static org.volifecycle.utils.DateUtils.getCurrentTime;
 
 import java.util.List;
 
+import org.volifecycle.common.AbstractLifeCycle;
+import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
-import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChecker;
-import org.volifecycle.lifecycle.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
 /**
@@ -20,7 +19,8 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  * @param <T>
  *            value object type
  */
-public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
+public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements
+		LifeCycleTransition<T> {
 	protected List<LifeCycleChecker<T>> checkers;
 	protected String target;
 
@@ -151,23 +151,5 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
 		}
 
 		return rtn;
-	}
-
-	/**
-	 * Log custom event
-	 * 
-	 * @param typeEvent
-	 * @param details
-	 */
-	public void logCustomEvent(T valueObject, LifeCycleAdapter<T> adapter,
-			EventManager evtManager, String typeEvent, String details) {
-		Event event = new Event();
-		event.setTypeEvent(typeEvent);
-		event.setDate(getCurrentTime());
-		event.setDetails(details);
-		event.setActor(LifeCycleConstants.SYS_ACTOR);
-		event.setIdValueObject(adapter.getId(valueObject));
-		event.setTypeValueObject(adapter.getType(valueObject));
-		evtManager.logEvent(event);
 	}
 }

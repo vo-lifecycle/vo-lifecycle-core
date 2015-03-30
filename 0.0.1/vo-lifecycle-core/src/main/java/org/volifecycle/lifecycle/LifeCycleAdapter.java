@@ -34,6 +34,14 @@ public interface LifeCycleAdapter<T> {
 	String getType(T valueObject);
 
 	/**
+	 * Return the actor who is responsible
+	 * 
+	 * @param valueObject
+	 * @return
+	 */
+	String getActor(T valueObject);
+
+	/**
 	 * Setting a new state
 	 * 
 	 * @param valueObject

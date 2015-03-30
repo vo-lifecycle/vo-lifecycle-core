@@ -1,10 +1,17 @@
 package org.volifecycle.event.impl;
 
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.volifecycle.utils.DateUtils.calendarToString;
+import static org.volifecycle.utils.JSONUtils.map2jsonQuietly;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.volifecycle.event.EventManager;
+import org.volifecycle.event.vo.DiffEvent;
 import org.volifecycle.event.vo.Event;
 
 /**
@@ -14,15 +21,28 @@ import org.volifecycle.event.vo.Event;
  * 
  */
 public class Log4jEventManagerImpl implements EventManager {
-    private static final Logger LOGGER = LogManager.getLogger(Log4jEventManagerImpl.class);
+	private static final Logger LOGGER = LogManager.getLogger(Log4jEventManagerImpl.class);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void logEvent(Event e) {
-        LOGGER.info("type = " + e.getTypeEvent() + ", actor = " + e.getActor() + ", date = " + calendarToString(e.getDate()));
-        LOGGER.info("VO id = " + e.getIdValueObject(), "VO type = " + e.getTypeValueObject());
-        LOGGER.info("message = " + e.getDetails());
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void logEvent(Event e) {
+		Map<String, String> logLine = new HashMap<String, String>();
+		logLine.put("type", e.getTypeEvent());
+		logLine.put("actor", e.getActor());
+		logLine.put("date", calendarToString(e.getDate()));
+		logLine.put("message", e.getDetails());
+
+		LOGGER.info(map2jsonQuietly(logLine));
+
+		// Case of diff event
+		if (e instanceof DiffEvent) {
+			DiffEvent de = (DiffEvent) e;
+			if (isNotEmpty(de.getDiffProperties())) {
+				Map<String, List<?>> logLineDiff = new HashMap<String, List<?>>();
+				logLineDiff.put("diffs", de.getDiffProperties());
+			}
+		}
+	}
 }

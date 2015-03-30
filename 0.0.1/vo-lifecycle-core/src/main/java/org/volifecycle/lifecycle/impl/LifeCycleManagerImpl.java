@@ -5,11 +5,11 @@ import static org.volifecycle.utils.DateUtils.getCurrentTime;
 import java.util.List;
 import java.util.Map;
 
+import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.impl.Log4jEventManagerImpl;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChangeSaver;
-import org.volifecycle.lifecycle.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleManager;
 import org.volifecycle.lifecycle.LifeCycleState;
 import org.volifecycle.lifecycle.LifeCycleTransition;
