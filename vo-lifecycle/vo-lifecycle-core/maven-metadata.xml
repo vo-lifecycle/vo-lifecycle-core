@@ -3,11 +3,9 @@
   <groupId>vo-lifecycle</groupId>
   <artifactId>vo-lifecycle-core</artifactId>
   <versioning>
-    <release>1.0.0</release>
     <versions>
-      <version>0.0.1-SNAPSHOT</version>
-      <version>1.0.0</version>
+      <version>1.1.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20150327085015</lastUpdated>
+    <lastUpdated>20150330222947</lastUpdated>
   </versioning>
 </metadata>
