@@ -20,6 +20,7 @@
 		<!-- Test -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.5</mockito.version>
+		<jacoco.version>0.6.3.201306030806</jacoco.version>
 
 		<!-- github server corresponds to entry in ~/.m2/settings.xml -->
 		<github.global.server>github</github.global.server>
@@ -110,6 +111,41 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+			    <groupId>org.jacoco</groupId>
+			    <artifactId>jacoco-maven-plugin</artifactId>
+			    <version>${jacoco.version}</version>
+			    <executions>
+			      <!-- prepare agent for measuring integration tests -->
+			      <execution>
+			        <id>prepare-integration-tests</id>
+			        <phase>pre-integration-test</phase>
+			        <goals>
+			          <goal>prepare-agent</goal>
+			        </goals>
+			        <configuration>
+					  <propertyName>surefireArgLine</propertyName>
+			          <destFile>${basedir}/target/jacoco.exec</destFile>
+			        </configuration>
+			      </execution>
+			      <execution>
+			        <id>jacoco-site</id>
+			        <phase>post-integration-test</phase>
+			        <goals>
+			          <goal>report</goal>
+			        </goals>
+			        <configuration>
+			          <dataFile>${basedir}/target/jacoco.exec</dataFile>
+			        </configuration>
+			      </execution>
+			    </executions>
+			  </plugin>
+			  <plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>sql-maven-plugin</artifactId>
+		        <version>1.5</version>
+	        </plugin>
 		</plugins>
 	</build>
 
