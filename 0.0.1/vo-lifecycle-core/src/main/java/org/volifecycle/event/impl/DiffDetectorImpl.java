@@ -71,6 +71,25 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
     }
 
     /**
+     * Convert objectToString
+     * 
+     * @param o
+     * @return String
+     */
+    public String object2string(Object o) {
+        Class<?> clazz;
+        if (null == o) {
+            return "null";
+        } else if (o instanceof Calendar) {
+            return calendarToString((Calendar) o, FORMAT_DATE_HOUR);
+        } else if (null != (clazz = getPrimitifType(o))) {
+            return String.valueOf(clazz.cast(o));
+        } else {
+            return o.toString();
+        }
+    }
+
+    /**
      * Logs diff
      * 
      * @param original
@@ -79,12 +98,9 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      */
     public List<DiffProperty> logDiffs(T original, Object vo1, Object vo2, List<DiffProperty> diffs, String parent) {
         if (null == vo1 || null == vo2) {
-            if (null == vo1 && null != vo2) {
-                diffs.add(createDiffProperty(vo2.getClass().getSimpleName(), "null", vo2.toString(), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
-            } else if (null != vo1 && null == vo2) {
-                diffs.add(createDiffProperty(vo1.getClass().getSimpleName(), vo1.toString(), "null", parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+            if (null != vo1 || null != vo2) {
+                diffs.add(createDiffProperty((null == parent) ? vo2.getClass().getSimpleName() : parent, object2string(vo1), object2string(vo2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
             }
-
             return diffs;
         }
 
@@ -125,10 +141,28 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                         }
                     } else if (isNotEmpty(l1) && isNotEmpty(l2)) {
                         diffs.add(createDiffProperty(property, String.valueOf(l1.size()), String.valueOf(l2.size()), parent, LifeCycleConstants.DIFF_TYPE_SIZE));
+
+                        List<?> lmin = (l1.size() >= l2.size()) ? l2 : l1;
+                        List<?> lmax = (l1.size() >= l2.size()) ? l1 : l2;
+
+                        // Adding value
+                        for (Integer i = lmin.size(); i < lmax.size(); i++) {
+                            logDiffs(original, null, lmax.get(i), diffs, property);
+                        }
                     } else if (isNotEmpty(l1)) {
                         diffs.add(createDiffProperty(property, String.valueOf(l1.size()), "null", parent, LifeCycleConstants.DIFF_TYPE_SIZE));
+
+                        // Adding value
+                        for (Integer i = 0; i < l1.size(); i++) {
+                            logDiffs(original, l1.get(i), null, diffs, property);
+                        }
                     } else {
                         diffs.add(createDiffProperty(property, "null", String.valueOf(l2.size()), parent, LifeCycleConstants.DIFF_TYPE_SIZE));
+
+                        // Adding value
+                        for (Integer i = 0; i < l2.size(); i++) {
+                            logDiffs(original, null, l2.get(i), diffs, property);
+                        }
                     }
                 } else if (null != (clazz = getPrimitifType(o1))) {
                     if (!clazz.cast(o1).equals(clazz.cast(o2))) {
