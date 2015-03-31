@@ -285,10 +285,10 @@ public class DiffDetectorImplTest {
         assertNull(d.getDiffProperties().get(0).getParentPropertyName());
 
         assertEquals("null", d.getDiffProperties().get(1).getBeforeValue());
-        assertEquals("123,label1", d.getDiffProperties().get(1).getAfterValue());
-        assertEquals("lstChilds", d.getDiffProperties().get(1).getPropertyName());
+        assertEquals("label1", d.getDiffProperties().get(1).getAfterValue());
+        assertEquals("lstChilds", d.getDiffProperties().get(1).getParentPropertyName());
+        assertEquals("label", d.getDiffProperties().get(1).getPropertyName());
         assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(1).getType());
-        assertNull(d.getDiffProperties().get(0).getParentPropertyName());
     }
 
     /**

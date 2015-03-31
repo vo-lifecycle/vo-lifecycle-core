@@ -22,8 +22,9 @@ import org.volifecycle.event.vo.DiffProperty;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 
 /**
+ * DiffDetector implementation
  * 
- * @author neumann
+ * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
  * @param <T>
  */
@@ -91,6 +92,60 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
     }
 
     /**
+     * Logs when one of two vo is NULL
+     * 
+     * @param original
+     * @param o
+     * @param diffs
+     * @param parent
+     * @param isBefore
+     * @return
+     */
+    public List<DiffProperty> logDiffsWhereNull(T original, Object o, List<DiffProperty> diffs, String parent, boolean isBefore) {
+        if (o instanceof Calendar || null != getPrimitifType(o)) {
+            diffs.add(createDiffProperty((null == parent) ? o.getClass().getSimpleName() : parent, object2string((!isBefore) ? null : o), object2string((isBefore) ? null : o), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+        } else {
+            Class<?> clazz = o.getClass();
+            if (isEmpty(classFilters) || !classFilters.contains(clazz.getName())) {
+                return diffs;
+            }
+
+            List<Method> getters = getCommonGetter(o, o);
+            if (isNotEmpty(getters)) {
+                for (Method getter : getters) {
+                    Object so;
+
+                    // Camel case
+                    String property = getter.getName().replaceAll("^get", "");
+                    property = property.substring(0, 1).toLowerCase() + property.substring(1);
+
+                    if (isEmpty(propertyFilters) || !propertyFilters.contains(property)) {
+                        continue;
+                    }
+
+                    try {
+                        so = getter.invoke(o);
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                        String message = "Reflexion error : " + e.getMessage();
+                        logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message);
+                        continue;
+                    }
+
+                    if (null != getNotImplementedType(so)) {
+                        continue;
+                    } else if (so instanceof Calendar || null != getPrimitifType(so)) {
+                        diffs.add(createDiffProperty(property, object2string((!isBefore) ? null : so), object2string((isBefore) ? null : so), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+                    } else {
+                        diffs = logDiffsWhereNull(original, so, diffs, property, isBefore);
+                    }
+                }
+            }
+        }
+
+        return diffs;
+    }
+
+    /**
      * Logs diff
      * 
      * @param original
@@ -98,9 +153,12 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      * @param vo2
      */
     public List<DiffProperty> logDiffs(T original, Object vo1, Object vo2, List<DiffProperty> diffs, String parent) {
+        // When one of two value object is null
         if (null == vo1 || null == vo2) {
-            if (null != vo1 || null != vo2) {
-                diffs.add(createDiffProperty((null == parent) ? vo2.getClass().getSimpleName() : parent, object2string(vo1), object2string(vo2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+            if (null != vo1) {
+                logDiffsWhereNull(original, vo1, diffs, parent, true);
+            } else if (null != vo2) {
+                logDiffsWhereNull(original, vo2, diffs, parent, false);
             }
             return diffs;
         }
