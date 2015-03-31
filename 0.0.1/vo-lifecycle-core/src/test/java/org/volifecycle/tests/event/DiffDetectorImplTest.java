@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -144,5 +147,45 @@ public class DiffDetectorImplTest {
 		assertEquals("label", d.getDiffProperties().get(0).getPropertyName());
 		assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(0).getType());
 		assertEquals("subValueObject", d.getDiffProperties().get(0).getParentPropertyName());
+	}
+
+	/**
+	 * Test with subobject
+	 */
+	@Test
+	public final void testDetectorSubObjectListSameSize() {
+		SubValueObject so1 = new SubValueObject();
+		so1.setCode("123");
+		so1.setLabel("label1");
+		List<SubValueObject> l1 = new ArrayList<SubValueObject>();
+		l1.add(so1);
+
+		SubValueObject so2 = new SubValueObject();
+		so2.setCode("123");
+		so2.setLabel("label2");
+		List<SubValueObject> l2 = new ArrayList<SubValueObject>();
+		l2.add(so2);
+
+		ValueObjectStub vo1 = new ValueObjectStub();
+		vo1.setLstChilds(l1);
+
+		ValueObjectStub vo2 = new ValueObjectStub();
+		vo2.setLstChilds(l2);
+
+		detector.compare(vo1, vo2);
+		verify(evtManagerMock).logEvent(captorEvent.capture());
+		Event result = captorEvent.getValue();
+
+		assertNotNull(result);
+		assertTrue(result instanceof DiffEvent);
+
+		DiffEvent d = (DiffEvent) result;
+		assertNotNull(d.getDiffProperties());
+		assertEquals(1, d.getDiffProperties().size());
+		assertEquals("label1", d.getDiffProperties().get(0).getBeforeValue());
+		assertEquals("label2", d.getDiffProperties().get(0).getAfterValue());
+		assertEquals("label", d.getDiffProperties().get(0).getPropertyName());
+		assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(0).getType());
+		assertEquals("lstChilds", d.getDiffProperties().get(0).getParentPropertyName());
 	}
 }
