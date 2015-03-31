@@ -32,7 +32,12 @@ public interface DiffDetector<T, A extends LifeCycleAdapter<T>> {
     EventManager getEvtManager();
 
     /**
-     * @return the filters
+     * @return the propertyFilters
      */
-    List<String> getFilters();
+    List<String> getPropertyFilters();
+
+    /**
+     * @return the classFilters
+     */
+    List<String> getClassFilters();
 }

@@ -50,7 +50,8 @@ public class DiffDetectorImplTest {
     ArgumentCaptor<Event> captorEvent;
 
     DiffDetectorImpl<ValueObjectStub, LifeCycleAdapter<ValueObjectStub>> detector;
-    List<String> filters;
+    List<String> propertyFilters;
+    List<String> classFilters;
 
     /**
      * Init datas
@@ -61,15 +62,21 @@ public class DiffDetectorImplTest {
         detector.setAdapter(adapterMock);
         detector.setEvtManager(evtManagerMock);
 
-        filters = new ArrayList<String>();
-        filters.add("id");
-        filters.add("label");
-        filters.add("subValueObject");
-        filters.add("map");
-        filters.add("nb");
-        filters.add("lstChilds");
+        propertyFilters = new ArrayList<String>();
+        propertyFilters.add("id");
+        propertyFilters.add("label");
+        propertyFilters.add("subValueObject");
+        propertyFilters.add("map");
+        propertyFilters.add("nb");
+        propertyFilters.add("lstChilds");
 
-        detector.setFilters(filters);
+        detector.setPropertyFilters(propertyFilters);
+
+        classFilters = new ArrayList<String>();
+        classFilters.add("org.volifecycle.tests.inputs.ValueObjectStub");
+        classFilters.add("org.volifecycle.tests.inputs.SubValueObject");
+
+        detector.setClassFilters(classFilters);
     }
 
     /**
@@ -104,14 +111,30 @@ public class DiffDetectorImplTest {
      * Simple test detector
      */
     @Test
-    public final void testDetectorWithFilterEmpty() {
+    public final void testDetectorWithPropertyFilterEmpty() {
         ValueObjectStub vo1 = new ValueObjectStub();
         vo1.setId("1");
 
         ValueObjectStub vo2 = new ValueObjectStub();
         vo2.setId("2");
 
-        detector.setFilters(null);
+        detector.setPropertyFilters(null);
+        detector.compare(vo1, vo2);
+        verify(evtManagerMock, times(0)).logEvent(any(Event.class));
+    }
+
+    /**
+     * Simple test detector
+     */
+    @Test
+    public final void testDetectorWithClassFilterEmpty() {
+        ValueObjectStub vo1 = new ValueObjectStub();
+        vo1.setId("1");
+
+        ValueObjectStub vo2 = new ValueObjectStub();
+        vo2.setId("2");
+
+        detector.setClassFilters(null);
         detector.compare(vo1, vo2);
         verify(evtManagerMock, times(0)).logEvent(any(Event.class));
     }

@@ -38,7 +38,8 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      */
     private A adapter;
 
-    private List<String> filters;
+    private List<String> propertyFilters;
+    private List<String> classFilters;
 
     /**
      * {@inheritDoc}
@@ -104,17 +105,21 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
             return diffs;
         }
 
+        Class<?> clazz = vo1.getClass();
+        if (isEmpty(classFilters) || !classFilters.contains(clazz.getName())) {
+            return diffs;
+        }
+
         List<Method> getters = getCommonGetter(vo1, vo2);
         if (isNotEmpty(getters)) {
             Object o1, o2;
-            Class<?> clazz;
 
             for (Method getter : getters) {
                 // Camel case
                 String property = getter.getName().replaceAll("^get", "");
                 property = property.substring(0, 1).toLowerCase() + property.substring(1);
 
-                if (isEmpty(filters) || !filters.contains(property)) {
+                if (isEmpty(propertyFilters) || !propertyFilters.contains(property)) {
                     continue;
                 }
 
@@ -325,14 +330,29 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      * {@inheritDoc}
      */
     @Override
-    public List<String> getFilters() {
-        return filters;
+    public List<String> getPropertyFilters() {
+        return propertyFilters;
     }
 
     /**
-     * @param filters the filters to set
+     * @param propertyFilters the propertyFilters to set
      */
-    public void setFilters(List<String> filters) {
-        this.filters = filters;
+    public void setPropertyFilters(List<String> propertyFilters) {
+        this.propertyFilters = propertyFilters;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getClassFilters() {
+        return classFilters;
+    }
+
+    /**
+     * @param classFilters the classFilters to set
+     */
+    public void setClassFilters(List<String> classFilters) {
+        this.classFilters = classFilters;
     }
 }
