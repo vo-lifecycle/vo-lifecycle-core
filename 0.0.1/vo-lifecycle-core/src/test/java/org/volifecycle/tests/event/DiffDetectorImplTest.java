@@ -17,6 +17,7 @@ import org.volifecycle.event.impl.DiffDetectorImpl;
 import org.volifecycle.event.vo.DiffEvent;
 import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
+import org.volifecycle.tests.inputs.SubValueObject;
 import org.volifecycle.tests.inputs.ValueObjectStub;
 
 /**
@@ -101,5 +102,39 @@ public class DiffDetectorImplTest {
 		assertEquals("1.2", d.getDiffProperties().get(0).getBeforeValue());
 		assertEquals("2.3", d.getDiffProperties().get(0).getAfterValue());
 		assertEquals("nb", d.getDiffProperties().get(0).getPropertyName());
+	}
+
+	/**
+	 * Test with subobject
+	 */
+	@Test
+	public final void testDetectorSubObject() {
+		SubValueObject so1 = new SubValueObject();
+		so1.setCode("123");
+		so1.setLabel("label1");
+
+		SubValueObject so2 = new SubValueObject();
+		so2.setCode("123");
+		so2.setLabel("label2");
+
+		ValueObjectStub vo1 = new ValueObjectStub();
+		vo1.setSubValueObject(so1);
+
+		ValueObjectStub vo2 = new ValueObjectStub();
+		vo2.setSubValueObject(so2);
+
+		detector.compare(vo1, vo2);
+		verify(evtManagerMock).logEvent(captorEvent.capture());
+		Event result = captorEvent.getValue();
+
+		assertNotNull(result);
+		assertTrue(result instanceof DiffEvent);
+
+		DiffEvent d = (DiffEvent) result;
+		assertNotNull(d.getDiffProperties());
+		assertEquals(1, d.getDiffProperties().size());
+		assertEquals("label1", d.getDiffProperties().get(0).getBeforeValue());
+		assertEquals("label2", d.getDiffProperties().get(0).getAfterValue());
+		assertEquals("label", d.getDiffProperties().get(0).getPropertyName());
 	}
 }

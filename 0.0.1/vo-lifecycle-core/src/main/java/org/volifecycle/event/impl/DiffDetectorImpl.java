@@ -56,7 +56,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 		DiffEvent event = new DiffEvent();
 		String details = "There are some changes...";
 		setCustomEvent(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details);
-		List<DiffProperty> diffs = logDiffs(vo1, vo1, vo2);
+		List<DiffProperty> diffs = logDiffs(vo1, vo1, vo2, new ArrayList<DiffProperty>());
 		event.setDiffProperties(diffs);
 
 		if (isNotEmpty(diffs)) {
@@ -73,9 +73,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 	 * @param vo1
 	 * @param vo2
 	 */
-	public List<DiffProperty> logDiffs(T original, Object vo1, Object vo2) {
-		List<DiffProperty> diffs = new ArrayList<DiffProperty>();
-
+	public List<DiffProperty> logDiffs(T original, Object vo1, Object vo2, List<DiffProperty> diffs) {
 		if (null == vo1 || null == vo2) {
 			if (null == vo1 && null != vo2) {
 				diffs.add(createDiffProperty(vo2.getClass().getSimpleName(), "null", vo2.toString()));
@@ -112,7 +110,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 					if (isNotEmpty(l1) && isNotEmpty(l2) && l1.size() == l2.size()) {
 						// Recursive
 						for (Integer i = 0; i < l1.size(); i++) {
-							logDiffs(original, l1.get(i), l2.get(i));
+							logDiffs(original, l1.get(i), l2.get(i), diffs);
 						}
 					} else if (isNotEmpty(l1) && isNotEmpty(l2)) {
 						diffs.add(createDiffProperty(property + ".size", String.valueOf(l1.size()), String.valueOf(l2.size())));
@@ -133,7 +131,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 					}
 				} else {
 					// Recursive
-					logDiffs(original, o1, o2);
+					logDiffs(original, o1, o2, diffs);
 				}
 			}
 		}

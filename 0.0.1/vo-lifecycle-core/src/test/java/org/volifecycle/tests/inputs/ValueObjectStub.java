@@ -1,17 +1,25 @@
 package org.volifecycle.tests.inputs;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Value object class for tests
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
  */
-public class ValueObjectStub {
+public class ValueObjectStub implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String state = "state";
 	private String id = "id";
 	private String type = "type";
 
 	private Float nb;
+
+	private SubValueObject subValueObject;
+	private List<SubValueObject> lstChilds;
 
 	/**
 	 * @return the state
@@ -71,5 +79,21 @@ public class ValueObjectStub {
 	 */
 	public void setNb(Float nb) {
 		this.nb = nb;
+	}
+
+	public SubValueObject getSubValueObject() {
+		return subValueObject;
+	}
+
+	public void setSubValueObject(SubValueObject subValueObject) {
+		this.subValueObject = subValueObject;
+	}
+
+	public List<SubValueObject> getLstChilds() {
+		return lstChilds;
+	}
+
+	public void setLstChilds(List<SubValueObject> lstChilds) {
+		this.lstChilds = lstChilds;
 	}
 }
