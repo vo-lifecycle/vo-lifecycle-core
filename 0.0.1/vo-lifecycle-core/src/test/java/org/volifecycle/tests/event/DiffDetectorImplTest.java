@@ -4,10 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -150,7 +154,7 @@ public class DiffDetectorImplTest {
 	}
 
 	/**
-	 * Test with subobject
+	 * Test with subobject list - same size
 	 */
 	@Test
 	public final void testDetectorSubObjectListSameSize() {
@@ -187,5 +191,67 @@ public class DiffDetectorImplTest {
 		assertEquals("label", d.getDiffProperties().get(0).getPropertyName());
 		assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(0).getType());
 		assertEquals("lstChilds", d.getDiffProperties().get(0).getParentPropertyName());
+	}
+
+	/**
+	 * Test with subobject list - not same size
+	 */
+	@Test
+	public final void testDetectorSubObjectListNotSameSize() {
+		SubValueObject so1 = new SubValueObject();
+		so1.setCode("123");
+		so1.setLabel("label1");
+		List<SubValueObject> l1 = new ArrayList<SubValueObject>();
+		l1.add(so1);
+
+		SubValueObject so2 = new SubValueObject();
+		so2.setCode("123");
+		so2.setLabel("label2");
+		List<SubValueObject> l2 = new ArrayList<SubValueObject>();
+		l2.add(so2);
+		l2.add(so1);
+
+		ValueObjectStub vo1 = new ValueObjectStub();
+		vo1.setLstChilds(l1);
+
+		ValueObjectStub vo2 = new ValueObjectStub();
+		vo2.setLstChilds(l2);
+
+		detector.compare(vo1, vo2);
+		verify(evtManagerMock).logEvent(captorEvent.capture());
+		Event result = captorEvent.getValue();
+
+		assertNotNull(result);
+		assertTrue(result instanceof DiffEvent);
+
+		DiffEvent d = (DiffEvent) result;
+		assertNotNull(d.getDiffProperties());
+		assertEquals(1, d.getDiffProperties().size());
+		assertEquals("1", d.getDiffProperties().get(0).getBeforeValue());
+		assertEquals("2", d.getDiffProperties().get(0).getAfterValue());
+		assertEquals("lstChilds", d.getDiffProperties().get(0).getPropertyName());
+		assertEquals(LifeCycleConstants.DIFF_TYPE_SIZE, d.getDiffProperties().get(0).getType());
+		assertNull(d.getDiffProperties().get(0).getParentPropertyName());
+	}
+
+	/**
+	 * Test not implemented type
+	 */
+	@Test
+	public final void testDetectorSubObjectListNotImplementedType() {
+		ValueObjectStub vo1 = new ValueObjectStub();
+		ValueObjectStub vo2 = new ValueObjectStub();
+
+		Map<String, String> m1 = new HashMap<String, String>();
+		m1.put("1", "2");
+
+		Map<String, String> m2 = new HashMap<String, String>();
+		m2.put("2", "2");
+
+		vo1.setMap(m1);
+		vo2.setMap(m2);
+		detector.compare(vo1, vo2);
+		verify(evtManagerMock, times(0)).logEvent(any(Event.class));
+
 	}
 }

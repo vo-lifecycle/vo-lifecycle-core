@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
@@ -103,7 +104,10 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 					continue;
 				}
 
-				if (o1 instanceof List && o2 instanceof List) {
+				// Not implemented type
+				if (null != getNotImplementedType(o1) || null != getNotImplementedType(o2)) {
+					continue;
+				} else if (o1 instanceof List && o2 instanceof List) {
 					List<?> l1 = (List<?>) o1;
 					List<?> l2 = (List<?>) o2;
 
@@ -176,6 +180,33 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 		rtn.add(Float.class);
 		rtn.add(BigDecimal.class);
 		return rtn;
+	}
+
+	/**
+	 * Get list of not allowed type
+	 * 
+	 * @return List<Class<?>>
+	 */
+	public List<Class<?>> getNotImplementedTypes() {
+		List<Class<?>> rtn = new ArrayList<Class<?>>();
+		rtn.add(Map.class);
+		return rtn;
+	}
+
+	/**
+	 * Get primitif type
+	 * 
+	 * @param o
+	 * @return Class<?>
+	 */
+	public Class<?> getNotImplementedType(Object o) {
+		for (Class<?> c : getNotImplementedTypes()) {
+			if (c.isInstance(o)) {
+				return c;
+			}
+		}
+
+		return null;
 	}
 
 	/**

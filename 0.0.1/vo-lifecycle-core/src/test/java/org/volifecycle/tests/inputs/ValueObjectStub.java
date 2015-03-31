@@ -2,6 +2,7 @@ package org.volifecycle.tests.inputs;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Value object class for tests
@@ -20,6 +21,8 @@ public class ValueObjectStub implements Serializable {
 
 	private SubValueObject subValueObject;
 	private List<SubValueObject> lstChilds;
+
+	private Map<String, String> map;
 
 	/**
 	 * @return the state
@@ -81,19 +84,48 @@ public class ValueObjectStub implements Serializable {
 		this.nb = nb;
 	}
 
+	/**
+	 * @return the subValueObject
+	 */
 	public SubValueObject getSubValueObject() {
 		return subValueObject;
 	}
 
+	/**
+	 * @param subValueObject
+	 *            the subValueObject to set
+	 */
 	public void setSubValueObject(SubValueObject subValueObject) {
 		this.subValueObject = subValueObject;
 	}
 
+	/**
+	 * @return the lstChilds
+	 */
 	public List<SubValueObject> getLstChilds() {
 		return lstChilds;
 	}
 
+	/**
+	 * @param lstChilds
+	 *            the lstChilds to set
+	 */
 	public void setLstChilds(List<SubValueObject> lstChilds) {
 		this.lstChilds = lstChilds;
+	}
+
+	/**
+	 * @return the map
+	 */
+	public Map<String, String> getMap() {
+		return map;
+	}
+
+	/**
+	 * @param map
+	 *            the map to set
+	 */
+	public void setMap(Map<String, String> map) {
+		this.map = map;
 	}
 }
