@@ -56,7 +56,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 		DiffEvent event = new DiffEvent();
 		String details = "There are some changes...";
 		setCustomEvent(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details);
-		List<DiffProperty> diffs = logDiffs(vo1, vo1, vo2, new ArrayList<DiffProperty>());
+		List<DiffProperty> diffs = logDiffs(vo1, vo1, vo2, new ArrayList<DiffProperty>(), null);
 		event.setDiffProperties(diffs);
 
 		if (isNotEmpty(diffs)) {
@@ -73,12 +73,12 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 	 * @param vo1
 	 * @param vo2
 	 */
-	public List<DiffProperty> logDiffs(T original, Object vo1, Object vo2, List<DiffProperty> diffs) {
+	public List<DiffProperty> logDiffs(T original, Object vo1, Object vo2, List<DiffProperty> diffs, String parent) {
 		if (null == vo1 || null == vo2) {
 			if (null == vo1 && null != vo2) {
-				diffs.add(createDiffProperty(vo2.getClass().getSimpleName(), "null", vo2.toString()));
+				diffs.add(createDiffProperty(vo2.getClass().getSimpleName(), "null", vo2.toString(), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
 			} else if (null != vo1 && null == vo2) {
-				diffs.add(createDiffProperty(vo1.getClass().getSimpleName(), vo1.toString(), "null"));
+				diffs.add(createDiffProperty(vo1.getClass().getSimpleName(), vo1.toString(), "null", parent, LifeCycleConstants.DIFF_TYPE_VALUE));
 			}
 
 			return diffs;
@@ -110,28 +110,28 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 					if (isNotEmpty(l1) && isNotEmpty(l2) && l1.size() == l2.size()) {
 						// Recursive
 						for (Integer i = 0; i < l1.size(); i++) {
-							logDiffs(original, l1.get(i), l2.get(i), diffs);
+							logDiffs(original, l1.get(i), l2.get(i), diffs, property);
 						}
 					} else if (isNotEmpty(l1) && isNotEmpty(l2)) {
-						diffs.add(createDiffProperty(property + ".size", String.valueOf(l1.size()), String.valueOf(l2.size())));
+						diffs.add(createDiffProperty(property, String.valueOf(l1.size()), String.valueOf(l2.size()), parent, LifeCycleConstants.DIFF_TYPE_SIZE));
 					} else if (isNotEmpty(l1)) {
-						diffs.add(createDiffProperty(property + ".size", String.valueOf(l1.size()), "null"));
+						diffs.add(createDiffProperty(property, String.valueOf(l1.size()), "null", parent, LifeCycleConstants.DIFF_TYPE_SIZE));
 					} else {
-						diffs.add(createDiffProperty(property + ".size", "null", String.valueOf(l2.size())));
+						diffs.add(createDiffProperty(property, "null", String.valueOf(l2.size()), parent, LifeCycleConstants.DIFF_TYPE_SIZE));
 					}
 				} else if (null != (clazz = getPrimitifType(o1))) {
 					if (!clazz.cast(o1).equals(clazz.cast(o2))) {
-						diffs.add(createDiffProperty(property, String.valueOf(clazz.cast(o1)), String.valueOf(clazz.cast(o2))));
+						diffs.add(createDiffProperty(property, String.valueOf(clazz.cast(o1)), String.valueOf(clazz.cast(o2)), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
 					}
 				} else if (o1 instanceof Calendar && o2 instanceof Calendar) {
 					Calendar c1 = (Calendar) o1;
 					Calendar c2 = (Calendar) o2;
 					if (!c1.equals(c2)) {
-						diffs.add(createDiffProperty(property, calendarToString(c1, FORMAT_DATE_HOUR), calendarToString(c2, FORMAT_DATE_HOUR)));
+						diffs.add(createDiffProperty(property, calendarToString(c1, FORMAT_DATE_HOUR), calendarToString(c2, FORMAT_DATE_HOUR), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
 					}
 				} else {
 					// Recursive
-					logDiffs(original, o1, o2, diffs);
+					logDiffs(original, o1, o2, diffs, property);
 				}
 			}
 		}
@@ -145,13 +145,17 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 	 * @param name
 	 * @param before
 	 * @param after
-	 * @return
+	 * @param parent
+	 * @param type
+	 * @return DiffProperty
 	 */
-	public DiffProperty createDiffProperty(String name, String before, String after) {
+	public DiffProperty createDiffProperty(String name, String before, String after, String parent, String type) {
 		DiffProperty diff = new DiffProperty();
 		diff.setPropertyName(name);
 		diff.setBeforeValue(before);
 		diff.setAfterValue(after);
+		diff.setParentPropertyName(parent);
+		diff.setType(type);
 		return diff;
 	}
 

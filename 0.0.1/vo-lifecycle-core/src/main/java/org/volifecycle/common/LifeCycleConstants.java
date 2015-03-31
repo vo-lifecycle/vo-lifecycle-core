@@ -24,4 +24,10 @@ public interface LifeCycleConstants {
 	static final String EVENT_TYPE_FAILED_CHECKER = "failed_checker";
 	static final String EVENT_TYPE_REFLEXION_ERROR = "reflexion_error";
 	static final String EVENT_TYPE_DIFF_VO = "diff_vo";
+
+	/**
+	 * Types of diff
+	 */
+	static final String DIFF_TYPE_VALUE = "value";
+	static final String DIFF_TYPE_SIZE = "size";
 }

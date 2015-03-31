@@ -2,6 +2,7 @@ package org.volifecycle.tests.event;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
@@ -12,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.impl.DiffDetectorImpl;
 import org.volifecycle.event.vo.DiffEvent;
@@ -76,6 +78,8 @@ public class DiffDetectorImplTest {
 		assertEquals("1", d.getDiffProperties().get(0).getBeforeValue());
 		assertEquals("2", d.getDiffProperties().get(0).getAfterValue());
 		assertEquals("id", d.getDiffProperties().get(0).getPropertyName());
+		assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(0).getType());
+		assertNull(d.getDiffProperties().get(0).getParentPropertyName());
 	}
 
 	/**
@@ -102,6 +106,8 @@ public class DiffDetectorImplTest {
 		assertEquals("1.2", d.getDiffProperties().get(0).getBeforeValue());
 		assertEquals("2.3", d.getDiffProperties().get(0).getAfterValue());
 		assertEquals("nb", d.getDiffProperties().get(0).getPropertyName());
+		assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(0).getType());
+		assertNull(d.getDiffProperties().get(0).getParentPropertyName());
 	}
 
 	/**
@@ -136,5 +142,7 @@ public class DiffDetectorImplTest {
 		assertEquals("label1", d.getDiffProperties().get(0).getBeforeValue());
 		assertEquals("label2", d.getDiffProperties().get(0).getAfterValue());
 		assertEquals("label", d.getDiffProperties().get(0).getPropertyName());
+		assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(0).getType());
+		assertEquals("subValueObject", d.getDiffProperties().get(0).getParentPropertyName());
 	}
 }
