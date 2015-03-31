@@ -212,6 +212,11 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                         for (Integer i = lmin.size(); i < lmax.size(); i++) {
                             logDiffs(original, null, lmax.get(i), diffs, property);
                         }
+
+                        // Recursive
+                        for (Integer i = 0; i < lmin.size(); i++) {
+                            logDiffs(original, l1.get(i), l2.get(i), diffs, property);
+                        }
                     } else if (isNotEmpty(l1)) {
                         diffs.add(createDiffProperty(property, String.valueOf(l1.size()), "null", parent, LifeCycleConstants.DIFF_TYPE_SIZE));
 

@@ -276,7 +276,7 @@ public class DiffDetectorImplTest {
 
         DiffEvent d = (DiffEvent) result;
         assertNotNull(d.getDiffProperties());
-        assertEquals(2, d.getDiffProperties().size());
+        assertEquals(3, d.getDiffProperties().size());
 
         assertEquals("1", d.getDiffProperties().get(0).getBeforeValue());
         assertEquals("2", d.getDiffProperties().get(0).getAfterValue());
@@ -284,11 +284,19 @@ public class DiffDetectorImplTest {
         assertEquals(LifeCycleConstants.DIFF_TYPE_SIZE, d.getDiffProperties().get(0).getType());
         assertNull(d.getDiffProperties().get(0).getParentPropertyName());
 
+        // Object added
         assertEquals("null", d.getDiffProperties().get(1).getBeforeValue());
         assertEquals("label1", d.getDiffProperties().get(1).getAfterValue());
         assertEquals("lstChilds", d.getDiffProperties().get(1).getParentPropertyName());
         assertEquals("label", d.getDiffProperties().get(1).getPropertyName());
         assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(1).getType());
+
+        // Object diff
+        assertEquals("label1", d.getDiffProperties().get(2).getBeforeValue());
+        assertEquals("label2", d.getDiffProperties().get(2).getAfterValue());
+        assertEquals("lstChilds", d.getDiffProperties().get(2).getParentPropertyName());
+        assertEquals("label", d.getDiffProperties().get(2).getPropertyName());
+        assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(2).getType());
     }
 
     /**
