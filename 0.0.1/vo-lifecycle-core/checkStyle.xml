@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+	<module name="SuppressionCommentFilter"/>
+	<module name="NewlineAtEndOfFile">
+		<property name="severity" value="info"/>
+	</module>
+	<module name="FileTabCharacter">
+		<property name="severity" value="info"/>
+	</module>
+	<module name="TreeWalker">
+		<module name="FileContentsHolder"/>
+		<module name="IllegalCatch">
+			<property name="severity" value="warning"/>
+			<property name="illegalClassNames" value="java.lang.Exception, java.lang.Throwable, java.lang.Error, java.lang.RuntimeException"/>
+		</module>
+		<module name="ModifiedControlVariable">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="StringLiteralEquality">
+			<property name="severity" value="info"/>
+		</module>
+		<module name="FallThrough">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="JavadocType">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="JavaNCSS">
+			<property name="severity" value="warning"/>
+			<property name="methodMaximum" value="70"/>
+		</module>
+		<module name="RedundantImport">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="MissingOverride">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="LineLength">
+			<property name="severity" value="warning"/>
+			<property name="max" value="160"/>
+			<property name="tabWidth" value="4"/>
+		</module>
+		<module name="AvoidStarImport">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="MultipleStringLiterals">
+			<property name="severity" value="info"/>
+		</module>
+		<module name="AnnotationUseStyle">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="MultipleVariableDeclarations">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="MemberName">
+			<property name="severity" value="warning"/>
+			<property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+		</module>
+		<module name="MissingSwitchDefault">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="SuperFinalize">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="NeedBraces">
+			<property name="severity" value="info"/>
+		</module>
+		<module name="VisibilityModifier">
+			<property name="severity" value="warning"/>
+			<property name="protectedAllowed" value="true"/>
+		</module>
+		<module name="EmptyStatement">
+			<property name="severity" value="info"/>
+		</module>
+		<module name="PackageName">
+			<property name="severity" value="info"/>
+			<property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+		</module>
+		<module name="IllegalImport">
+			<property name="severity" value="warning"/>
+			<property name="illegalPkgs" value="sun, java.util.BitSet, java.util.Enumeration, java.util.Vector, java.util.Hashtable"/>
+		</module>
+		<module name="RedundantThrows">
+			<property name="severity" value="info"/>
+		</module>
+		<module name="AvoidNestedBlocks">
+			<property name="severity" value="warning"/>
+			<property name="allowInSwitchCase" value="true"/>
+		</module>
+		<module name="JavadocStyle">
+			<property name="severity" value="warning"/>
+			<property name="checkFirstSentence" value="false"/>
+			<property name="checkEmptyJavadoc" value="true"/>
+			<property name="checkHtml" value="false"/>
+		</module>
+		<module name="HideUtilityClassConstructor">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="MissingDeprecated">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="JavadocMethod">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="InnerAssignment">
+			<property name="severity" value="warning"/>
+		</module>
+		<module name="MagicNumber">
+			<property name="severity" value="info"/>
+		</module>
+	</module>
+</module>

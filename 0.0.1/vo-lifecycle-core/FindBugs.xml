@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <Match>
+    <Bug pattern="JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS"/>
+  </Match>
+  <Match>
+    <Bug pattern="ISC_INSTANTIATE_STATIC_CLASS"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_BAD_FIELD_INNER_CLASS"/>
+  </Match>
+  <Match>
+    <Bug pattern="NO_NOTIFY_NOT_NOTIFYALL"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_NO_SERIALVERSIONID"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_NONFINAL_SERIALVERSIONID"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_NONLONG_SERIALVERSIONID"/>
+  </Match>
+  <Match>
+    <Bug pattern="SF_SWITCH_FALLTHROUGH"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_NONSTATIC_SERIALVERSIONID"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_TRANSIENT_FIELD_OF_NONSERIALIZABLE_CLASS"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_INNER_CLASS"/>
+  </Match>
+  <Match>
+    <Bug pattern="SE_NO_SUITABLE_CONSTRUCTOR"/>
+  </Match>
+  <Match>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE_IN_RETURN"/>
+  </Match>
+</FindBugsFilter>
