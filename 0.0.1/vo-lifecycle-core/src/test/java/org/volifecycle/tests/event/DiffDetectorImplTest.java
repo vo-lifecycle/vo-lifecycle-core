@@ -50,6 +50,7 @@ public class DiffDetectorImplTest {
 	ArgumentCaptor<Event> captorEvent;
 
 	DiffDetectorImpl<ValueObjectStub, LifeCycleAdapter<ValueObjectStub>> detector;
+	List<String> filters;
 
 	/**
 	 * Init datas
@@ -59,6 +60,16 @@ public class DiffDetectorImplTest {
 		detector = new DiffDetectorImpl<ValueObjectStub, LifeCycleAdapter<ValueObjectStub>>();
 		detector.setAdapter(adapterMock);
 		detector.setEvtManager(evtManagerMock);
+
+		filters = new ArrayList<String>();
+		filters.add("id");
+		filters.add("label");
+		filters.add("subValueObject");
+		filters.add("map");
+		filters.add("nb");
+		filters.add("lstChilds");
+
+		detector.setFilters(filters);
 	}
 
 	/**
@@ -87,6 +98,22 @@ public class DiffDetectorImplTest {
 		assertEquals("id", d.getDiffProperties().get(0).getPropertyName());
 		assertEquals(LifeCycleConstants.DIFF_TYPE_VALUE, d.getDiffProperties().get(0).getType());
 		assertNull(d.getDiffProperties().get(0).getParentPropertyName());
+	}
+
+	/**
+	 * Simple test detector
+	 */
+	@Test
+	public final void testDetectorWithFilterEmpty() {
+		ValueObjectStub vo1 = new ValueObjectStub();
+		vo1.setId("1");
+
+		ValueObjectStub vo2 = new ValueObjectStub();
+		vo2.setId("2");
+
+		detector.setFilters(null);
+		detector.compare(vo1, vo2);
+		verify(evtManagerMock, times(0)).logEvent(any(Event.class));
 	}
 
 	/**

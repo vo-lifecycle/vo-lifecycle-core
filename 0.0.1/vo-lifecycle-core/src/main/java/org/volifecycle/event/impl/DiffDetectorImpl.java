@@ -1,5 +1,6 @@
 package org.volifecycle.event.impl;
 
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.volifecycle.utils.DateUtils.FORMAT_DATE_HOUR;
 import static org.volifecycle.utils.DateUtils.calendarToString;
@@ -36,6 +37,8 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 	 * Adapter
 	 */
 	private A adapter;
+
+	private List<String> filters;
 
 	/**
 	 * {@inheritDoc}
@@ -94,6 +97,10 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 				// Camel case
 				String property = getter.getName().replaceAll("^get", "");
 				property = property.substring(0, 1).toLowerCase() + property.substring(1);
+
+				if (isEmpty(filters) || !filters.contains(property)) {
+					continue;
+				}
 
 				try {
 					o1 = getter.invoke(vo1);
@@ -278,5 +285,20 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 	 */
 	public void setAdapter(A adapter) {
 		this.adapter = adapter;
+	}
+
+	/**
+	 * @return the filters
+	 */
+	public List<String> getFilters() {
+		return filters;
+	}
+
+	/**
+	 * @param filters
+	 *            the filters to set
+	 */
+	public void setFilters(List<String> filters) {
+		this.filters = filters;
 	}
 }
