@@ -114,10 +114,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
             if (isNotEmpty(getters)) {
                 for (Method getter : getters) {
                     Object so;
-
-                    // Camel case
-                    String property = getter.getName().replaceAll("^get", "");
-                    property = property.substring(0, 1).toLowerCase() + property.substring(1);
+                    String property = getPropertyFromGetter(getter);
 
                     if (isEmpty(propertyFilters) || !propertyFilters.contains(property)) {
                         continue;
@@ -143,6 +140,19 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
         }
 
         return diffs;
+    }
+
+    /**
+     * Get property from getter
+     * 
+     * @param getter
+     * @return String
+     */
+    private String getPropertyFromGetter(Method getter) {
+        // Camel case
+        String property = getter.getName().replaceAll("^get", "");
+        property = property.substring(0, 1).toLowerCase() + property.substring(1);
+        return property;
     }
 
     /**
@@ -173,9 +183,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
             Object o1, o2;
 
             for (Method getter : getters) {
-                // Camel case
-                String property = getter.getName().replaceAll("^get", "");
-                property = property.substring(0, 1).toLowerCase() + property.substring(1);
+                String property = getPropertyFromGetter(getter);
 
                 if (isEmpty(propertyFilters) || !propertyFilters.contains(property)) {
                     continue;
@@ -234,13 +242,13 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                     }
                 } else if (null != (clazz = getPrimitifType(o1))) {
                     if (!clazz.cast(o1).equals(clazz.cast(o2))) {
-                        diffs.add(createDiffProperty(property, String.valueOf(clazz.cast(o1)), String.valueOf(clazz.cast(o2)), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+                        diffs.add(createDiffProperty(property, object2string(o1), object2string(o2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
                     }
                 } else if (o1 instanceof Calendar && o2 instanceof Calendar) {
                     Calendar c1 = (Calendar) o1;
                     Calendar c2 = (Calendar) o2;
                     if (!c1.equals(c2)) {
-                        diffs.add(createDiffProperty(property, calendarToString(c1, FORMAT_DATE_HOUR), calendarToString(c2, FORMAT_DATE_HOUR), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+                        diffs.add(createDiffProperty(property, object2string(c1), object2string(c2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
                     }
                 } else {
                     // Recursive
@@ -262,7 +270,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      * @param type
      * @return DiffProperty
      */
-    public DiffProperty createDiffProperty(String name, String before, String after, String parent, String type) {
+    private DiffProperty createDiffProperty(String name, String before, String after, String parent, String type) {
         DiffProperty diff = new DiffProperty();
         diff.setPropertyName(name);
         diff.setBeforeValue(before);
@@ -277,7 +285,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      * 
      * @return List<Class<?>>
      */
-    public List<Class<?>> getPrimitifTypes() {
+    private List<Class<?>> getPrimitifTypes() {
         List<Class<?>> rtn = new ArrayList<Class<?>>();
         rtn.add(Number.class);
         rtn.add(String.class);
@@ -296,7 +304,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      * 
      * @return List<Class<?>>
      */
-    public List<Class<?>> getNotImplementedTypes() {
+    private List<Class<?>> getNotImplementedTypes() {
         List<Class<?>> rtn = new ArrayList<Class<?>>();
         rtn.add(Map.class);
         return rtn;
@@ -308,14 +316,8 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      * @param o
      * @return Class<?>
      */
-    public Class<?> getNotImplementedType(Object o) {
-        for (Class<?> c : getNotImplementedTypes()) {
-            if (c.isInstance(o)) {
-                return c;
-            }
-        }
-
-        return null;
+    private Class<?> getNotImplementedType(Object o) {
+        return getClassFromObject(o, getNotImplementedTypes());
     }
 
     /**
@@ -325,7 +327,18 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      * @return Class<?>
      */
     public Class<?> getPrimitifType(Object o) {
-        for (Class<?> c : getPrimitifTypes()) {
+        return getClassFromObject(o, getPrimitifTypes());
+    }
+
+    /**
+     * Get class from object
+     * 
+     * @param o
+     * @param lstClass
+     * @return
+     */
+    private Class<?> getClassFromObject(Object o, List<Class<?>> lstClass) {
+        for (Class<?> c : lstClass) {
             if (c.isInstance(o)) {
                 return c;
             }
