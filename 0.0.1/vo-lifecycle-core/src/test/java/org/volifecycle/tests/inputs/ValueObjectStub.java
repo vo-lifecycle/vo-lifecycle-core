@@ -7,9 +7,11 @@ package org.volifecycle.tests.inputs;
  * 
  */
 public class ValueObjectStub {
-	String state = "state";
-	String id = "id";
-	String type = "type";
+	private String state = "state";
+	private String id = "id";
+	private String type = "type";
+
+	private Float nb;
 
 	/**
 	 * @return the state
@@ -54,5 +56,20 @@ public class ValueObjectStub {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the nb
+	 */
+	public Float getNb() {
+		return nb;
+	}
+
+	/**
+	 * @param nb
+	 *            the nb to set
+	 */
+	public void setNb(Float nb) {
+		this.nb = nb;
 	}
 }

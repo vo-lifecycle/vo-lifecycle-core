@@ -76,4 +76,30 @@ public class DiffDetectorImplTest {
 		assertEquals("2", d.getDiffProperties().get(0).getAfterValue());
 		assertEquals("id", d.getDiffProperties().get(0).getPropertyName());
 	}
+
+	/**
+	 * Test with float
+	 */
+	@Test
+	public final void testDetectorFloat() {
+		ValueObjectStub vo1 = new ValueObjectStub();
+		vo1.setNb(1.2f);
+
+		ValueObjectStub vo2 = new ValueObjectStub();
+		vo2.setNb(2.3f);
+
+		detector.compare(vo1, vo2);
+		verify(evtManagerMock).logEvent(captorEvent.capture());
+		Event result = captorEvent.getValue();
+
+		assertNotNull(result);
+		assertTrue(result instanceof DiffEvent);
+
+		DiffEvent d = (DiffEvent) result;
+		assertNotNull(d.getDiffProperties());
+		assertEquals(1, d.getDiffProperties().size());
+		assertEquals("1.2", d.getDiffProperties().get(0).getBeforeValue());
+		assertEquals("2.3", d.getDiffProperties().get(0).getAfterValue());
+		assertEquals("nb", d.getDiffProperties().get(0).getPropertyName());
+	}
 }
