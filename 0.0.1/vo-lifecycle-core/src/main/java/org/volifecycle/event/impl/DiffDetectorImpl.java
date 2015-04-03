@@ -46,7 +46,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      * {@inheritDoc}
      */
     @Override
-    public boolean compare(T vo1, T vo2) {
+    public boolean compare(T vo1, T vo2, String parentId, String parentType) {
         boolean rtn = false;
 
         EventManager evtManager = getEvtManager();
@@ -64,12 +64,22 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
         setCustomEvent(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details);
         List<DiffProperty> diffs = logDiffs(vo1, vo1, vo2, new ArrayList<DiffProperty>(), null);
         event.setDiffProperties(diffs);
+        event.setParentId(parentId);
+        event.setParentType(parentType);
 
         if (isNotEmpty(diffs)) {
             evtManager.logEvent(event);
         }
 
         return rtn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean compare(T vo1, T vo2) {
+        return compare(vo1, vo2, null, null);
     }
 
     /**
