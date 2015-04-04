@@ -31,6 +31,10 @@ public interface DiffDetector<T, A extends LifeCycleAdapter<T>> {
 	 *            value object 1
 	 * @param vo2
 	 *            value object 2
+	 * @param parentId
+	 *            id of value object parent
+	 * @param parentType
+	 *            type of value object parent
 	 * @return true or false
 	 */
 	boolean compare(T vo1, T vo2, String parentId, String parentType);

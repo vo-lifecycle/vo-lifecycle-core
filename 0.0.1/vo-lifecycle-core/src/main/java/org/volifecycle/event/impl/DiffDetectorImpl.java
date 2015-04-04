@@ -39,6 +39,9 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 	 */
 	private A adapter;
 
+	/**
+	 * List of classes to watch
+	 */
 	private List<ClassListener> classListeners;
 
 	/**

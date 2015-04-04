@@ -37,7 +37,7 @@ public interface LifeCycleAdapter<T> {
 	 * Return the actor who is responsible
 	 * 
 	 * @param valueObject
-	 * @return
+	 * @return actor
 	 */
 	String getActor(T valueObject);
 

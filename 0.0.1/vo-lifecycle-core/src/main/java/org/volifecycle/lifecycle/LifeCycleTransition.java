@@ -23,8 +23,7 @@ public interface LifeCycleTransition<T> {
 	 * 
 	 * @return "true" if success or "false"
 	 */
-	public String changeState(T valueObject, LifeCycleAdapter<T> adapter,
-			EventManager evtManager);
+	public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager);
 
 	/**
 	 * Verify all checker with a forced id list
@@ -33,10 +32,9 @@ public interface LifeCycleTransition<T> {
 	 * @param adapter
 	 * @param evtManager
 	 * @param forcedCheckers
-	 * @return
+	 * @return "true" if success or "false"
 	 */
-	String changeState(T valueObject, LifeCycleAdapter<T> adapter,
-			EventManager evtManager, List<String> forcedCheckers);
+	String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedCheckers);
 
 	/**
 	 * @return the type

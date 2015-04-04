@@ -9,8 +9,15 @@ import java.util.List;
  * 
  */
 public class ClassListener {
+	/**
+	 * complete name of class<br />
+	 * ex : org.yourproject.package.ClassName
+	 */
 	private String className;
 
+	/**
+	 * List of class's properties to watch
+	 */
 	private List<String> properties;
 
 	/**
