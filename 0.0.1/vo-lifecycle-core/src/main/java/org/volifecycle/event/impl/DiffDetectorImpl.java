@@ -29,440 +29,452 @@ import org.volifecycle.lifecycle.LifeCycleAdapter;
  * @param <T>
  */
 public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends AbstractLifeCycle<T> implements DiffDetector<T, A> {
-    /**
-     * Event manager
-     */
-    private EventManager evtManager;
+	/**
+	 * Event manager
+	 */
+	private EventManager evtManager;
 
-    /**
-     * Adapter
-     */
-    private A adapter;
+	/**
+	 * Adapter
+	 */
+	private A adapter;
 
-    /**
-     * List of classes to watch
-     */
-    private List<ClassListener> classListeners;
+	/**
+	 * List of classes to watch
+	 */
+	private List<ClassListener> classListeners;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean compare(T vo1, T vo2, String parentId, String parentType) {
-        boolean rtn = false;
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean compare(T vo1, T vo2, String parentId, String parentType, Map<String, String> additionalInformations) {
+		boolean rtn = false;
 
-        EventManager evtManager = getEvtManager();
+		EventManager evtManager = getEvtManager();
 
-        if (null == evtManager) {
-            evtManager = new Log4jEventManagerImpl();
-        }
+		if (null == evtManager) {
+			evtManager = new Log4jEventManagerImpl();
+		}
 
-        DiffEvent event = new DiffEvent();
-        String details = "There are some changes...";
-        setCustomEvent(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details);
-        List<DiffProperty> diffs = logDiffs(vo2, vo1, vo2, new ArrayList<DiffProperty>(), null);
-        event.setDiffProperties(diffs);
-        event.setParentId(parentId);
-        event.setParentType(parentType);
+		DiffEvent event = new DiffEvent();
+		String details = "There are some changes...";
+		setCustomEvent(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details);
+		List<DiffProperty> diffs = logDiffs(vo2, vo1, vo2, new ArrayList<DiffProperty>(), null);
+		event.setDiffProperties(diffs);
+		event.setParentId(parentId);
+		event.setParentType(parentType);
+		event.setAdditionalInformations(additionalInformations);
 
-        if (isNotEmpty(diffs)) {
-            evtManager.logEvent(event);
-        }
+		if (isNotEmpty(diffs)) {
+			evtManager.logEvent(event);
+		}
 
-        return rtn;
-    }
+		return rtn;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean compare(T vo1, T vo2) {
-        return compare(vo1, vo2, null, null);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean compare(T vo1, T vo2, String parentId, String parentType) {
+		return compare(vo1, vo2, null, null, null);
+	}
 
-    /**
-     * Convert objectToString
-     * 
-     * @param o
-     * @return String
-     */
-    public String object2string(Object o) {
-        Class<?> clazz;
-        if (null == o) {
-            return "null";
-        } else if (o instanceof Calendar) {
-            return calendarToString((Calendar) o, FORMAT_DATE_HOUR);
-        } else if (null != (clazz = getPrimitifType(o))) {
-            return String.valueOf(clazz.cast(o));
-        } else {
-            return o.toString();
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean compare(T vo1, T vo2) {
+		return compare(vo1, vo2, null, null);
+	}
 
-    /**
-     * Get listener for object class
-     * 
-     * @param o
-     * @return ClassListener
-     */
-    private ClassListener getListener(Object o) {
-        if (null != o) {
-            if (isNotEmpty(classListeners)) {
-                for (ClassListener c : classListeners) {
-                    if (c.getClassName().equalsIgnoreCase(o.getClass().getName())) {
-                        return c;
-                    }
-                }
-            }
-        }
+	/**
+	 * Convert objectToString
+	 * 
+	 * @param o
+	 * @return String
+	 */
+	public String object2string(Object o) {
+		Class<?> clazz;
+		if (null == o) {
+			return "null";
+		} else if (o instanceof Calendar) {
+			return calendarToString((Calendar) o, FORMAT_DATE_HOUR);
+		} else if (null != (clazz = getPrimitifType(o))) {
+			return String.valueOf(clazz.cast(o));
+		} else {
+			return o.toString();
+		}
+	}
 
-        return null;
-    }
+	/**
+	 * Get listener for object class
+	 * 
+	 * @param o
+	 * @return ClassListener
+	 */
+	private ClassListener getListener(Object o) {
+		if (null != o) {
+			if (isNotEmpty(classListeners)) {
+				for (ClassListener c : classListeners) {
+					if (c.getClassName().equalsIgnoreCase(o.getClass().getName())) {
+						return c;
+					}
+				}
+			}
+		}
 
-    /**
-     * Testing if a class exist in the listener list
-     * 
-     * @param o
-     * @return boolean
-     */
-    private boolean isClassListened(Object o) {
-        return null != getListener(o);
-    }
+		return null;
+	}
 
-    /**
-     * Testing if a property exists in the listener list
-     * 
-     * @param o
-     * @param property
-     * @return boolean
-     */
-    private boolean isPropertyListened(Object o, String property) {
-        ClassListener l = getListener(o);
-        return null != l && isNotEmpty(l.getProperties()) && l.getProperties().contains(property);
-    }
+	/**
+	 * Testing if a class exist in the listener list
+	 * 
+	 * @param o
+	 * @return boolean
+	 */
+	private boolean isClassListened(Object o) {
+		return null != getListener(o);
+	}
 
-    /**
-     * Logs when one of two vo is NULL
-     * 
-     * @param original
-     * @param o
-     * @param diffs
-     * @param parent
-     * @param isBefore
-     * @return
-     */
-    public List<DiffProperty> logDiffsWhereNull(T original, Object o, List<DiffProperty> diffs, String parent, boolean isBefore) {
-        if (o instanceof Calendar || null != getPrimitifType(o)) {
-            diffs.add(createDiffProperty((null == parent) ? o.getClass().getSimpleName() : parent, object2string((!isBefore) ? null : o), object2string((isBefore) ? null : o), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
-        } else {
-            if (!isClassListened(o)) {
-                return diffs;
-            }
+	/**
+	 * Testing if a property exists in the listener list
+	 * 
+	 * @param o
+	 * @param property
+	 * @return boolean
+	 */
+	private boolean isPropertyListened(Object o, String property) {
+		ClassListener l = getListener(o);
+		return null != l && isNotEmpty(l.getProperties()) && l.getProperties().contains(property);
+	}
 
-            List<Method> getters = getCommonGetter(o, o);
-            if (isNotEmpty(getters)) {
-                for (Method getter : getters) {
-                    Object so;
-                    String property = getPropertyFromGetter(getter);
+	/**
+	 * Logs when one of two vo is NULL
+	 * 
+	 * @param original
+	 * @param o
+	 * @param diffs
+	 * @param parent
+	 * @param isBefore
+	 * @return
+	 */
+	public List<DiffProperty> logDiffsWhereNull(T original, Object o, List<DiffProperty> diffs, String parent, boolean isBefore) {
+		if (o instanceof Calendar || null != getPrimitifType(o)) {
+			diffs.add(createDiffProperty((null == parent) ? o.getClass().getSimpleName() : parent, object2string((!isBefore) ? null : o), object2string((isBefore) ? null : o), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+		} else {
+			if (!isClassListened(o)) {
+				return diffs;
+			}
 
-                    if (!isPropertyListened(o, property)) {
-                        continue;
-                    }
+			List<Method> getters = getCommonGetter(o, o);
+			if (isNotEmpty(getters)) {
+				for (Method getter : getters) {
+					Object so;
+					String property = getPropertyFromGetter(getter);
 
-                    try {
-                        so = getter.invoke(o);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        String message = "Reflexion error : " + e.getMessage();
-                        logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message);
-                        continue;
-                    }
+					if (!isPropertyListened(o, property)) {
+						continue;
+					}
 
-                    if (null != getNotImplementedType(so)) {
-                        continue;
-                    } else if (so instanceof Calendar || null != getPrimitifType(so)) {
-                        diffs.add(createDiffProperty(property, object2string((!isBefore) ? null : so), object2string((isBefore) ? null : so), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
-                    } else {
-                        diffs = logDiffsWhereNull(original, so, diffs, property, isBefore);
-                    }
-                }
-            }
-        }
+					try {
+						so = getter.invoke(o);
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						String message = "Reflexion error : " + e.getMessage();
+						logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message);
+						continue;
+					}
 
-        return diffs;
-    }
+					if (null != getNotImplementedType(so)) {
+						continue;
+					} else if (so instanceof Calendar || null != getPrimitifType(so)) {
+						diffs.add(createDiffProperty(property, object2string((!isBefore) ? null : so), object2string((isBefore) ? null : so), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+					} else {
+						diffs = logDiffsWhereNull(original, so, diffs, property, isBefore);
+					}
+				}
+			}
+		}
 
-    /**
-     * Get property from getter
-     * 
-     * @param getter
-     * @return String
-     */
-    private String getPropertyFromGetter(Method getter) {
-        // Camel case
-        String property = getter.getName().replaceAll("^get", "");
-        property = property.substring(0, 1).toLowerCase() + property.substring(1);
-        return property;
-    }
+		return diffs;
+	}
 
-    /**
-     * Logs diff
-     * 
-     * @param original
-     * @param vo1
-     * @param vo2
-     */
-    public List<DiffProperty> logDiffs(T original, Object vo1, Object vo2, List<DiffProperty> diffs, String parent) {
-        // When one of two value object is null
-        if (null == vo1 || null == vo2) {
-            if (null != vo1) {
-                diffs = logDiffsWhereNull(original, vo1, diffs, parent, true);
-            } else if (null != vo2) {
-                diffs = logDiffsWhereNull(original, vo2, diffs, parent, false);
-            }
-            return diffs;
-        }
+	/**
+	 * Get property from getter
+	 * 
+	 * @param getter
+	 * @return String
+	 */
+	private String getPropertyFromGetter(Method getter) {
+		// Camel case
+		String property = getter.getName().replaceAll("^get", "");
+		property = property.substring(0, 1).toLowerCase() + property.substring(1);
+		return property;
+	}
 
-        Class<?> clazz = vo1.getClass();
-        if (!isClassListened(vo1)) {
-            return diffs;
-        }
+	/**
+	 * Logs diff
+	 * 
+	 * @param original
+	 * @param vo1
+	 * @param vo2
+	 */
+	public List<DiffProperty> logDiffs(T original, Object vo1, Object vo2, List<DiffProperty> diffs, String parent) {
+		// When one of two value object is null
+		if (null == vo1 || null == vo2) {
+			if (null != vo1) {
+				diffs = logDiffsWhereNull(original, vo1, diffs, parent, true);
+			} else if (null != vo2) {
+				diffs = logDiffsWhereNull(original, vo2, diffs, parent, false);
+			}
+			return diffs;
+		}
 
-        List<Method> getters = getCommonGetter(vo1, vo2);
-        if (isNotEmpty(getters)) {
-            Object o1, o2;
+		Class<?> clazz = vo1.getClass();
+		if (!isClassListened(vo1)) {
+			return diffs;
+		}
 
-            for (Method getter : getters) {
-                String property = getPropertyFromGetter(getter);
+		List<Method> getters = getCommonGetter(vo1, vo2);
+		if (isNotEmpty(getters)) {
+			Object o1, o2;
 
-                if (!isPropertyListened(vo1, property)) {
-                    continue;
-                }
+			for (Method getter : getters) {
+				String property = getPropertyFromGetter(getter);
 
-                try {
-                    o1 = getter.invoke(vo1);
-                    o2 = getter.invoke(vo2);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    String message = "Reflexion error : " + e.getMessage();
-                    logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message);
-                    continue;
-                }
+				if (!isPropertyListened(vo1, property)) {
+					continue;
+				}
 
-                // Not implemented type
-                if (null != getNotImplementedType(o1) || null != getNotImplementedType(o2)) {
-                    continue;
-                } else if (o1 instanceof List && o2 instanceof List) {
-                    List<?> l1 = (List<?>) o1;
-                    List<?> l2 = (List<?>) o2;
+				try {
+					o1 = getter.invoke(vo1);
+					o2 = getter.invoke(vo2);
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					String message = "Reflexion error : " + e.getMessage();
+					logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message);
+					continue;
+				}
 
-                    if (isNotEmpty(l1) && isNotEmpty(l2) && l1.size() == l2.size()) {
-                        // Recursive
-                        for (Integer i = 0; i < l1.size(); i++) {
-                            diffs = logDiffs(original, l1.get(i), l2.get(i), diffs, property);
-                        }
-                    } else if (isNotEmpty(l1) && isNotEmpty(l2)) {
-                        diffs.add(createDiffProperty(property, String.valueOf(l1.size()), String.valueOf(l2.size()), parent, LifeCycleConstants.DIFF_TYPE_SIZE));
+				// Not implemented type
+				if (null != getNotImplementedType(o1) || null != getNotImplementedType(o2)) {
+					continue;
+				} else if (o1 instanceof List && o2 instanceof List) {
+					List<?> l1 = (List<?>) o1;
+					List<?> l2 = (List<?>) o2;
 
-                        List<?> lmin = (l1.size() >= l2.size()) ? l2 : l1;
-                        List<?> lmax = (l1.size() >= l2.size()) ? l1 : l2;
+					if (isNotEmpty(l1) && isNotEmpty(l2) && l1.size() == l2.size()) {
+						// Recursive
+						for (Integer i = 0; i < l1.size(); i++) {
+							diffs = logDiffs(original, l1.get(i), l2.get(i), diffs, property);
+						}
+					} else if (isNotEmpty(l1) && isNotEmpty(l2)) {
+						diffs.add(createDiffProperty(property, String.valueOf(l1.size()), String.valueOf(l2.size()), parent, LifeCycleConstants.DIFF_TYPE_SIZE));
 
-                        // Adding value
-                        for (Integer i = lmin.size(); i < lmax.size(); i++) {
-                            diffs = logDiffs(original, null, lmax.get(i), diffs, property);
-                        }
+						List<?> lmin = (l1.size() >= l2.size()) ? l2 : l1;
+						List<?> lmax = (l1.size() >= l2.size()) ? l1 : l2;
 
-                        // Recursive
-                        for (Integer i = 0; i < lmin.size(); i++) {
-                            diffs = logDiffs(original, l1.get(i), l2.get(i), diffs, property);
-                        }
-                    } else if (isNotEmpty(l1)) {
-                        diffs.add(createDiffProperty(property, String.valueOf(l1.size()), "null", parent, LifeCycleConstants.DIFF_TYPE_SIZE));
+						// Adding value
+						for (Integer i = lmin.size(); i < lmax.size(); i++) {
+							diffs = logDiffs(original, null, lmax.get(i), diffs, property);
+						}
 
-                        // Adding value
-                        for (Integer i = 0; i < l1.size(); i++) {
-                            diffs = logDiffs(original, l1.get(i), null, diffs, property);
-                        }
-                    } else {
-                        diffs.add(createDiffProperty(property, "null", String.valueOf(l2.size()), parent, LifeCycleConstants.DIFF_TYPE_SIZE));
+						// Recursive
+						for (Integer i = 0; i < lmin.size(); i++) {
+							diffs = logDiffs(original, l1.get(i), l2.get(i), diffs, property);
+						}
+					} else if (isNotEmpty(l1)) {
+						diffs.add(createDiffProperty(property, String.valueOf(l1.size()), "null", parent, LifeCycleConstants.DIFF_TYPE_SIZE));
 
-                        // Adding value
-                        for (Integer i = 0; i < l2.size(); i++) {
-                            diffs = logDiffs(original, null, l2.get(i), diffs, property);
-                        }
-                    }
-                } else if (null != (clazz = getPrimitifType(o1))) {
-                    if (!clazz.cast(o1).equals(clazz.cast(o2))) {
-                        diffs.add(createDiffProperty(property, object2string(o1), object2string(o2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
-                    }
-                } else if (o1 instanceof Calendar && o2 instanceof Calendar) {
-                    Calendar c1 = (Calendar) o1;
-                    Calendar c2 = (Calendar) o2;
-                    if (!c1.equals(c2)) {
-                        diffs.add(createDiffProperty(property, object2string(c1), object2string(c2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
-                    }
-                } else {
-                    // Recursive
-                    diffs = logDiffs(original, o1, o2, diffs, property);
-                }
-            }
-        }
+						// Adding value
+						for (Integer i = 0; i < l1.size(); i++) {
+							diffs = logDiffs(original, l1.get(i), null, diffs, property);
+						}
+					} else {
+						diffs.add(createDiffProperty(property, "null", String.valueOf(l2.size()), parent, LifeCycleConstants.DIFF_TYPE_SIZE));
 
-        return diffs;
-    }
+						// Adding value
+						for (Integer i = 0; i < l2.size(); i++) {
+							diffs = logDiffs(original, null, l2.get(i), diffs, property);
+						}
+					}
+				} else if (null != (clazz = getPrimitifType(o1))) {
+					if (!clazz.cast(o1).equals(clazz.cast(o2))) {
+						diffs.add(createDiffProperty(property, object2string(o1), object2string(o2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+					}
+				} else if (o1 instanceof Calendar && o2 instanceof Calendar) {
+					Calendar c1 = (Calendar) o1;
+					Calendar c2 = (Calendar) o2;
+					if (!c1.equals(c2)) {
+						diffs.add(createDiffProperty(property, object2string(c1), object2string(c2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+					}
+				} else {
+					// Recursive
+					diffs = logDiffs(original, o1, o2, diffs, property);
+				}
+			}
+		}
 
-    /**
-     * Create diff property
-     * 
-     * @param name
-     * @param before
-     * @param after
-     * @param parent
-     * @param type
-     * @return DiffProperty
-     */
-    private DiffProperty createDiffProperty(String name, String before, String after, String parent, String type) {
-        DiffProperty diff = new DiffProperty();
-        diff.setPropertyName(name);
-        diff.setBeforeValue(before);
-        diff.setAfterValue(after);
-        diff.setParentPropertyName(parent);
-        diff.setType(type);
-        return diff;
-    }
+		return diffs;
+	}
 
-    /**
-     * Get list of primitif type
-     * 
-     * @return List<Class<?>>
-     */
-    private List<Class<?>> getPrimitifTypes() {
-        List<Class<?>> rtn = new ArrayList<Class<?>>();
-        rtn.add(Number.class);
-        rtn.add(String.class);
-        rtn.add(Boolean.class);
-        rtn.add(Integer.class);
-        rtn.add(Long.class);
-        rtn.add(Double.class);
-        rtn.add(Short.class);
-        rtn.add(Float.class);
-        rtn.add(BigDecimal.class);
-        return rtn;
-    }
+	/**
+	 * Create diff property
+	 * 
+	 * @param name
+	 * @param before
+	 * @param after
+	 * @param parent
+	 * @param type
+	 * @return DiffProperty
+	 */
+	private DiffProperty createDiffProperty(String name, String before, String after, String parent, String type) {
+		DiffProperty diff = new DiffProperty();
+		diff.setPropertyName(name);
+		diff.setBeforeValue(before);
+		diff.setAfterValue(after);
+		diff.setParentPropertyName(parent);
+		diff.setType(type);
+		return diff;
+	}
 
-    /**
-     * Get list of not allowed type
-     * 
-     * @return List<Class<?>>
-     */
-    private List<Class<?>> getNotImplementedTypes() {
-        List<Class<?>> rtn = new ArrayList<Class<?>>();
-        rtn.add(Map.class);
-        return rtn;
-    }
+	/**
+	 * Get list of primitif type
+	 * 
+	 * @return List<Class<?>>
+	 */
+	private List<Class<?>> getPrimitifTypes() {
+		List<Class<?>> rtn = new ArrayList<Class<?>>();
+		rtn.add(Number.class);
+		rtn.add(String.class);
+		rtn.add(Boolean.class);
+		rtn.add(Integer.class);
+		rtn.add(Long.class);
+		rtn.add(Double.class);
+		rtn.add(Short.class);
+		rtn.add(Float.class);
+		rtn.add(BigDecimal.class);
+		return rtn;
+	}
 
-    /**
-     * Get primitif type
-     * 
-     * @param o
-     * @return Class<?>
-     */
-    private Class<?> getNotImplementedType(Object o) {
-        return getClassFromObject(o, getNotImplementedTypes());
-    }
+	/**
+	 * Get list of not allowed type
+	 * 
+	 * @return List<Class<?>>
+	 */
+	private List<Class<?>> getNotImplementedTypes() {
+		List<Class<?>> rtn = new ArrayList<Class<?>>();
+		rtn.add(Map.class);
+		return rtn;
+	}
 
-    /**
-     * Get primitif type
-     * 
-     * @param o
-     * @return Class<?>
-     */
-    public Class<?> getPrimitifType(Object o) {
-        return getClassFromObject(o, getPrimitifTypes());
-    }
+	/**
+	 * Get primitif type
+	 * 
+	 * @param o
+	 * @return Class<?>
+	 */
+	private Class<?> getNotImplementedType(Object o) {
+		return getClassFromObject(o, getNotImplementedTypes());
+	}
 
-    /**
-     * Get class from object
-     * 
-     * @param o
-     * @param lstClass
-     * @return
-     */
-    private Class<?> getClassFromObject(Object o, List<Class<?>> lstClass) {
-        for (Class<?> c : lstClass) {
-            if (c.isInstance(o)) {
-                return c;
-            }
-        }
+	/**
+	 * Get primitif type
+	 * 
+	 * @param o
+	 * @return Class<?>
+	 */
+	public Class<?> getPrimitifType(Object o) {
+		return getClassFromObject(o, getPrimitifTypes());
+	}
 
-        return null;
-    }
+	/**
+	 * Get class from object
+	 * 
+	 * @param o
+	 * @param lstClass
+	 * @return
+	 */
+	private Class<?> getClassFromObject(Object o, List<Class<?>> lstClass) {
+		for (Class<?> c : lstClass) {
+			if (c.isInstance(o)) {
+				return c;
+			}
+		}
 
-    /**
-     * Get common methods of two value object
-     * 
-     * @param vo1
-     * @param vo2
-     * @return List<Method>
-     */
-    private List<Method> getCommonGetter(Object vo1, Object vo2) {
-        Method[] methods = vo1.getClass().getMethods();
-        Method[] methods2 = vo2.getClass().getMethods();
-        List<Method> rtn = new ArrayList<Method>();
+		return null;
+	}
 
-        if (null != methods && null != methods2 && methods.length > 0 && methods2.length > 0) {
-            for (Method m1 : methods) {
-                for (Method m2 : methods) {
-                    if (m1.getName().startsWith("get") && !m1.getName().equals("getClass") && m1.getName().equals(m2.getName())) {
-                        rtn.add(m1);
-                    }
-                }
-            }
-        }
+	/**
+	 * Get common methods of two value object
+	 * 
+	 * @param vo1
+	 * @param vo2
+	 * @return List<Method>
+	 */
+	private List<Method> getCommonGetter(Object vo1, Object vo2) {
+		Method[] methods = vo1.getClass().getMethods();
+		Method[] methods2 = vo2.getClass().getMethods();
+		List<Method> rtn = new ArrayList<Method>();
 
-        return rtn;
-    }
+		if (null != methods && null != methods2 && methods.length > 0 && methods2.length > 0) {
+			for (Method m1 : methods) {
+				for (Method m2 : methods) {
+					if (m1.getName().startsWith("get") && !m1.getName().equals("getClass") && m1.getName().equals(m2.getName())) {
+						rtn.add(m1);
+					}
+				}
+			}
+		}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public EventManager getEvtManager() {
-        return evtManager;
-    }
+		return rtn;
+	}
 
-    /**
-     * @param evtManager the evtManager to set
-     */
-    public void setEvtManager(EventManager evtManager) {
-        this.evtManager = evtManager;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public EventManager getEvtManager() {
+		return evtManager;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public A getAdapter() {
-        return adapter;
-    }
+	/**
+	 * @param evtManager
+	 *            the evtManager to set
+	 */
+	public void setEvtManager(EventManager evtManager) {
+		this.evtManager = evtManager;
+	}
 
-    /**
-     * @param adapter the adapter to set
-     */
-    public void setAdapter(A adapter) {
-        this.adapter = adapter;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public A getAdapter() {
+		return adapter;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ClassListener> getClassListeners() {
-        return classListeners;
-    }
+	/**
+	 * @param adapter
+	 *            the adapter to set
+	 */
+	public void setAdapter(A adapter) {
+		this.adapter = adapter;
+	}
 
-    /**
-     * @param classListeners the classListeners to set
-     */
-    public void setClassListeners(List<ClassListener> classListeners) {
-        this.classListeners = classListeners;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<ClassListener> getClassListeners() {
+		return classListeners;
+	}
+
+	/**
+	 * @param classListeners
+	 *            the classListeners to set
+	 */
+	public void setClassListeners(List<ClassListener> classListeners) {
+		this.classListeners = classListeners;
+	}
 }

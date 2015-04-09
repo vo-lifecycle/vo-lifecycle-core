@@ -2,6 +2,7 @@ package org.volifecycle.event.vo;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Map;
 
 /**
  * Event value object class
@@ -41,6 +42,11 @@ public class Event implements Serializable {
 	 * Type of value object impacted
 	 */
 	protected String typeValueObject;
+
+	/**
+	 * Additional informations (like comments, sources, etc)
+	 */
+	protected Map<String, String> additionalInformations;
 
 	/**
 	 * @return the typeEvent
@@ -130,5 +136,20 @@ public class Event implements Serializable {
 	 */
 	public void setTypeValueObject(String typeValueObject) {
 		this.typeValueObject = typeValueObject;
+	}
+
+	/**
+	 * @return the additionalInformations
+	 */
+	public Map<String, String> getAdditionalInformations() {
+		return additionalInformations;
+	}
+
+	/**
+	 * @param additionalInformations
+	 *            the additionalInformations to set
+	 */
+	public void setAdditionalInformations(Map<String, String> additionalInformations) {
+		this.additionalInformations = additionalInformations;
 	}
 }
