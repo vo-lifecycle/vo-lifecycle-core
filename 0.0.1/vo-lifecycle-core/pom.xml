@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vo-lifecycle</groupId>
 	<artifactId>vo-lifecycle-core</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.1</version>
 	<name>VO LifeCycle</name>
 	<description>A value object lifecycle framework</description>
 	<packaging>jar</packaging>
