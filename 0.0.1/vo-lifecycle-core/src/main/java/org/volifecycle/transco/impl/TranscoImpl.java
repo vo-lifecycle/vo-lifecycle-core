@@ -19,7 +19,7 @@ public class TranscoImpl implements Transco {
     protected Map<String, String> original;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public TranscoImpl() {
         k2v = new HashMap<String, String>();

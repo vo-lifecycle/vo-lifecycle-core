@@ -3,7 +3,7 @@ package org.volifecycle.transco;
 import java.util.Map;
 
 /**
- * Transco table interface
+ * Transco table interface.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
