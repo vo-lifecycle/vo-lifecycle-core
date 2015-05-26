@@ -54,4 +54,14 @@ public interface Transco extends Map<String, String> {
      * @return String
      */
     String getOriginalQuietly(String key);
+
+    /**
+     * @return the k2v
+     */
+    Map<String, String> getK2v();
+
+    /**
+     * @return the v2k
+     */
+    Map<String, String> getV2k();
 }

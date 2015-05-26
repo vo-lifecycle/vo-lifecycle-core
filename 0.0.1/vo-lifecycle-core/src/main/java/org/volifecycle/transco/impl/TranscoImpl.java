@@ -267,4 +267,34 @@ public class TranscoImpl implements Transco {
             return original.get(getFormatedKey(key));
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getK2v() {
+        return k2v;
+    }
+
+    /**
+     * @param k2v the k2v to set
+     */
+    public void setK2v(Map<String, String> k2v) {
+        this.k2v = k2v;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getV2k() {
+        return v2k;
+    }
+
+    /**
+     * @param v2k the v2k to set
+     */
+    public void setV2k(Map<String, String> v2k) {
+        this.v2k = v2k;
+    }
 }
