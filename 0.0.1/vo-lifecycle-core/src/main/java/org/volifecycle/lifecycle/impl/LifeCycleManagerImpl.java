@@ -1,9 +1,13 @@
 package org.volifecycle.lifecycle.impl;
 
+import static org.apache.commons.collections.MapUtils.isNotEmpty;
 import static org.volifecycle.utils.DateUtils.getCurrentTime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
@@ -20,7 +24,8 @@ import org.volifecycle.lifecycle.vo.LifeCycleChange;
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
- * @param <T> valueObject type
+ * @param <T>
+ *            valueObject type
  */
 public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements LifeCycleManager<T, LifeCycleAdapter<T>> {
     /**
@@ -100,7 +105,48 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     }
 
     /**
-     * Log change
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, LifeCycleTransition<T>> getTransitionsFromType(String type) {
+        Map<String, LifeCycleTransition<T>> rtn = new HashMap<String, LifeCycleTransition<T>>();
+        if (isNotEmpty(statesById)) {
+            for (Entry<String, LifeCycleState<T>> entryState : statesById.entrySet()) {
+                LifeCycleState<T> state = entryState.getValue();
+                if (isNotEmpty(state.getTransitionsById())) {
+                    for (Entry<String, LifeCycleTransition<T>> entryTransition : state.getTransitionsById().entrySet()) {
+                        String idTransition = entryTransition.getKey();
+                        LifeCycleTransition<T> transition = entryTransition.getValue();
+                        if (!rtn.containsKey(idTransition) && type.equalsIgnoreCase(transition.getType())) {
+                            rtn.put(idTransition, transition);
+                        }
+                    }
+                }
+            }
+        }
+
+        return rtn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getIdsTransitionsFromType(String type) {
+        Map<String, LifeCycleTransition<T>> transitionsById = getTransitionsFromType(type);
+        List<String> rtn = new ArrayList<String>();
+
+        if (isNotEmpty(transitionsById)) {
+            for (Entry<String, LifeCycleTransition<T>> entryTransition : transitionsById.entrySet()) {
+                rtn.add(entryTransition.getKey());
+            }
+        }
+
+        return rtn;
+    }
+
+    /**
+     * Log change.
      * 
      * @param valueObject
      * @param transitionId
@@ -141,7 +187,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     }
 
     /**
-     * @param statesById the statesById to set
+     * @param statesById
+     *            the statesById to set
      */
     public void setStatesById(Map<String, LifeCycleState<T>> statesById) {
         this.statesById = statesById;
@@ -156,7 +203,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     }
 
     /**
-     * @param adapter the adapter to set
+     * @param adapter
+     *            the adapter to set
      */
     public void setAdapter(A adapter) {
         this.adapter = adapter;
@@ -171,7 +219,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     }
 
     /**
-     * @param description the description to set
+     * @param description
+     *            the description to set
      */
     public void setDescription(String description) {
         this.description = description;
@@ -186,7 +235,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     }
 
     /**
-     * @param evtManager the evtManager to set
+     * @param evtManager
+     *            the evtManager to set
      */
     public void setEvtManager(EventManager evtManager) {
         this.evtManager = evtManager;
@@ -201,7 +251,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     }
 
     /**
-     * @param id the id to set
+     * @param id
+     *            the id to set
      */
     public void setId(String id) {
         this.id = id;
@@ -216,7 +267,8 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     }
 
     /**
-     * @param saver the saver to set
+     * @param saver
+     *            the saver to set
      */
     public void setSaver(LifeCycleChangeSaver saver) {
         this.saver = saver;
