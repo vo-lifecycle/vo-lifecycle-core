@@ -1,17 +1,16 @@
 package org.volifecycle.lifecycle;
 
-import java.util.List;
 import java.util.Map;
 
 /**
- * Checker interface
+ * Predicate interface.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
- * 
+ *
  * @param <T>
  *            value object type
  */
-public interface LifeCycleChecker<T> {
+public interface LifeCyclePredicate<T> {
     /**
      * Return the result
      * 
@@ -28,24 +27,4 @@ public interface LifeCycleChecker<T> {
      * @return "true" if success or "false"
      */
     String getResult(T valueObject, Map<String, Object> actionStorage);
-
-    /**
-     * @return the id
-     */
-    String getId();
-
-    /**
-     * @return the description
-     */
-    String getDescription();
-
-    /**
-     * @return the targetState
-     */
-    String getTargetState();
-
-    /**
-     * @return the predicates
-     */
-    List<LifeCyclePredicate<T>> getPredicates();
 }
