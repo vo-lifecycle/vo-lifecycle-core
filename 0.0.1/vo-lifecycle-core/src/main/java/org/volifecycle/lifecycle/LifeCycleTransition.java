@@ -15,7 +15,7 @@ import org.volifecycle.event.EventManager;
  */
 public interface LifeCycleTransition<T> {
     /**
-     * Verify all checker
+     * Verify all checker.
      * 
      * @param valueObject
      * @param adapter
@@ -26,7 +26,7 @@ public interface LifeCycleTransition<T> {
     public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager);
 
     /**
-     * Verify all checker with a forced id list
+     * Verify all checker with a forced id list.
      * 
      * @param valueObject
      * @param adapter
@@ -50,4 +50,9 @@ public interface LifeCycleTransition<T> {
      * @return the checkers
      */
     List<LifeCycleChecker<T>> getCheckers();
+
+    /**
+     * @return the actionStorage
+     */
+    LifeCycleActionStorage<T> getActionStorage();
 }

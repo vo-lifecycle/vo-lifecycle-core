@@ -3,10 +3,12 @@ package org.volifecycle.lifecycle.impl;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 import java.util.List;
+import java.util.Map;
 
 import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
+import org.volifecycle.lifecycle.LifeCycleActionStorage;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChecker;
 import org.volifecycle.lifecycle.LifeCycleTransition;
@@ -20,7 +22,15 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  *            value object type
  */
 public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleTransition<T> {
+    /**
+     * List of composite checkers.
+     */
     protected List<LifeCycleChecker<T>> checkers;
+
+    /**
+     * Action storage.
+     */
+    protected LifeCycleActionStorage<T> actionStorage;
 
     /**
      * auto | manual
@@ -84,6 +94,22 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
      * {@inheritDoc}
      */
     @Override
+    public LifeCycleActionStorage<T> getActionStorage() {
+        return actionStorage;
+    }
+
+    /**
+     * @param actionStorage
+     *            the actionStorage to set
+     */
+    public void setActionStorage(LifeCycleActionStorage<T> actionStorage) {
+        this.actionStorage = actionStorage;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager) {
         return changeState(valueObject, adapter, evtManager, null);
     }
@@ -94,6 +120,11 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
     @Override
     public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedCheckers) {
         String rtn = LifeCycleConstants.TRUE;
+
+        Map<String, Object> actionStorageResult = null;
+        if (null != actionStorage) {
+            actionStorageResult = actionStorage.getActionStorageResult(valueObject);
+        }
 
         if (isNotEmpty(checkers)) {
             for (LifeCycleChecker<T> checker : checkers) {
@@ -113,17 +144,17 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                     rtn = checker.getTargetState();
                 }
 
-                String[] resultArray = checker.getResult(valueObject);
+                String[] resultArray = checker.getResult(valueObject, actionStorageResult);
                 String result = (null == resultArray || resultArray.length < 1) ? null : resultArray[0];
-                String idFailedPredicate = (null == resultArray || resultArray.length < 2) ? LifeCycleConstants.EMPTY_STRING : resultArray[1];
+                String idPredicate = (null == resultArray || resultArray.length < 2) ? LifeCycleConstants.EMPTY_STRING : resultArray[1];
 
                 if (null == result || LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
                     if (!filter) {
                         rtn = LifeCycleConstants.FALSE;
-                        String message = "Failed checker : " + checker.getId() + ", predicate : " + idFailedPredicate;
+                        String message = "Failed checker : " + checker.getId() + ", predicate : " + idPredicate;
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_CHECKER, message);
                     } else {
-                        String message = "Forced checker : " + checker.getId() + ", predicate : " + idFailedPredicate;
+                        String message = "Forced checker : " + checker.getId() + ", predicate : " + idPredicate;
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_CHECKER, message);
                     }
                 }
