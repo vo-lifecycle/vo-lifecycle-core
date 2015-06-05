@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface LifeCyclePredicate<T> {
     /**
-     * Return the result
+     * Return the result.
      * 
      * @param valueObject
      * @return "true" if success or "false"
@@ -20,11 +20,18 @@ public interface LifeCyclePredicate<T> {
     String getResult(T valueObject);
 
     /**
-     * Return the result
+     * Return the result.
      * 
      * @param valueObject
      * @param actionStorage
      * @return "true" if success or "false"
      */
     String getResult(T valueObject, Map<String, Object> actionStorage);
+
+    /**
+     * Return the id.
+     * 
+     * @return id
+     */
+    String getId();
 }

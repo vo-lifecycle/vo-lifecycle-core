@@ -30,69 +30,66 @@ import org.volifecycle.tests.inputs.ValueObjectStub;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class LifeCycleTransitionImplTest extends AbstractTest {
-	/**
-	 * Mocks
-	 */
-	@Mock
-	LifeCycleChecker<ValueObjectStub> checkerMock;
+    /**
+     * Mocks
+     */
+    @Mock
+    LifeCycleChecker<ValueObjectStub> checkerMock;
 
-	@Mock
-	LifeCycleAdapter<ValueObjectStub> adapterMock;
+    @Mock
+    LifeCycleAdapter<ValueObjectStub> adapterMock;
 
-	@Mock
-	EventManager evtManagerMock;
+    @Mock
+    EventManager evtManagerMock;
 
-	LifeCycleTransitionImpl<ValueObjectStub> transition;
-	ValueObjectStub valueObject;
-	List<LifeCycleChecker<ValueObjectStub>> lstCheckers;
-	String idChecker = "ID";
-	List<String> forcedCheckers;
+    LifeCycleTransitionImpl<ValueObjectStub> transition;
+    ValueObjectStub valueObject;
+    List<LifeCycleChecker<ValueObjectStub>> lstCheckers;
+    String idChecker = "ID";
+    List<String> forcedCheckers;
 
-	/**
-	 * Init datas
-	 */
-	@Before
-	public final void initData() {
-		valueObject = new ValueObjectStub();
-		transition = new LifeCycleTransitionImpl<ValueObjectStub>();
+    /**
+     * Init datas
+     */
+    @Before
+    public final void initData() {
+        valueObject = new ValueObjectStub();
+        transition = new LifeCycleTransitionImpl<ValueObjectStub>();
 
-		lstCheckers = new ArrayList<LifeCycleChecker<ValueObjectStub>>();
-		lstCheckers.add(checkerMock);
-		transition.setCheckers(lstCheckers);
+        lstCheckers = new ArrayList<LifeCycleChecker<ValueObjectStub>>();
+        lstCheckers.add(checkerMock);
+        transition.setCheckers(lstCheckers);
 
-		forcedCheckers = new ArrayList<String>();
-		forcedCheckers.add(idChecker);
+        forcedCheckers = new ArrayList<String>();
+        forcedCheckers.add(idChecker);
 
-		// mocks configuration
-		when(checkerMock.getResult(any(ValueObjectStub.class))).thenReturn(
-				LifeCycleConstants.FALSE);
-		when(checkerMock.getId()).thenReturn(idChecker);
+        // mocks configuration
+        String rtn[] = new String[2];
+        rtn[0] = LifeCycleConstants.FALSE;
+        when(checkerMock.getResult(any(ValueObjectStub.class))).thenReturn(rtn);
+        when(checkerMock.getId()).thenReturn(idChecker);
 
-		when(adapterMock.getState(any(ValueObjectStub.class))).thenReturn(
-				valueObject.getState());
+        when(adapterMock.getState(any(ValueObjectStub.class))).thenReturn(valueObject.getState());
 
-		when(adapterMock.getType(any(ValueObjectStub.class))).thenReturn(
-				valueObject.getType());
-	}
+        when(adapterMock.getType(any(ValueObjectStub.class))).thenReturn(valueObject.getType());
+    }
 
-	/**
-	 * Change state nominal
-	 */
-	@Test
-	public final void testChangeStateNominal() {
-		String result = transition.changeState(valueObject, adapterMock,
-				evtManagerMock);
-		assertEquals(LifeCycleConstants.FALSE, result);
-	}
+    /**
+     * Change state nominal
+     */
+    @Test
+    public final void testChangeStateNominal() {
+        String result = transition.changeState(valueObject, adapterMock, evtManagerMock);
+        assertEquals(LifeCycleConstants.FALSE, result);
+    }
 
-	/**
-	 * Change state with forced checker
-	 */
-	@Test
-	public final void testChangeStateWithForcedChecker() {
-		String result = transition.changeState(valueObject, adapterMock,
-				evtManagerMock, forcedCheckers);
-		assertEquals(LifeCycleConstants.TRUE, result);
-		verify(evtManagerMock).logEvent(any(Event.class));
-	}
+    /**
+     * Change state with forced checker
+     */
+    @Test
+    public final void testChangeStateWithForcedChecker() {
+        String result = transition.changeState(valueObject, adapterMock, evtManagerMock, forcedCheckers);
+        assertEquals(LifeCycleConstants.TRUE, result);
+        verify(evtManagerMock).logEvent(any(Event.class));
+    }
 }

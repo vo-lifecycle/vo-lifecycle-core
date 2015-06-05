@@ -106,7 +106,7 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
      * {@inheritDoc}
      */
     @Override
-    public String getResult(T valueObject) {
+    public String[] getResult(T valueObject) {
         return getResult(valueObject, null);
     }
 
@@ -114,16 +114,18 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
      * {@inheritDoc}
      */
     @Override
-    public String getResult(T valueObject, Map<String, Object> actionStorage) {
-        String result = LifeCycleConstants.TRUE;
+    public String[] getResult(T valueObject, Map<String, Object> actionStorage) {
+        String rtn[] = new String[2];
+        rtn[0] = LifeCycleConstants.TRUE;
         if (isNotEmpty(predicates)) {
             for (LifeCyclePredicate<T> predicate : predicates) {
-                result = predicate.getResult(valueObject, actionStorage);
-                if (LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
+                rtn[0] = predicate.getResult(valueObject, actionStorage);
+                if (LifeCycleConstants.FALSE.equalsIgnoreCase(rtn[0])) {
+                    rtn[1] = predicate.getId();
                     break;
                 }
             }
         }
-        return result;
+        return rtn;
     }
 }

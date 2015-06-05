@@ -16,18 +16,26 @@ public interface LifeCycleChecker<T> {
      * Return the result
      * 
      * @param valueObject
-     * @return "true" if success or "false"
+     * @return array with
+     *         <ul>
+     *         <li>item 0 :"true" if success or "false"</li>
+     *         <li>item 1 : failed predicate (may be null)</li>
+     *         </ul>
      */
-    String getResult(T valueObject);
+    String[] getResult(T valueObject);
 
     /**
      * Return the result
      * 
      * @param valueObject
      * @param actionStorage
-     * @return "true" if success or "false"
+     * @return array with
+     *         <ul>
+     *         <li>item 0 :"true" if success or "false"</li>
+     *         <li>item 1 : failed predicate (may be null)</li>
+     *         </ul>
      */
-    String getResult(T valueObject, Map<String, Object> actionStorage);
+    String[] getResult(T valueObject, Map<String, Object> actionStorage);
 
     /**
      * @return the id
