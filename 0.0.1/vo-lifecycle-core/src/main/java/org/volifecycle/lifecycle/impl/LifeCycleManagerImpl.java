@@ -92,16 +92,15 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
         }
 
         LifeCycleTransition<T> transition = transitionsById.get(idTransition);
-        String rtn = transition.changeState(valueObject, adapter, eManager, forcedCheckers);
-        String targetState = transition.getTarget();
+        String targetState = transition.changeState(valueObject, adapter, eManager, forcedCheckers);
 
         // Change state (in database or other persistence support)
-        if (null != targetState && !LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
+        if (null != targetState && !LifeCycleConstants.FALSE.equalsIgnoreCase(targetState)) {
             adapter.setState(valueObject, targetState);
             logChangeCustom(valueObject, idTransition, keyState, adapter, targetState);
         }
 
-        return rtn;
+        return targetState;
     }
 
     /**

@@ -47,6 +47,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
     List<LifeCycleChecker<ValueObjectStub>> lstCheckers;
     String idChecker = "ID";
     List<String> forcedCheckers;
+    String targetState = "STATE";
 
     /**
      * Init datas
@@ -68,6 +69,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
         rtn[0] = LifeCycleConstants.FALSE;
         when(checkerMock.getResult(any(ValueObjectStub.class))).thenReturn(rtn);
         when(checkerMock.getId()).thenReturn(idChecker);
+        when(checkerMock.getTargetState()).thenReturn(targetState);
 
         when(adapterMock.getState(any(ValueObjectStub.class))).thenReturn(valueObject.getState());
 
@@ -89,7 +91,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
     @Test
     public final void testChangeStateWithForcedChecker() {
         String result = transition.changeState(valueObject, adapterMock, evtManagerMock, forcedCheckers);
-        assertEquals(LifeCycleConstants.TRUE, result);
+        assertEquals(targetState, result);
         verify(evtManagerMock).logEvent(any(Event.class));
     }
 }

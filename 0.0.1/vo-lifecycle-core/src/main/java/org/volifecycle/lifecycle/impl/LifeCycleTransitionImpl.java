@@ -21,7 +21,6 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  */
 public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleTransition<T> {
     protected List<LifeCycleChecker<T>> checkers;
-    protected String target;
 
     /**
      * auto | manual
@@ -47,22 +46,6 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
      */
     public void setCheckers(List<LifeCycleChecker<T>> checkers) {
         this.checkers = checkers;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTarget() {
-        return target;
-    }
-
-    /**
-     * @param target
-     *            the target to set
-     */
-    public void setTarget(String target) {
-        this.target = target;
     }
 
     /**
@@ -126,9 +109,14 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                     }
                 }
 
+                if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
+                    rtn = checker.getTargetState();
+                }
+
                 String[] resultArray = checker.getResult(valueObject);
                 String result = (null == resultArray || resultArray.length < 1) ? null : resultArray[0];
                 String idFailedPredicate = (null == resultArray || resultArray.length < 2) ? LifeCycleConstants.EMPTY_STRING : resultArray[1];
+
                 if (null == result || LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
                     if (!filter) {
                         rtn = LifeCycleConstants.FALSE;

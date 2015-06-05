@@ -32,7 +32,7 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
      * @param idTransition
      * @param valueObject
      * @param forcedCheckers
-     * @return String "true" or "false"
+     * @return String "false" if failure or state id if success
      */
     String runTransition(String idTransition, T valueObject, List<String> forcedCheckers);
 
