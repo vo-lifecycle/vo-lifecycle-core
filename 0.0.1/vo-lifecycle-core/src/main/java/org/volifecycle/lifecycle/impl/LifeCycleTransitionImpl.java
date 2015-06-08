@@ -1,5 +1,6 @@
 package org.volifecycle.lifecycle.impl;
 
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.volifecycle.utils.CommonUtils.implode;
 
@@ -35,6 +36,11 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	protected LifeCycleActionStorage<T> actionStorage;
 
 	/**
+	 * The id.
+	 */
+	protected String id;
+
+	/**
 	 * auto | manual
 	 */
 	protected String type;
@@ -43,6 +49,11 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	 * Description
 	 */
 	protected String description;
+
+	/**
+	 * List of targeted states.
+	 */
+	List<String> targetStates;
 
 	/**
 	 * @return the actions
@@ -57,6 +68,22 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	 */
 	public void setActions(List<LifeCycleCompositeAction<T>> actions) {
 		this.actions = actions;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**
@@ -104,6 +131,22 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	 */
 	public void setActionStorage(LifeCycleActionStorage<T> actionStorage) {
 		this.actionStorage = actionStorage;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<String> getTargetStates() {
+		return targetStates;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setTargetStates(List<String> targetStates) {
+		this.targetStates = targetStates;
 	}
 
 	/**
@@ -167,6 +210,12 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 			}
 		}
 
-		return (null == rtn) ? LifeCycleConstants.FALSE : rtn;
+		if (isEmpty(targetStates) || null == rtn || LifeCycleConstants.FALSE.equals(rtn) || !targetStates.contains(rtn)) {
+			rtn = LifeCycleConstants.FALSE;
+			String message = "Failed transition : id=" + this.getId() + ", targetStates = " + implode(",", targetStates);
+			logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations);
+		}
+
+		return rtn;
 	}
 }

@@ -37,6 +37,11 @@ public interface LifeCycleTransition<T> {
 	String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedActions);
 
 	/**
+	 * @return the id
+	 */
+	String getId();
+
+	/**
 	 * @return the type
 	 */
 	String getType();
@@ -45,4 +50,15 @@ public interface LifeCycleTransition<T> {
 	 * @return the description
 	 */
 	String getDescription();
+
+	/**
+	 * @return the targetStates
+	 */
+	List<String> getTargetStates();
+
+	/**
+	 * @param targetStates
+	 *            the targetStates to set
+	 */
+	void setTargetStates(List<String> targetStates);
 }

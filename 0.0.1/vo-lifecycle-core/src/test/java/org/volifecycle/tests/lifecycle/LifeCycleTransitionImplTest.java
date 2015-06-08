@@ -76,6 +76,10 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 		action.setTargetState(targetState);
 		action.setSimpleActions(simpleActions);
 
+		List<String> targetStates = new ArrayList<String>();
+		targetStates.add(targetState);
+		transition.setTargetStates(targetStates);
+
 		// mocks configuration
 		when(adapterMock.getState(any(ValueObjectStub.class))).thenReturn(valueObject.getState());
 		when(adapterMock.getType(any(ValueObjectStub.class))).thenReturn(valueObject.getType());
