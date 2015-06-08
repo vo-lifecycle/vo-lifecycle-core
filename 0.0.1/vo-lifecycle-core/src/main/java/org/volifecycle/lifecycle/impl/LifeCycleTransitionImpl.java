@@ -11,6 +11,7 @@ import java.util.Map;
 import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
+import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleActionStorage;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
@@ -28,7 +29,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	/**
 	 * List of composite actions.
 	 */
-	protected List<LifeCycleCompositeAction<T>> actions;
+	protected List<LifeCycleAction<T>> actions;
 
 	/**
 	 * Action storage.
@@ -63,7 +64,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	/**
 	 * @return the actions
 	 */
-	public List<LifeCycleCompositeAction<T>> getActions() {
+	public List<LifeCycleAction<T>> getActions() {
 		return actions;
 	}
 
@@ -71,7 +72,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	 * @param actions
 	 *            the actions to set
 	 */
-	public void setActions(List<LifeCycleCompositeAction<T>> actions) {
+	public void setActions(List<LifeCycleAction<T>> actions) {
 		this.actions = actions;
 	}
 
@@ -191,7 +192,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 		}
 
 		if (isNotEmpty(actions)) {
-			for (LifeCycleCompositeAction<T> action : actions) {
+			for (LifeCycleAction<T> action : actions) {
 				boolean filter = false;
 
 				// Searching if is an action to ignore
@@ -206,10 +207,16 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 
 				additionnalInformations = action.getAdditionnalInformations();
 				List<String> failedSimpleActions = new ArrayList<String>();
-				String result = action.getResult(valueObject, failedSimpleActions, actionStorageResult);
+				String result = null;
+				LifeCycleCompositeAction<T> compositeAction = null;
+				if (action instanceof LifeCycleCompositeAction<?>) {
+					compositeAction = (LifeCycleCompositeAction<T>) action;
+					result = compositeAction.getResult(valueObject, failedSimpleActions, actionStorageResult);
+				} else {
+					result = action.getResult(valueObject, actionStorageResult);
+				}
 
 				if (null == result || LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
-					LifeCycleCompositeAction<T> compositeAction = null;
 					if (!filter) {
 						rtn = LifeCycleConstants.FALSE;
 						String message = "Failed action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
@@ -218,8 +225,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 						if (null != stopIfFailed && stopIfFailed) {
 							break;
 						}
-					} else if (action instanceof LifeCycleCompositeAction<?>) {
-						compositeAction = (LifeCycleCompositeAction<T>) action;
+					} else if (null != compositeAction) {
 						rtn = compositeAction.getTargetState();
 						String message = "Forced action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
 						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations);

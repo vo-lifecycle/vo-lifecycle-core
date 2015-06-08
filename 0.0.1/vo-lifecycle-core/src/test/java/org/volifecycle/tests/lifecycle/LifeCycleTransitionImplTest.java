@@ -17,7 +17,6 @@ import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
-import org.volifecycle.lifecycle.LifeCycleCompositeAction;
 import org.volifecycle.lifecycle.impl.LifeCycleCompositeActionImpl;
 import org.volifecycle.lifecycle.impl.LifeCycleTransitionImpl;
 import org.volifecycle.tests.AbstractTest;
@@ -47,7 +46,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 	LifeCycleCompositeActionImpl<ValueObjectStub> action;
 
 	ValueObjectStub valueObject;
-	List<LifeCycleCompositeAction<ValueObjectStub>> lstActions;
+	List<LifeCycleAction<ValueObjectStub>> lstActions;
 	String idAction = "ID";
 	List<String> forcedActions;
 	String targetState = "STATE";
@@ -62,7 +61,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 		action = new LifeCycleCompositeActionImpl<ValueObjectStub>() {
 		};
 
-		lstActions = new ArrayList<LifeCycleCompositeAction<ValueObjectStub>>();
+		lstActions = new ArrayList<LifeCycleAction<ValueObjectStub>>();
 		lstActions.add(action);
 		transition.setActions(lstActions);
 
