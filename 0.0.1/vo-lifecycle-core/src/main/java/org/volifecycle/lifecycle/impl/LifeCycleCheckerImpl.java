@@ -186,6 +186,8 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
             for (LifeCyclePredicate<T> predicate : predicates) {
                 result = predicate.getResult(valueObject, actionStorage);
                 if (LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
+                    rtn = LifeCycleConstants.FALSE;
+
                     if (null != failedPredicate && !failedPredicate.contains(predicate.getId())) {
                         failedPredicate.add(predicate.getId());
                     }
