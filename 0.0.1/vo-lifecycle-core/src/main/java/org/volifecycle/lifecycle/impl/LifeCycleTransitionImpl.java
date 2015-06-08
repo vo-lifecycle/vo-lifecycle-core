@@ -56,6 +56,11 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	List<String> targetStates;
 
 	/**
+	 * Setting with true if you want stop when a predicate failed.
+	 */
+	protected Boolean stopIfFailed;
+
+	/**
 	 * @return the actions
 	 */
 	public List<LifeCycleCompositeAction<T>> getActions() {
@@ -108,6 +113,21 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * @return the stopIfFailed
+	 */
+	public Boolean getStopIfFailed() {
+		return stopIfFailed;
+	}
+
+	/**
+	 * @param stopIfFailed
+	 *            the stopIfFailed to set
+	 */
+	public void setStopIfFailed(Boolean stopIfFailed) {
+		this.stopIfFailed = stopIfFailed;
 	}
 
 	/**
@@ -194,6 +214,10 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 						rtn = LifeCycleConstants.FALSE;
 						String message = "Failed action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
 						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations);
+
+						if (null != stopIfFailed && stopIfFailed) {
+							break;
+						}
 					} else if (action instanceof LifeCycleCompositeAction<?>) {
 						compositeAction = (LifeCycleCompositeAction<T>) action;
 						rtn = compositeAction.getTargetState();
@@ -207,6 +231,10 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 						rtn = LifeCycleConstants.FALSE;
 						String message = "Failed action : " + action.getId() + " (no target state), sub actions : " + implode(",", failedSimpleActions);
 						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations);
+
+						if (null != stopIfFailed && stopIfFailed) {
+							break;
+						}
 					}
 				} else if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
 					rtn = result;
