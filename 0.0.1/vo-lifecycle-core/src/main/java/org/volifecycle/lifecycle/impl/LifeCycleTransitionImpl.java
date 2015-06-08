@@ -213,7 +213,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 		if (isEmpty(targetStates) || null == rtn || LifeCycleConstants.FALSE.equals(rtn) || !targetStates.contains(rtn)) {
 			rtn = LifeCycleConstants.FALSE;
 			String message = "Failed transition : id=" + this.getId() + ", targetStates = " + implode(",", targetStates);
-			logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations);
+			logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_TRANSITION, message, additionnalInformations);
 		}
 
 		return rtn;
