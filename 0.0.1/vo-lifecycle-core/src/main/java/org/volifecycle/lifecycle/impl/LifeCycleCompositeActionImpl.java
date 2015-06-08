@@ -6,20 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.volifecycle.common.LifeCycleConstants;
-import org.volifecycle.lifecycle.LifeCycleChecker;
-import org.volifecycle.lifecycle.LifeCyclePredicate;
+import org.volifecycle.lifecycle.LifeCycleAction;
+import org.volifecycle.lifecycle.LifeCycleCompositeAction;
 
 /**
- * Implementation of checker
+ * Implementation of composite action.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
  * @param <T>
  *            valueObject
  */
-public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
+public abstract class LifeCycleCompositeActionImpl<T> implements LifeCycleCompositeAction<T> {
 	/**
-	 * Id which is used for forced the result of this checker
+	 * Id which is used for forced the result of this action
 	 */
 	protected String id;
 
@@ -34,9 +34,9 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
 	protected String targetState;
 
 	/**
-	 * List predicates wich are executed by "and"
+	 * List actions wich are executed by "and" predicate operator.
 	 */
-	protected List<LifeCyclePredicate<T>> predicates;
+	protected List<LifeCycleAction<T>> simpleActions;
 
 	/**
 	 * Setting with true if you want stop when a predicate failed.
@@ -96,26 +96,18 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
 	}
 
 	/**
-	 * @return the predicates
+	 * @return the simpleActions
 	 */
-	public List<LifeCyclePredicate<T>> getPredicates() {
-		return predicates;
+	public List<LifeCycleAction<T>> getSimpleActions() {
+		return simpleActions;
 	}
 
 	/**
-	 * @param predicates
-	 *            the predicates to set
+	 * @param simpleActions
+	 *            the simpleActions to set
 	 */
-	public void setPredicates(List<LifeCyclePredicate<T>> predicates) {
-		this.predicates = predicates;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getResult(T valueObject, List<String> failedPredicate) {
-		return getResult(valueObject, null);
+	public void setSimpleActions(List<LifeCycleAction<T>> simpleActions) {
+		this.simpleActions = simpleActions;
 	}
 
 	/**
@@ -153,18 +145,42 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getResult(T valueObject, List<String> failedPredicate, Map<String, Object> actionStorage) {
+	public String getResult(T valueObject) {
+		return getResult(valueObject, (List<String>) null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getResult(T valueObject, List<String> failedPredicate) {
+		return getResult(valueObject, failedPredicate, null);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getResult(T valueObject, Map<String, Object> actionStorage) {
+		return getResult(valueObject, null, actionStorage);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getResult(T valueObject, List<String> failedSubActions, Map<String, Object> actionStorage) {
 		String rtn = getTargetState();
 		String result;
 
-		if (isNotEmpty(predicates)) {
-			for (LifeCyclePredicate<T> predicate : predicates) {
-				result = predicate.getResult(valueObject, actionStorage);
+		if (isNotEmpty(simpleActions)) {
+			for (LifeCycleAction<T> action : simpleActions) {
+				result = action.getResult(valueObject, actionStorage);
 				if (LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
 					rtn = LifeCycleConstants.FALSE;
 
-					if (null != failedPredicate && !failedPredicate.contains(predicate.getId())) {
-						failedPredicate.add(predicate.getId());
+					if (null != failedSubActions && !failedSubActions.contains(action.getId())) {
+						failedSubActions.add(action.getId());
 					}
 
 					if (null != stopIfFailed && stopIfFailed) {

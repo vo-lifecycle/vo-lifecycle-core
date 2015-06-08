@@ -16,8 +16,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
-import org.volifecycle.lifecycle.LifeCycleChecker;
-import org.volifecycle.lifecycle.impl.LifeCycleCheckerImpl;
+import org.volifecycle.lifecycle.LifeCycleCompositeAction;
+import org.volifecycle.lifecycle.impl.LifeCycleCompositeActionImpl;
 import org.volifecycle.lifecycle.impl.LifeCycleTransitionImpl;
 import org.volifecycle.tests.AbstractTest;
 import org.volifecycle.tests.inputs.ValueObjectStub;
@@ -40,10 +40,10 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 	EventManager evtManagerMock;
 
 	LifeCycleTransitionImpl<ValueObjectStub> transition;
-	LifeCycleCheckerImpl<ValueObjectStub> checker;
+	LifeCycleCompositeActionImpl<ValueObjectStub> checker;
 
 	ValueObjectStub valueObject;
-	List<LifeCycleChecker<ValueObjectStub>> lstCheckers;
+	List<LifeCycleCompositeAction<ValueObjectStub>> lstCheckers;
 	String idChecker = "ID";
 	List<String> forcedCheckers;
 	String targetState = "STATE";
@@ -55,10 +55,10 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 	public final void initData() {
 		valueObject = new ValueObjectStub();
 		transition = new LifeCycleTransitionImpl<ValueObjectStub>();
-		checker = new LifeCycleCheckerImpl<ValueObjectStub>() {
+		checker = new LifeCycleCompositeActionImpl<ValueObjectStub>() {
 		};
 
-		lstCheckers = new ArrayList<LifeCycleChecker<ValueObjectStub>>();
+		lstCheckers = new ArrayList<LifeCycleCompositeAction<ValueObjectStub>>();
 		lstCheckers.add(checker);
 		transition.setCheckers(lstCheckers);
 

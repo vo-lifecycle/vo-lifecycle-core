@@ -12,7 +12,7 @@ import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.lifecycle.LifeCycleActionStorage;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
-import org.volifecycle.lifecycle.LifeCycleChecker;
+import org.volifecycle.lifecycle.LifeCycleCompositeAction;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
 /**
@@ -27,7 +27,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	/**
 	 * List of composite checkers.
 	 */
-	protected List<LifeCycleChecker<T>> checkers;
+	protected List<LifeCycleCompositeAction<T>> checkers;
 
 	/**
 	 * Action storage.
@@ -47,7 +47,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	/**
 	 * @return the checkers
 	 */
-	public List<LifeCycleChecker<T>> getCheckers() {
+	public List<LifeCycleCompositeAction<T>> getCheckers() {
 		return checkers;
 	}
 
@@ -55,7 +55,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	 * @param checkers
 	 *            the checkers to set
 	 */
-	public void setCheckers(List<LifeCycleChecker<T>> checkers) {
+	public void setCheckers(List<LifeCycleCompositeAction<T>> checkers) {
 		this.checkers = checkers;
 	}
 
@@ -118,7 +118,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedCheckers) {
+	public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedActions) {
 		String rtn = null;
 		Map<String, String> additionnalInformations = null;
 
@@ -128,12 +128,12 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 		}
 
 		if (isNotEmpty(checkers)) {
-			for (LifeCycleChecker<T> checker : checkers) {
+			for (LifeCycleCompositeAction<T> checker : checkers) {
 				boolean filter = false;
 
 				// Searching if is a checker to ignore
-				if (isNotEmpty(forcedCheckers)) {
-					for (String idChecker : forcedCheckers) {
+				if (isNotEmpty(forcedActions)) {
+					for (String idChecker : forcedActions) {
 						if (null != checker.getId() && idChecker.equalsIgnoreCase(checker.getId())) {
 							filter = true;
 							break;
@@ -148,10 +148,10 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 				if (null == result || LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
 					if (!filter) {
 						rtn = LifeCycleConstants.FALSE;
-						String message = "Failed checker : " + checker.getId() + ", predicate : " + implode(",", failedPredicates);
+						String message = "Failed action : " + checker.getId() + ", sub actions : " + implode(",", failedPredicates);
 						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_CHECKER, message, additionnalInformations);
 					} else {
-						String message = "Forced checker : " + checker.getId() + ", predicate : " + implode(",", failedPredicates);
+						String message = "Forced action : " + checker.getId() + ", sub actions : " + implode(",", failedPredicates);
 						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_CHECKER, message, additionnalInformations);
 					}
 				} else if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
