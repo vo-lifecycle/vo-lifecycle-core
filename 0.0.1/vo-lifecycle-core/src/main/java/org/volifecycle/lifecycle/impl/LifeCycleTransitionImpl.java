@@ -199,6 +199,10 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 						rtn = compositeAction.getTargetState();
 						String message = "Forced action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
 						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations);
+					} else if (isNotEmpty(targetStates) && targetStates.size() == 1) {
+						rtn = targetStates.get(0);
+						String message = "Forced action : " + action.getId() + " (only one target state), sub actions : " + implode(",", failedSimpleActions);
+						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations);
 					} else {
 						rtn = LifeCycleConstants.FALSE;
 						String message = "Failed action : " + action.getId() + " (no target state), sub actions : " + implode(",", failedSimpleActions);
@@ -210,7 +214,9 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 			}
 		}
 
-		if (isEmpty(targetStates) || null == rtn || LifeCycleConstants.FALSE.equals(rtn) || !targetStates.contains(rtn)) {
+		if (LifeCycleConstants.TRUE.equalsIgnoreCase(rtn) && isNotEmpty(targetStates) && targetStates.size() == 1) {
+			rtn = targetStates.get(0);
+		} else if (isEmpty(targetStates) || null == rtn || LifeCycleConstants.FALSE.equals(rtn) || !targetStates.contains(rtn)) {
 			rtn = LifeCycleConstants.FALSE;
 			String message = "Failed transition : id=" + this.getId() + ", targetStates = " + implode(",", targetStates);
 			logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_TRANSITION, message, additionnalInformations);
