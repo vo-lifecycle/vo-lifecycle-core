@@ -119,7 +119,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	 */
 	@Override
 	public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedCheckers) {
-		String rtn = LifeCycleConstants.TRUE;
+		String rtn = null;
 		Map<String, String> additionnalInformations = null;
 
 		Map<String, Object> actionStorageResult = null;
@@ -142,10 +142,6 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 				}
 
 				additionnalInformations = checker.getAdditionnalInformations();
-				if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
-					rtn = checker.getTargetState();
-				}
-
 				List<String> failedPredicates = new ArrayList<String>();
 				String result = checker.getResult(valueObject, failedPredicates, actionStorageResult);
 
@@ -158,10 +154,12 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 						String message = "Forced checker : " + checker.getId() + ", predicate : " + implode(",", failedPredicates);
 						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_CHECKER, message, additionnalInformations);
 					}
+				} else if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
+					rtn = result;
 				}
 			}
 		}
 
-		return rtn;
+		return (null == rtn) ? LifeCycleConstants.FALSE : rtn;
 	}
 }
