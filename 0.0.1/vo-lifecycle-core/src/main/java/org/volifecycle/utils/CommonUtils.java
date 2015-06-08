@@ -9,7 +9,7 @@ import org.volifecycle.common.LifeCycleConstants;
 /**
  * Utils common methods.
  * 
- * @author Idriss Neumann <idriss.neumann@capgemini.com>
+ * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
  */
 public class CommonUtils {
