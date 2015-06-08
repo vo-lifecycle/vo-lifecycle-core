@@ -13,7 +13,6 @@ import org.volifecycle.event.EventManager;
 import org.volifecycle.lifecycle.LifeCycleActionStorage;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChecker;
-import org.volifecycle.lifecycle.LifeCyclePostAction;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
 /**
@@ -123,7 +122,6 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
     @Override
     public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedCheckers) {
         String rtn = LifeCycleConstants.TRUE;
-        LifeCyclePostAction postAction = null;
         Map<String, String> additionnalInformations = null;
 
         Map<String, Object> actionStorageResult = null;
@@ -148,7 +146,6 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                 additionnalInformations = checker.getAdditionnalInformations();
                 if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
                     rtn = checker.getTargetState();
-                    postAction = checker.getPostAction();
                 }
 
                 List<String> failedPredicates = new ArrayList<String>();
@@ -165,12 +162,6 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                     }
                 }
             }
-        }
-
-        if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn) && null != postAction) {
-            String message = "Post action : " + postAction.getId();
-            logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_POST_ACTION, message, additionnalInformations);
-            postAction.execute();
         }
 
         return rtn;

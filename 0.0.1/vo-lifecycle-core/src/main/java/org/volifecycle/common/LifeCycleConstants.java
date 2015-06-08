@@ -22,7 +22,6 @@ public interface LifeCycleConstants {
     static final String EVENT_TYPE_OTHER = "other";
     static final String EVENT_TYPE_FORCED_CHECKER = "forced_checker";
     static final String EVENT_TYPE_FAILED_CHECKER = "failed_checker";
-    static final String EVENT_TYPE_POST_ACTION = "vo_post_action";
     static final String EVENT_TYPE_REFLEXION_ERROR = "reflexion_error";
     static final String EVENT_TYPE_DIFF_VO = "diff_vo";
 

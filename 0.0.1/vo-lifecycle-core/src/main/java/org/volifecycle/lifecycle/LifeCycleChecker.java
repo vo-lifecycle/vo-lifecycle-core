@@ -66,9 +66,4 @@ public interface LifeCycleChecker<T> {
      *            the stopIfFailed to set
      */
     void setStopIfFailed(Boolean stopIfFailed);
-
-    /**
-     * @return the postAction
-     */
-    LifeCyclePostAction getPostAction();
 }

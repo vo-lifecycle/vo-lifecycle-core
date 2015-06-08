@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleChecker;
-import org.volifecycle.lifecycle.LifeCyclePostAction;
 import org.volifecycle.lifecycle.LifeCyclePredicate;
 
 /**
@@ -48,11 +47,6 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
      * Additionnal informations to save.
      */
     protected Map<String, String> additionnalInformations;
-
-    /**
-     * Post action (async)
-     */
-    protected LifeCyclePostAction postAction;
 
     /**
      * {@inheritDoc}
@@ -156,22 +150,6 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
      */
     public void setAdditionnalInformations(Map<String, String> additionnalInformations) {
         this.additionnalInformations = additionnalInformations;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public LifeCyclePostAction getPostAction() {
-        return postAction;
-    }
-
-    /**
-     * @param postAction
-     *            the postAction to set
-     */
-    public void setPostAction(LifeCyclePostAction postAction) {
-        this.postAction = postAction;
     }
 
     /**
