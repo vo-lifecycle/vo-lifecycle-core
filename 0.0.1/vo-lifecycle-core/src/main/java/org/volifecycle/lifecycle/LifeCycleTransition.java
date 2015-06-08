@@ -14,45 +14,35 @@ import org.volifecycle.event.EventManager;
  * 
  */
 public interface LifeCycleTransition<T> {
-    /**
-     * Verify all checker.
-     * 
-     * @param valueObject
-     * @param adapter
-     * @param evtManager
-     * 
-     * @return "true" if success or "false"
-     */
-    public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager);
+	/**
+	 * Verify all checker.
+	 * 
+	 * @param valueObject
+	 * @param adapter
+	 * @param evtManager
+	 * 
+	 * @return "true" if success or "false"
+	 */
+	String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager);
 
-    /**
-     * Verify all checker with a forced id list.
-     * 
-     * @param valueObject
-     * @param adapter
-     * @param evtManager
-     * @param forcedCheckers
-     * @return the state's id if success or "false"
-     */
-    String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedCheckers);
+	/**
+	 * Verify all checker with a forced id list.
+	 * 
+	 * @param valueObject
+	 * @param adapter
+	 * @param evtManager
+	 * @param forcedCheckers
+	 * @return the state's id if success or "false"
+	 */
+	String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedCheckers);
 
-    /**
-     * @return the type
-     */
-    String getType();
+	/**
+	 * @return the type
+	 */
+	String getType();
 
-    /**
-     * @return the description
-     */
-    String getDescription();
-
-    /**
-     * @return the checkers
-     */
-    List<LifeCycleChecker<T>> getCheckers();
-
-    /**
-     * @return the actionStorage
-     */
-    LifeCycleActionStorage<T> getActionStorage();
+	/**
+	 * @return the description
+	 */
+	String getDescription();
 }
