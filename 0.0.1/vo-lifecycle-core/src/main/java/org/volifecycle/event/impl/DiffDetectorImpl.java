@@ -59,12 +59,11 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 
         DiffEvent event = new DiffEvent();
         String details = "There are some changes...";
-        setCustomEvent(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details);
+        setCustomEvent(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details, additionalInformations);
         List<DiffProperty> diffs = logDiffs(vo2, vo1, vo2, new ArrayList<DiffProperty>(), null);
         event.setDiffProperties(diffs);
         event.setParentId(parentId);
         event.setParentType(parentType);
-        event.setAdditionalInformations(additionalInformations);
 
         if (isNotEmpty(diffs)) {
             evtManager.logEvent(event);
@@ -183,7 +182,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                         so = getter.invoke(o);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         String message = "Reflexion error : " + e.getMessage();
-                        logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message);
+                        logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null);
                         continue;
                     }
 
@@ -253,7 +252,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                     o2 = getter.invoke(vo2);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     String message = "Reflexion error : " + e.getMessage();
-                    logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message);
+                    logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null);
                     continue;
                 }
 

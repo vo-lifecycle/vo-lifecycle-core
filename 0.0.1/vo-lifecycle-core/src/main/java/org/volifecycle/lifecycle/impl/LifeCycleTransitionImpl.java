@@ -1,7 +1,9 @@
 package org.volifecycle.lifecycle.impl;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.volifecycle.utils.CommonUtils.implode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import org.volifecycle.event.EventManager;
 import org.volifecycle.lifecycle.LifeCycleActionStorage;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChecker;
+import org.volifecycle.lifecycle.LifeCyclePostAction;
 import org.volifecycle.lifecycle.LifeCycleTransition;
 
 /**
@@ -120,6 +123,8 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
     @Override
     public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedCheckers) {
         String rtn = LifeCycleConstants.TRUE;
+        LifeCyclePostAction postAction = null;
+        Map<String, String> additionnalInformations = null;
 
         Map<String, Object> actionStorageResult = null;
         if (null != actionStorage) {
@@ -140,25 +145,32 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                     }
                 }
 
+                additionnalInformations = checker.getAdditionnalInformations();
                 if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
                     rtn = checker.getTargetState();
+                    postAction = checker.getPostAction();
                 }
 
-                String[] resultArray = checker.getResult(valueObject, actionStorageResult);
-                String result = (null == resultArray || resultArray.length < 1) ? null : resultArray[0];
-                String idPredicate = (null == resultArray || resultArray.length < 2) ? LifeCycleConstants.EMPTY_STRING : resultArray[1];
+                List<String> failedPredicates = new ArrayList<String>();
+                String result = checker.getResult(valueObject, failedPredicates, actionStorageResult);
 
                 if (null == result || LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
                     if (!filter) {
                         rtn = LifeCycleConstants.FALSE;
-                        String message = "Failed checker : " + checker.getId() + ", predicate : " + idPredicate;
-                        logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_CHECKER, message);
+                        String message = "Failed checker : " + checker.getId() + ", predicate : " + implode(",", failedPredicates);
+                        logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_CHECKER, message, additionnalInformations);
                     } else {
-                        String message = "Forced checker : " + checker.getId() + ", predicate : " + idPredicate;
-                        logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_CHECKER, message);
+                        String message = "Forced checker : " + checker.getId() + ", predicate : " + implode(",", failedPredicates);
+                        logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_CHECKER, message, additionnalInformations);
                     }
                 }
             }
+        }
+
+        if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn) && null != postAction) {
+            String message = "Post action : " + postAction.getId();
+            logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_POST_ACTION, message, additionnalInformations);
+            postAction.execute();
         }
 
         return rtn;

@@ -2,6 +2,7 @@ package org.volifecycle.tests.lifecycle;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -65,9 +66,7 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
         forcedCheckers.add(idChecker);
 
         // mocks configuration
-        String rtn[] = new String[2];
-        rtn[0] = LifeCycleConstants.FALSE;
-        when(checkerMock.getResult(any(ValueObjectStub.class))).thenReturn(rtn);
+        when(checkerMock.getResult(any(ValueObjectStub.class), anyListOf(String.class))).thenReturn(LifeCycleConstants.FALSE);
         when(checkerMock.getId()).thenReturn(idChecker);
         when(checkerMock.getTargetState()).thenReturn(targetState);
 

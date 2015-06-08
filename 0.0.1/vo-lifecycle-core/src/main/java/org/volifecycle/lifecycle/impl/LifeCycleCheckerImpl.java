@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleChecker;
+import org.volifecycle.lifecycle.LifeCyclePostAction;
 import org.volifecycle.lifecycle.LifeCyclePredicate;
 
 /**
@@ -34,9 +35,24 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
     protected String targetState;
 
     /**
-     * List predicates wich are executed by and
+     * List predicates wich are executed by "and"
      */
     protected List<LifeCyclePredicate<T>> predicates;
+
+    /**
+     * Setting with true if you want stop when a predicate failed.
+     */
+    protected Boolean stopIfFailed;
+
+    /**
+     * Additionnal informations to save.
+     */
+    protected Map<String, String> additionnalInformations;
+
+    /**
+     * Post action (async)
+     */
+    protected LifeCyclePostAction postAction;
 
     /**
      * {@inheritDoc}
@@ -106,7 +122,7 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
      * {@inheritDoc}
      */
     @Override
-    public String[] getResult(T valueObject) {
+    public String getResult(T valueObject, List<String> failedPredicate) {
         return getResult(valueObject, null);
     }
 
@@ -114,18 +130,73 @@ public abstract class LifeCycleCheckerImpl<T> implements LifeCycleChecker<T> {
      * {@inheritDoc}
      */
     @Override
-    public String[] getResult(T valueObject, Map<String, Object> actionStorage) {
-        String rtn[] = new String[2];
-        rtn[0] = LifeCycleConstants.TRUE;
+    public Boolean getStopIfFailed() {
+        return stopIfFailed;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setStopIfFailed(Boolean stopIfFailed) {
+        this.stopIfFailed = stopIfFailed;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getAdditionnalInformations() {
+        return additionnalInformations;
+    }
+
+    /**
+     * @param additionnalInformations
+     *            the additionnalInformations to set
+     */
+    public void setAdditionnalInformations(Map<String, String> additionnalInformations) {
+        this.additionnalInformations = additionnalInformations;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LifeCyclePostAction getPostAction() {
+        return postAction;
+    }
+
+    /**
+     * @param postAction
+     *            the postAction to set
+     */
+    public void setPostAction(LifeCyclePostAction postAction) {
+        this.postAction = postAction;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResult(T valueObject, List<String> failedPredicate, Map<String, Object> actionStorage) {
+        String rtn = LifeCycleConstants.TRUE;
+        String result;
+
         if (isNotEmpty(predicates)) {
             for (LifeCyclePredicate<T> predicate : predicates) {
-                rtn[0] = predicate.getResult(valueObject, actionStorage);
-                if (LifeCycleConstants.FALSE.equalsIgnoreCase(rtn[0])) {
-                    rtn[1] = predicate.getId();
-                    break;
+                result = predicate.getResult(valueObject, actionStorage);
+                if (LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
+                    if (null != failedPredicate && !failedPredicate.contains(predicate.getId())) {
+                        failedPredicate.add(predicate.getId());
+                    }
+
+                    if (null != stopIfFailed && stopIfFailed) {
+                        break;
+                    }
                 }
             }
         }
+
         return rtn;
     }
 }
