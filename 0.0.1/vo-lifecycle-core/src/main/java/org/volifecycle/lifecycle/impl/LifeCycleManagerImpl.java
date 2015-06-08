@@ -64,7 +64,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String runTransition(String idTransition, T valueObject, List<String> forcedCheckers) {
+	public String runTransition(String idTransition, T valueObject, List<String> forcedActions) {
 		EventManager eManager = getEvtManager();
 
 		// Default EventManager
@@ -94,7 +94,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
 		}
 
 		LifeCycleTransition<T> transition = transitionsById.get(idTransition);
-		String targetState = transition.changeState(valueObject, adapter, eManager, forcedCheckers);
+		String targetState = transition.changeState(valueObject, adapter, eManager, forcedActions);
 
 		// Change state (in database or other persistence support)
 		if (null != targetState && !LifeCycleConstants.FALSE.equalsIgnoreCase(targetState)) {

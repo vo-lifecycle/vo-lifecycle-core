@@ -25,9 +25,9 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  */
 public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleTransition<T> {
 	/**
-	 * List of composite checkers.
+	 * List of composite actions.
 	 */
-	protected List<LifeCycleCompositeAction<T>> checkers;
+	protected List<LifeCycleCompositeAction<T>> actions;
 
 	/**
 	 * Action storage.
@@ -45,18 +45,18 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 	protected String description;
 
 	/**
-	 * @return the checkers
+	 * @return the actions
 	 */
-	public List<LifeCycleCompositeAction<T>> getCheckers() {
-		return checkers;
+	public List<LifeCycleCompositeAction<T>> getActions() {
+		return actions;
 	}
 
 	/**
-	 * @param checkers
-	 *            the checkers to set
+	 * @param actions
+	 *            the actions to set
 	 */
-	public void setCheckers(List<LifeCycleCompositeAction<T>> checkers) {
-		this.checkers = checkers;
+	public void setActions(List<LifeCycleCompositeAction<T>> actions) {
+		this.actions = actions;
 	}
 
 	/**
@@ -127,32 +127,39 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 			actionStorageResult = actionStorage.getActionStorageResult(valueObject);
 		}
 
-		if (isNotEmpty(checkers)) {
-			for (LifeCycleCompositeAction<T> checker : checkers) {
+		if (isNotEmpty(actions)) {
+			for (LifeCycleCompositeAction<T> action : actions) {
 				boolean filter = false;
 
-				// Searching if is a checker to ignore
+				// Searching if is an action to ignore
 				if (isNotEmpty(forcedActions)) {
-					for (String idChecker : forcedActions) {
-						if (null != checker.getId() && idChecker.equalsIgnoreCase(checker.getId())) {
+					for (String idForcedAction : forcedActions) {
+						if (null != action.getId() && idForcedAction.equalsIgnoreCase(action.getId())) {
 							filter = true;
 							break;
 						}
 					}
 				}
 
-				additionnalInformations = checker.getAdditionnalInformations();
-				List<String> failedPredicates = new ArrayList<String>();
-				String result = checker.getResult(valueObject, failedPredicates, actionStorageResult);
+				additionnalInformations = action.getAdditionnalInformations();
+				List<String> failedSimpleActions = new ArrayList<String>();
+				String result = action.getResult(valueObject, failedSimpleActions, actionStorageResult);
 
 				if (null == result || LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
+					LifeCycleCompositeAction<T> compositeAction = null;
 					if (!filter) {
 						rtn = LifeCycleConstants.FALSE;
-						String message = "Failed action : " + checker.getId() + ", sub actions : " + implode(",", failedPredicates);
-						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_CHECKER, message, additionnalInformations);
+						String message = "Failed action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
+						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations);
+					} else if (action instanceof LifeCycleCompositeAction<?>) {
+						compositeAction = (LifeCycleCompositeAction<T>) action;
+						rtn = compositeAction.getTargetState();
+						String message = "Forced action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
+						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations);
 					} else {
-						String message = "Forced action : " + checker.getId() + ", sub actions : " + implode(",", failedPredicates);
-						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_CHECKER, message, additionnalInformations);
+						rtn = LifeCycleConstants.FALSE;
+						String message = "Failed action : " + action.getId() + " (no target state), sub actions : " + implode(",", failedSimpleActions);
+						logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations);
 					}
 				} else if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
 					rtn = result;

@@ -30,4 +30,9 @@ public interface LifeCycleCompositeAction<T> extends LifeCycleAction<T> {
 	 * @return "true" if success or "false"
 	 */
 	String getResult(T valueObject, List<String> failedPredicate, Map<String, Object> actionStorage);
+
+	/**
+	 * @return the targetState
+	 */
+	String getTargetState();
 }

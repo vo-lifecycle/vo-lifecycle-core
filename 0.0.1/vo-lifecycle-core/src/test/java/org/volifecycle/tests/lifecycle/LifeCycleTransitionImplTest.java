@@ -2,19 +2,20 @@ package org.volifecycle.tests.lifecycle;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
+import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
 import org.volifecycle.lifecycle.impl.LifeCycleCompositeActionImpl;
@@ -39,13 +40,16 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 	@Mock
 	EventManager evtManagerMock;
 
+	@Mock
+	LifeCycleAction<ValueObjectStub> actionMock;
+
 	LifeCycleTransitionImpl<ValueObjectStub> transition;
-	LifeCycleCompositeActionImpl<ValueObjectStub> checker;
+	LifeCycleCompositeActionImpl<ValueObjectStub> action;
 
 	ValueObjectStub valueObject;
-	List<LifeCycleCompositeAction<ValueObjectStub>> lstCheckers;
-	String idChecker = "ID";
-	List<String> forcedCheckers;
+	List<LifeCycleCompositeAction<ValueObjectStub>> lstActions;
+	String idAction = "ID";
+	List<String> forcedActions;
 	String targetState = "STATE";
 
 	/**
@@ -55,41 +59,56 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
 	public final void initData() {
 		valueObject = new ValueObjectStub();
 		transition = new LifeCycleTransitionImpl<ValueObjectStub>();
-		checker = new LifeCycleCompositeActionImpl<ValueObjectStub>() {
+		action = new LifeCycleCompositeActionImpl<ValueObjectStub>() {
 		};
 
-		lstCheckers = new ArrayList<LifeCycleCompositeAction<ValueObjectStub>>();
-		lstCheckers.add(checker);
-		transition.setCheckers(lstCheckers);
+		lstActions = new ArrayList<LifeCycleCompositeAction<ValueObjectStub>>();
+		lstActions.add(action);
+		transition.setActions(lstActions);
 
-		forcedCheckers = new ArrayList<String>();
-		forcedCheckers.add(idChecker);
+		forcedActions = new ArrayList<String>();
+		forcedActions.add(idAction);
 
-		checker.setId(idChecker);
-		checker.setTargetState(targetState);
+		List<LifeCycleAction<ValueObjectStub>> simpleActions = new ArrayList<LifeCycleAction<ValueObjectStub>>();
+		simpleActions.add(actionMock);
+
+		action.setId(idAction);
+		action.setTargetState(targetState);
+		action.setSimpleActions(simpleActions);
 
 		// mocks configuration
 		when(adapterMock.getState(any(ValueObjectStub.class))).thenReturn(valueObject.getState());
 		when(adapterMock.getType(any(ValueObjectStub.class))).thenReturn(valueObject.getType());
+		when(actionMock.getId()).thenReturn(idAction);
 	}
 
 	/**
 	 * Change state nominal
 	 */
 	@Test
-	@Ignore
-	// FIXME à mettre à jour
 	public final void testChangeStateNominal() {
+		when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(targetState);
+		String result = transition.changeState(valueObject, adapterMock, evtManagerMock);
+		assertEquals(targetState, result);
+	}
+
+	/**
+	 * Change state failed
+	 */
+	@Test
+	public final void testChangeStateFailed() {
+		when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(LifeCycleConstants.FALSE);
 		String result = transition.changeState(valueObject, adapterMock, evtManagerMock);
 		assertEquals(LifeCycleConstants.FALSE, result);
 	}
 
 	/**
-	 * Change state with forced checker
+	 * Change state with forced action
 	 */
 	@Test
-	public final void testChangeStateWithForcedChecker() {
-		String result = transition.changeState(valueObject, adapterMock, evtManagerMock, forcedCheckers);
+	public final void testChangeStateWithForcedAction() {
+		when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(LifeCycleConstants.FALSE);
+		String result = transition.changeState(valueObject, adapterMock, evtManagerMock, forcedActions);
 		assertEquals(targetState, result);
 	}
 }

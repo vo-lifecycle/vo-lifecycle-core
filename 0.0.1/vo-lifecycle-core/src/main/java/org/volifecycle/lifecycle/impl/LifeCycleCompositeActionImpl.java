@@ -81,8 +81,9 @@ public abstract class LifeCycleCompositeActionImpl<T> implements LifeCycleCompos
 	}
 
 	/**
-	 * @return the targetState
+	 * {@inheritDoc}
 	 */
+	@Override
 	public String getTargetState() {
 		return targetState;
 	}
