@@ -229,6 +229,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                         rtn = compositeAction.getTargetState();
                         String message = "Forced action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations);
+                        break;
                     } else if (isNotEmpty(targetStates) && targetStates.size() == 1) {
                         rtn = targetStates.get(0);
                         String message = "Forced action : " + action.getId() + " (only one target state), sub actions : " + implode(",", failedSimpleActions);
@@ -242,6 +243,9 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                             break;
                         }
                     }
+                } else if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn) && null != compositeAction) {
+                    rtn = compositeAction.getTargetState();
+                    break;
                 } else if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
                     rtn = result;
                 }
