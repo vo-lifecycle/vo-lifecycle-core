@@ -5,6 +5,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import java.util.List;
 import java.util.Map;
 
+import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
@@ -17,7 +18,7 @@ import org.volifecycle.lifecycle.LifeCycleCompositeAction;
  * @param <T>
  *            valueObject
  */
-public class LifeCycleCompositeActionImpl<T> implements LifeCycleCompositeAction<T> {
+public class LifeCycleCompositeActionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleCompositeAction<T> {
     /**
      * Id which is used for forced the result of this action
      */
@@ -172,13 +173,38 @@ public class LifeCycleCompositeActionImpl<T> implements LifeCycleCompositeAction
      */
     @Override
     public String getResult(T valueObject, List<String> failedSubActions, Map<String, Object> actionStorage) {
+        return getResult(valueObject, null, actionStorage, null, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResult(T valueObject, List<String> failedSubActions, Map<String, Object> actionStorage, List<String> forcedActions, List<String> forcedActionsInReality) {
         String rtn = getTargetState();
         String result;
 
         if (isNotEmpty(actions)) {
             for (LifeCycleAction<T> action : actions) {
+                boolean filter = false;
+
+                // Searching if is an action to ignore
+                if (isNotEmpty(forcedActions)) {
+                    for (String idForcedAction : forcedActions) {
+                        if (null != action.getId() && idForcedAction.equalsIgnoreCase(action.getId())) {
+                            filter = true;
+                            break;
+                        }
+                    }
+                }
+
                 result = action.getResult(valueObject, actionStorage);
                 if (LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
+                    if (filter) {
+                        forcedActionsInReality.add(action.getId());
+                        continue;
+                    }
+
                     rtn = LifeCycleConstants.FALSE;
 
                     if (null != failedSubActions && !failedSubActions.contains(action.getId())) {

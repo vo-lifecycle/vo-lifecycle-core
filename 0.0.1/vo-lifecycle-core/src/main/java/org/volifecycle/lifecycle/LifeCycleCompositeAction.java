@@ -40,4 +40,16 @@ public interface LifeCycleCompositeAction<T> extends LifeCycleAction<T> {
      * @return the actions
      */
     List<LifeCycleAction<T>> getActions();
+
+    /**
+     * Return the result.
+     * 
+     * @param valueObject
+     * @param failedPredicate
+     * @param actionStorage
+     * @param forcedActions
+     * @param forcedActionsInReality
+     * @return "true" if success or "false"
+     */
+    String getResult(T valueObject, List<String> failedSubActions, Map<String, Object> actionStorage, List<String> forcedActions, List<String> forcedActionsInReality);
 }

@@ -207,11 +207,12 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 
                 additionnalInformations = action.getAdditionnalInformations();
                 List<String> failedSimpleActions = new ArrayList<String>();
+                List<String> forcedActionsInReality = new ArrayList<String>();
                 String result = null;
                 LifeCycleCompositeAction<T> compositeAction = null;
                 if (action instanceof LifeCycleCompositeAction<?>) {
                     compositeAction = (LifeCycleCompositeAction<T>) action;
-                    result = compositeAction.getResult(valueObject, failedSimpleActions, actionStorageResult);
+                    result = compositeAction.getResult(valueObject, failedSimpleActions, actionStorageResult, forcedActions, forcedActionsInReality);
                 } else {
                     result = action.getResult(valueObject, actionStorageResult);
                 }
@@ -243,8 +244,13 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                             break;
                         }
                     }
-                } else if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn) && null != compositeAction) {
+                } else if (null != compositeAction) {
                     rtn = compositeAction.getTargetState();
+                    if (isNotEmpty(forcedActionsInReality)) {
+                        String message = "Forced action : " + action.getId() + ", forced sub actions : " + implode(",", forcedActionsInReality);
+                        logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations);
+                    }
+
                     break;
                 } else if (!LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
                     rtn = result;
