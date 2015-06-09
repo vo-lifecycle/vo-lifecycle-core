@@ -17,7 +17,7 @@ import org.volifecycle.lifecycle.LifeCycleCompositeAction;
  * @param <T>
  *            valueObject
  */
-public abstract class LifeCycleCompositeActionImpl<T> implements LifeCycleCompositeAction<T> {
+public class LifeCycleCompositeActionImpl<T> implements LifeCycleCompositeAction<T> {
     /**
      * Id which is used for forced the result of this action
      */
