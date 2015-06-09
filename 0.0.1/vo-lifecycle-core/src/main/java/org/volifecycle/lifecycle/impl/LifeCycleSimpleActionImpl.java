@@ -45,6 +45,30 @@ public abstract class LifeCycleSimpleActionImpl<T> implements LifeCycleAction<T>
     }
 
     /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @param additionnalInformations
+     *            the additionnalInformations to set
+     */
+    public void setAdditionnalInformations(Map<String, String> additionnalInformations) {
+        this.additionnalInformations = additionnalInformations;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
