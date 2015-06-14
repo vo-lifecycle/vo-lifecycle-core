@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Value object class for tests
  * 
@@ -17,6 +19,7 @@ public class ValueObjectStub implements Serializable {
 	private String id = "id";
 	private String type = "type";
 
+	@NotNull
 	private Float nb;
 
 	private SubValueObject subValueObject;
