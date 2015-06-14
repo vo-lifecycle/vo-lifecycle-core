@@ -22,7 +22,7 @@
 		<mockito.version>1.10.5</mockito.version>
 
 		<!-- Maven plugins -->
-		<jacoco-maven-plugin.version>0.6.3.201306030806</jacoco-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.7.4.201502262128</jacoco-maven-plugin.version>
 		<sql-maven-plugin.version>1.5</sql-maven-plugin.version>
 		<jetty-maven-plugin.version>8.1.4.v20120524</jetty-maven-plugin.version>
 		<tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
@@ -104,15 +104,26 @@
 				<artifactId>site-maven-plugin</artifactId>
 				<version>${site-maven-plugin.version}</version>
 				<configuration>
-					<message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
-					<noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
-					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
-					<branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
+				    <!-- git commit message -->
+					<message>Maven artifacts for ${project.version}</message>
+					
+					 <!-- disable webpage processing -->
+					<noJekyll>true</noJekyll>
+					
+					<!-- matches distribution management repository url above -->
+					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+					
+					<!-- remote branch name -->
+					<branch>refs/heads/mvn-repo</branch>
 					<includes>
 						<include>**/*</include>
 					</includes>
-					<repositoryName>vo-lifecycle</repositoryName>      <!-- github repo name -->
-					<repositoryOwner>idrissneumann</repositoryOwner>    <!-- github username -->
+					
+					<!-- github repo name -->
+					<repositoryName>vo-lifecycle-core</repositoryName>
+					
+					<!-- github username -->
+					<repositoryOwner>idrissneumann</repositoryOwner>
 				</configuration>
 				<executions>
 					<!-- run site-maven-plugin's 'site' target as part of the build's normal 
