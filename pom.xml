@@ -17,6 +17,10 @@
 		<commons.version>3.2.1</commons.version>
 		<jackson.version>1.9.13</jackson.version>
 
+		<!-- Validation -->
+		<javax.validation.version>1.1.0.Final</javax.validation.version>
+		<bval.version>0.5</bval.version>
+
 		<!-- Test -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.5</mockito.version>
@@ -79,6 +83,24 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${javax.validation.version}</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.bval</groupId>
+            <artifactId>bval-core</artifactId>
+            <version>${bval.version}</version>
+        </dependency>
+
+		<dependency>
+			<groupId>org.apache.bval</groupId>
+			<artifactId>bval-jsr303</artifactId>
+			<version>${bval.version}</version>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
@@ -104,24 +126,24 @@
 				<artifactId>site-maven-plugin</artifactId>
 				<version>${site-maven-plugin.version}</version>
 				<configuration>
-				    <!-- git commit message -->
+					<!-- git commit message -->
 					<message>Maven artifacts for ${project.version}</message>
-					
-					 <!-- disable webpage processing -->
+
+					<!-- disable webpage processing -->
 					<noJekyll>true</noJekyll>
-					
+
 					<!-- matches distribution management repository url above -->
 					<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-					
+
 					<!-- remote branch name -->
 					<branch>refs/heads/mvn-repo</branch>
 					<includes>
 						<include>**/*</include>
 					</includes>
-					
+
 					<!-- github repo name -->
 					<repositoryName>vo-lifecycle-core</repositoryName>
-					
+
 					<!-- github username -->
 					<repositoryOwner>vo-lifecycle</repositoryOwner>
 				</configuration>
@@ -273,7 +295,7 @@
 				<artifactId>sql-maven-plugin</artifactId>
 				<version>${sql-maven-plugin.version}</version>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
@@ -294,7 +316,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
