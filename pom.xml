@@ -94,6 +94,7 @@
             <groupId>org.apache.bval</groupId>
             <artifactId>bval-core</artifactId>
             <version>${bval.version}</version>
+            <optional>true</optional>
         </dependency>
 
 		<dependency>
