@@ -94,12 +94,14 @@
             <groupId>org.apache.bval</groupId>
             <artifactId>bval-core</artifactId>
             <version>${bval.version}</version>
+            <optional>true</optional>
         </dependency>
 
 		<dependency>
 			<groupId>org.apache.bval</groupId>
 			<artifactId>bval-jsr303</artifactId>
 			<version>${bval.version}</version>
+            <optional>true</optional>
 		</dependency>
 	</dependencies>
 
