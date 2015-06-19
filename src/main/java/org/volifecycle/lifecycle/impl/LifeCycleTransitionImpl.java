@@ -5,6 +5,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.volifecycle.utils.CommonUtils.implode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -189,6 +190,8 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
         Map<String, Object> actionStorageResult = null;
         if (null != actionStorage) {
             actionStorageResult = actionStorage.getActionStorageResult(valueObject);
+        } else {
+            actionStorageResult = new HashMap<String, Object>();
         }
 
         if (isNotEmpty(actions)) {
