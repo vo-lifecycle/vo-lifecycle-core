@@ -13,21 +13,21 @@ import org.volifecycle.lifecycle.impl.LifeCycleManagerImpl;
  *            : value object's type
  */
 public interface LifeCycleSynchronizedProcess<T> {
-	/**
-	 * @return the manager
-	 */
-	LifeCycleManagerImpl<T, LifeCycleAdapter<T>> getManager();
+    /**
+     * @return the manager
+     */
+    LifeCycleManagerImpl<T, LifeCycleAdapter<T>> getManager();
 
-	/**
-	 * @return the transitionIds
-	 */
-	List<String> getTransitionIds();
+    /**
+     * @return the transitionIds
+     */
+    List<String> getTransitionIds();
 
-	/**
-	 * Launching a list of transition on a value object
-	 * 
-	 * @param valueObject
-	 * @return the last state if success or "false"
-	 */
-	String process(T valueObject);
+    /**
+     * Launching a list of transition on a value object
+     * 
+     * @param valueObject
+     * @return the last state if success or "false"
+     */
+    String process(T valueObject) throws IllegalStateException;
 }

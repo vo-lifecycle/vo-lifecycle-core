@@ -17,52 +17,55 @@ import org.volifecycle.lifecycle.LifeCycleSynchronizedProcess;
  *            : value object's type
  */
 public class LifeCycleSynchronizedProcessImpl<T> implements LifeCycleSynchronizedProcess<T> {
-	protected LifeCycleManagerImpl<T, LifeCycleAdapter<T>> manager;
-	protected List<String> transitionIds;
+    protected LifeCycleManagerImpl<T, LifeCycleAdapter<T>> manager;
+    protected List<String> transitionIds;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public LifeCycleManagerImpl<T, LifeCycleAdapter<T>> getManager() {
-		return manager;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LifeCycleManagerImpl<T, LifeCycleAdapter<T>> getManager() {
+        return manager;
+    }
 
-	/**
-	 * @param manager
-	 *            the manager to set
-	 */
-	public void setManager(LifeCycleManagerImpl<T, LifeCycleAdapter<T>> manager) {
-		this.manager = manager;
-	}
+    /**
+     * @param manager
+     *            the manager to set
+     */
+    public void setManager(LifeCycleManagerImpl<T, LifeCycleAdapter<T>> manager) {
+        this.manager = manager;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<String> getTransitionIds() {
-		return transitionIds;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getTransitionIds() {
+        return transitionIds;
+    }
 
-	/**
-	 * @param transitionIds
-	 *            the transitionIds to set
-	 */
-	public void setTransitionIds(List<String> transitionIds) {
-		this.transitionIds = transitionIds;
-	}
+    /**
+     * @param transitionIds
+     *            the transitionIds to set
+     */
+    public void setTransitionIds(List<String> transitionIds) {
+        this.transitionIds = transitionIds;
+    }
 
-	@Override
-	public String process(T valueObject) {
-		String rtn = LifeCycleConstants.FALSE;
-		if (isNotEmpty(transitionIds)) {
-			for (String transitionId : transitionIds) {
-				rtn = manager.runTransition(transitionId, valueObject);
-				if (LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
-					break;
-				}
-			}
-		}
-		return rtn;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String process(T valueObject) throws IllegalStateException {
+        String rtn = LifeCycleConstants.FALSE;
+        if (isNotEmpty(transitionIds)) {
+            for (String transitionId : transitionIds) {
+                rtn = manager.runTransition(transitionId, valueObject);
+                if (LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
+                    break;
+                }
+            }
+        }
+        return rtn;
+    }
 }
