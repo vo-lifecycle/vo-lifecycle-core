@@ -64,7 +64,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
      * {@inheritDoc}
      */
     @Override
-    public String runTransition(String idTransition, T valueObject, List<String> forcedActions) {
+    public String runTransition(String idTransition, T valueObject, List<String> forcedActions) throws IllegalStateException {
         EventManager eManager = getEvtManager();
 
         // Default EventManager
@@ -232,7 +232,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
      * {@inheritDoc}
      */
     @Override
-    public String runTransition(String idTransition, T valueObject) {
+    public String runTransition(String idTransition, T valueObject) throws IllegalStateException {
         return runTransition(idTransition, valueObject, null);
     }
 
