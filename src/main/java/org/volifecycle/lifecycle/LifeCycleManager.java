@@ -23,7 +23,7 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
      * @param valueObject
      * @return String "true" or "false"
      */
-    String runTransition(String transitionId, T valueObject);
+    String runTransition(String transitionId, T valueObject) throws IllegalStateException;
 
     /**
      * Run a transition on valueObject from a transition configuration id and
@@ -34,7 +34,7 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
      * @param forcedActions
      * @return String "false" if failure or state id if success
      */
-    String runTransition(String idTransition, T valueObject, List<String> forcedActions);
+    String runTransition(String idTransition, T valueObject, List<String> forcedActions) throws IllegalStateException;
 
     /**
      * @return the description
