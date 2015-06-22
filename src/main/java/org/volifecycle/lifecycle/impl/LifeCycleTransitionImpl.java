@@ -184,14 +184,26 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
      */
     @Override
     public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedActions) {
+        return changeState(valueObject, adapter, evtManager, forcedActions, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String changeState(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, List<String> forcedActions, Map<String, Object> storage) {
         String rtn = LifeCycleConstants.TRUE;
         Map<String, String> additionnalInformations = null;
 
         Map<String, Object> actionStorageResult = null;
         if (null != actionStorage) {
             actionStorageResult = actionStorage.getActionStorageResult(valueObject);
-        } else {
+        } else if (null == actionStorageResult) {
             actionStorageResult = new HashMap<String, Object>();
+        }
+
+        if (null != storage) {
+            actionStorageResult.putAll(storage);
         }
 
         if (isNotEmpty(actions)) {

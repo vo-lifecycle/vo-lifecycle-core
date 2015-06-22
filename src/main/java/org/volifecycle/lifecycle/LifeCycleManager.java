@@ -37,6 +37,18 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
     String runTransition(String idTransition, T valueObject, List<String> forcedActions) throws IllegalStateException;
 
     /**
+     * Run a transition on valueObject from a transition configuration id and
+     * forced actions list and pre-storage
+     * 
+     * @param idTransition
+     * @param valueObject
+     * @param forcedActions
+     * @param storage
+     * @return String "false" if failure or state id if success
+     */
+    String runTransition(String idTransition, T valueObject, List<String> forcedActions, Map<String, Object> storage) throws IllegalStateException;
+
+    /**
      * @return the description
      */
     String getDescription();
@@ -101,4 +113,5 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
      * @return List<String>
      */
     List<String> getIdsTransitionsFromType(String type, String stateId);
+
 }
