@@ -130,7 +130,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
         if (isNotEmpty(statesById)) {
             for (Entry<String, LifeCycleState<T>> entryState : statesById.entrySet()) {
                 LifeCycleState<T> state = entryState.getValue();
-                if (null != stateId && !stateId.equalsIgnoreCase(stateId)) {
+                if (null != stateId && !stateId.equalsIgnoreCase(entryState.getKey())) {
                     continue;
                 }
 
