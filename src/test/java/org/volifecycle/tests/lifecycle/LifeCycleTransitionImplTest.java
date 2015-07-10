@@ -1,8 +1,12 @@
 package org.volifecycle.tests.lifecycle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -11,10 +15,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
+import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.impl.LifeCycleCompositeActionImpl;
@@ -30,88 +37,96 @@ import org.volifecycle.tests.inputs.ValueObjectStub;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class LifeCycleTransitionImplTest extends AbstractTest {
-    /**
-     * Mocks
-     */
-    @Mock
-    LifeCycleAdapter<ValueObjectStub> adapterMock;
+	/**
+	 * Mocks
+	 */
+	@Mock
+	LifeCycleAdapter<ValueObjectStub> adapterMock;
 
-    @Mock
-    EventManager evtManagerMock;
+	@Mock
+	EventManager evtManagerMock;
 
-    @Mock
-    LifeCycleAction<ValueObjectStub> actionMock;
+	@Mock
+	LifeCycleAction<ValueObjectStub> actionMock;
 
-    LifeCycleTransitionImpl<ValueObjectStub> transition;
-    LifeCycleCompositeActionImpl<ValueObjectStub> action;
+	@Captor
+	ArgumentCaptor<Event> eventCaptor;
 
-    ValueObjectStub valueObject;
-    List<LifeCycleAction<ValueObjectStub>> lstActions;
-    String idAction = "ID";
-    List<String> forcedActions;
-    String targetState = "STATE";
+	LifeCycleTransitionImpl<ValueObjectStub> transition;
+	LifeCycleCompositeActionImpl<ValueObjectStub> action;
 
-    /**
-     * Init datas
-     */
-    @Before
-    public final void initData() {
-        valueObject = new ValueObjectStub();
-        transition = new LifeCycleTransitionImpl<ValueObjectStub>();
-        action = new LifeCycleCompositeActionImpl<ValueObjectStub>() {
-        };
+	ValueObjectStub valueObject;
+	List<LifeCycleAction<ValueObjectStub>> lstActions;
+	String idAction = "ID";
+	List<String> forcedActions;
+	String targetState = "STATE";
 
-        lstActions = new ArrayList<LifeCycleAction<ValueObjectStub>>();
-        lstActions.add(action);
-        transition.setActions(lstActions);
+	/**
+	 * Init datas
+	 */
+	@Before
+	public final void initData() {
+		valueObject = new ValueObjectStub();
+		transition = new LifeCycleTransitionImpl<ValueObjectStub>();
+		action = new LifeCycleCompositeActionImpl<ValueObjectStub>() {
+		};
 
-        forcedActions = new ArrayList<String>();
-        forcedActions.add(idAction);
+		lstActions = new ArrayList<LifeCycleAction<ValueObjectStub>>();
+		lstActions.add(action);
+		transition.setActions(lstActions);
 
-        List<LifeCycleAction<ValueObjectStub>> simpleActions = new ArrayList<LifeCycleAction<ValueObjectStub>>();
-        simpleActions.add(actionMock);
+		forcedActions = new ArrayList<String>();
+		forcedActions.add(idAction);
 
-        action.setId(idAction);
-        action.setTargetState(targetState);
-        action.setActions(simpleActions);
+		List<LifeCycleAction<ValueObjectStub>> simpleActions = new ArrayList<LifeCycleAction<ValueObjectStub>>();
+		simpleActions.add(actionMock);
 
-        List<String> targetStates = new ArrayList<String>();
-        targetStates.add(targetState);
-        transition.setTargetStates(targetStates);
+		action.setId(idAction);
+		action.setTargetState(targetState);
+		action.setActions(simpleActions);
 
-        // mocks configuration
-        when(adapterMock.getState(any(ValueObjectStub.class))).thenReturn(valueObject.getState());
-        when(adapterMock.getType(any(ValueObjectStub.class))).thenReturn(valueObject.getType());
-        when(actionMock.getId()).thenReturn(idAction);
-    }
+		List<String> targetStates = new ArrayList<String>();
+		targetStates.add(targetState);
+		transition.setTargetStates(targetStates);
 
-    /**
-     * Change state nominal
-     */
-    @Test
-    public final void testChangeStateNominal() {
-        when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(targetState);
-        String result = transition.changeState(valueObject, adapterMock, evtManagerMock);
-        assertEquals(targetState, result);
-    }
+		// mocks configuration
+		when(adapterMock.getState(any(ValueObjectStub.class))).thenReturn(valueObject.getState());
+		when(adapterMock.getType(any(ValueObjectStub.class))).thenReturn(valueObject.getType());
+		when(actionMock.getId()).thenReturn(idAction);
+	}
 
-    /**
-     * Change state failed
-     */
-    @Test
-    public final void testChangeStateFailed() {
-        when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(LifeCycleConstants.FALSE);
-        String result = transition.changeState(valueObject, adapterMock, evtManagerMock);
-        assertEquals(LifeCycleConstants.FALSE, result);
-    }
+	/**
+	 * Change state nominal
+	 */
+	@Test
+	public final void testChangeStateNominal() {
+		when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(targetState);
+		String result = transition.changeState(valueObject, adapterMock, evtManagerMock);
+		assertEquals(targetState, result);
+	}
 
-    /**
-     * Change state with forced action
-     */
-    @Test
-    public final void testChangeStateWithForcedAction() {
-        when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(LifeCycleConstants.FALSE);
-        String result = transition.changeState(valueObject, adapterMock, evtManagerMock, forcedActions);
-        assertEquals(targetState, result);
-    }
+	/**
+	 * Change state failed
+	 */
+	@Test
+	public final void testChangeStateFailed() {
+		when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(LifeCycleConstants.FALSE);
+		String result = transition.changeState(valueObject, adapterMock, evtManagerMock);
+		assertEquals(LifeCycleConstants.FALSE, result);
+		verify(evtManagerMock, times(2)).logEvent(eventCaptor.capture());
+		Event e = eventCaptor.getAllValues().get(0);
+		assertNotNull(e);
+		assertNotNull(e.getFailedActionsIds());
+		assertTrue(e.getFailedActionsIds().contains(idAction));
+	}
+
+	/**
+	 * Change state with forced action
+	 */
+	@Test
+	public final void testChangeStateWithForcedAction() {
+		when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(LifeCycleConstants.FALSE);
+		String result = transition.changeState(valueObject, adapterMock, evtManagerMock, forcedActions);
+		assertEquals(targetState, result);
+	}
 }
