@@ -96,7 +96,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
 
         // Searching current state in transco
         if (null == keyState || !statesById.containsKey(keyState)) {
-            throw new IllegalStateException("The transition is not applicable for the state " + ((null == keyState) ? "<null>" : keyState));
+            throw new IllegalStateException("The transition " + idTransition + " is not applicable for the state " + ((null == keyState) ? "<null>" : keyState));
         }
 
         LifeCycleState<T> currentState = statesById.get(keyState);
