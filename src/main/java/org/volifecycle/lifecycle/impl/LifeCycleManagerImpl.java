@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.impl.Log4jEventManagerImpl;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
@@ -114,7 +113,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
         String targetState = transition.changeState(valueObject, adapter, eManager, forcedActions, storage);
 
         // Change state (in database or other persistence support)
-        if (null != targetState && !LifeCycleConstants.FALSE.equalsIgnoreCase(targetState)) {
+        if (null != targetState && !Boolean.FALSE.toString().equalsIgnoreCase(targetState)) {
             adapter.setState(valueObject, targetState);
             logChangeCustom(valueObject, idTransition, keyState, adapter, targetState);
         }

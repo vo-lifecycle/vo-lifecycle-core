@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.volifecycle.common.AbstractLifeCycle;
-import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
 
@@ -199,13 +198,13 @@ public class LifeCycleCompositeActionImpl<T> extends AbstractLifeCycle<T> implem
                 }
 
                 result = action.getResult(valueObject, actionStorage);
-                if (LifeCycleConstants.FALSE.equalsIgnoreCase(result)) {
+                if (Boolean.FALSE.toString().equalsIgnoreCase(result)) {
                     if (filter) {
                         forcedActionsInReality.add(action.getId());
                         continue;
                     }
 
-                    rtn = LifeCycleConstants.FALSE;
+                    rtn = Boolean.FALSE.toString();
 
                     if (null != failedSubActions && !failedSubActions.contains(action.getId())) {
                         failedSubActions.add(action.getId());

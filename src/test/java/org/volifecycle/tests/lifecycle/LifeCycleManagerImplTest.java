@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChangeSaver;
@@ -83,7 +82,7 @@ public class LifeCycleManagerImplTest extends AbstractTest {
         transitionsById.put(transitionId, transitionMock);
 
         when(stateMock.getTransitionsById()).thenReturn(transitionsById);
-        when(transitionMock.changeState(eq(valueObject), eq(adapterMock), eq(evtManagerMock), anyListOf(String.class), anyMapOf(String.class, Object.class))).thenReturn(LifeCycleConstants.TRUE);
+        when(transitionMock.changeState(eq(valueObject), eq(adapterMock), eq(evtManagerMock), anyListOf(String.class), anyMapOf(String.class, Object.class))).thenReturn(Boolean.TRUE.toString());
     }
 
     /**
@@ -103,7 +102,7 @@ public class LifeCycleManagerImplTest extends AbstractTest {
     @Test
     public final void testRunTransitionNominal() {
         when(adapterMock.getState(valueObject)).thenReturn(stateId);
-        assertEquals(LifeCycleConstants.TRUE, manager.runTransition(transitionId, valueObject));
+        assertEquals(Boolean.TRUE.toString(), manager.runTransition(transitionId, valueObject));
     }
 
     /**

@@ -101,10 +101,10 @@ public class LifeCycleJSR303ActionImpl<T, A extends LifeCycleAdapter<T>> extends
                 logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_JSR303_FAILURE, message, additionnalInformations);
             }
 
-            return LifeCycleConstants.FALSE;
+            return Boolean.FALSE.toString();
         }
 
-        return LifeCycleConstants.TRUE;
+        return Boolean.TRUE.toString();
     }
 
     /**

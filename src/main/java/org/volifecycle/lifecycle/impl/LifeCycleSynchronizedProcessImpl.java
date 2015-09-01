@@ -4,7 +4,6 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 import java.util.List;
 
-import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleSynchronizedProcess;
 
@@ -57,11 +56,11 @@ public class LifeCycleSynchronizedProcessImpl<T> implements LifeCycleSynchronize
      */
     @Override
     public String process(T valueObject) throws IllegalStateException {
-        String rtn = LifeCycleConstants.FALSE;
+        String rtn = Boolean.FALSE.toString();
         if (isNotEmpty(transitionIds)) {
             for (String transitionId : transitionIds) {
                 rtn = manager.runTransition(transitionId, valueObject);
-                if (LifeCycleConstants.FALSE.equalsIgnoreCase(rtn)) {
+                if (Boolean.FALSE.toString().equalsIgnoreCase(rtn)) {
                     break;
                 }
             }
