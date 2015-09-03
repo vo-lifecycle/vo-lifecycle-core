@@ -42,6 +42,8 @@
 
 		<!-- github server corresponds to entry in ~/.m2/settings.xml -->
 		<github.global.server>github</github.global.server>
+        
+        <javancss-maven-plugin.version>2.1</javancss-maven-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -337,5 +339,15 @@
 			</plugin>
 		</plugins>
 	</build>
+    
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>${javancss-maven-plugin.version}</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
