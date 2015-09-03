@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
@@ -27,6 +29,8 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  *            value object type
  */
 public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleTransition<T> {
+    private static final Logger LOGGER = LogManager.getLogger(LifeCycleTransitionImpl.class);
+
     /**
      * List of composite actions.
      */
@@ -215,11 +219,14 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                 if (isNotEmpty(forcedActions)) {
                     for (String idForcedAction : forcedActions) {
                         if (null != action.getId() && idForcedAction.equalsIgnoreCase(action.getId())) {
+                            LOGGER.info("Skipping result : " + action.getId());
                             filter = true;
                             break;
                         }
                     }
                 }
+
+                LOGGER.info("Testing action : " + action.getId());
 
                 additionnalInformations = action.getAdditionnalInformations();
                 List<String> failedSimpleActions = new ArrayList<String>();
@@ -233,34 +240,50 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                     result = action.getResult(valueObject, storage);
                 }
 
+                LOGGER.info("Action result : id = " + action.getId() + ", result = " + result);
+
                 if (null == result || Boolean.FALSE.toString().equalsIgnoreCase(result)) {
+                    LOGGER.debug("Case 1.X");
+
                     if (!filter) {
+                        LOGGER.debug("Case 1.1");
+
                         rtn = Boolean.FALSE.toString();
                         String message = "Failed action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), failedSimpleActions));
 
                         if (null != stopIfFailed && stopIfFailed) {
+                            LOGGER.info("stopIfFailed is enabled : skipping next actions...");
                             break;
                         }
                     } else if (null != compositeAction) {
+                        LOGGER.debug("Case 1.2");
+
                         rtn = compositeAction.getTargetState();
                         String message = "Forced action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), failedSimpleActions));
                         break;
                     } else if (isNotEmpty(targetStates) && targetStates.size() == 1) {
+                        LOGGER.debug("Case 1.3");
+
                         rtn = targetStates.get(0);
                         String message = "Forced action : " + action.getId() + " (only one target state), sub actions : " + implode(",", failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), failedSimpleActions));
                     } else {
+                        LOGGER.debug("Case 1.4");
+
                         rtn = Boolean.FALSE.toString();
                         String message = "Failed action : " + action.getId() + " (no target state), sub actions : " + implode(",", failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), failedSimpleActions));
 
                         if (null != stopIfFailed && stopIfFailed) {
+                            LOGGER.info("stopIfFailed is enabled : skipping next actions...");
                             break;
                         }
                     }
                 } else if (null != compositeAction) {
+                    LOGGER.debug("Case 2.X");
+
                     rtn = compositeAction.getTargetState();
                     if (isNotEmpty(forcedActionsInReality)) {
                         String message = "Forced action : " + action.getId() + ", forced sub actions : " + implode(",", forcedActionsInReality);
@@ -269,6 +292,8 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 
                     break;
                 } else if (!Boolean.FALSE.toString().equalsIgnoreCase(rtn)) {
+                    LOGGER.debug("Case 3.X");
+
                     rtn = result;
                 }
             }
@@ -276,10 +301,12 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 
         if (Boolean.TRUE.toString().equalsIgnoreCase(rtn) && isNotEmpty(targetStates) && targetStates.size() == 1) {
             rtn = targetStates.get(0);
+            LOGGER.info("[1] Transition result : id = " + this.getId() + ", result = " + rtn);
         } else if (isEmpty(targetStates) || null == rtn || Boolean.FALSE.toString().equals(rtn) || !targetStates.contains(rtn)) {
             rtn = Boolean.FALSE.toString();
             String message = "Failed transition : id=" + this.getId() + ", targetStates = " + implode(",", targetStates);
             logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_TRANSITION, message, additionnalInformations);
+            LOGGER.info("[2] Transition result : id = " + this.getId() + ", result = " + rtn);
         }
 
         return rtn;
