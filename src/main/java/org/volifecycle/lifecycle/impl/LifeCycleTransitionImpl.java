@@ -303,6 +303,10 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
             rtn = targetStates.get(0);
             LOGGER.info("[1] Transition result : id = " + this.getId() + ", result = " + rtn);
         } else if (isEmpty(targetStates) || null == rtn || Boolean.FALSE.toString().equals(rtn) || !targetStates.contains(rtn)) {
+            if (!Boolean.FALSE.toString().equals(rtn) && !targetStates.contains(rtn)) {
+                LOGGER.error("The state " + rtn + " is not expected by transition : id = " + this.getId() + ", targetStates = " + implode(",", targetStates));
+            }
+
             rtn = Boolean.FALSE.toString();
             String message = "Failed transition : id=" + this.getId() + ", targetStates = " + implode(",", targetStates);
             logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_TRANSITION, message, additionnalInformations);
