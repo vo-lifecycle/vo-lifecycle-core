@@ -5,6 +5,8 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
@@ -18,6 +20,8 @@ import org.volifecycle.lifecycle.LifeCycleCompositeAction;
  *            valueObject
  */
 public class LifeCycleCompositeActionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleCompositeAction<T> {
+    private static final Logger LOGGER = LogManager.getLogger(LifeCycleCompositeActionImpl.class);
+
     /**
      * Id which is used for forced the result of this action
      */
@@ -191,13 +195,19 @@ public class LifeCycleCompositeActionImpl<T> extends AbstractLifeCycle<T> implem
                 if (isNotEmpty(forcedActions)) {
                     for (String idForcedAction : forcedActions) {
                         if (null != action.getId() && idForcedAction.equalsIgnoreCase(action.getId())) {
+                            LOGGER.info("Skipping result : " + action.getId());
                             filter = true;
                             break;
                         }
                     }
                 }
 
+                LOGGER.info("Testing action : " + action.getId());
+
                 result = action.getResult(valueObject, actionStorage);
+
+                LOGGER.info("Action result : id = " + action.getId() + ", result = " + result);
+
                 if (Boolean.FALSE.toString().equalsIgnoreCase(result)) {
                     if (filter) {
                         forcedActionsInReality.add(action.getId());
@@ -211,6 +221,7 @@ public class LifeCycleCompositeActionImpl<T> extends AbstractLifeCycle<T> implem
                     }
 
                     if (null != stopIfFailed && stopIfFailed) {
+                        LOGGER.info("stopIfFailed is enabled : skipping next actions...");
                         break;
                     }
                 }
