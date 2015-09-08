@@ -71,14 +71,6 @@ public class LifeCycleJSR303ActionImpl<T, A extends LifeCycleAdapter<T>> extends
      * {@inheritDoc}
      */
     @Override
-    public String getResult(T valueObject) {
-        return getResult(valueObject, null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getResult(T valueObject, Map<String, Object> actionStorage) {
         return getResult(valueObject, actionStorage, null);
     }

@@ -50,7 +50,7 @@ public class LifeCycleJSR303ActionImplTest extends AbstractTest {
         // required field
         valueObject.setNb(1F);
 
-        assertEquals(Boolean.TRUE.toString(), action.getResult(valueObject));
+        assertEquals(Boolean.TRUE.toString(), action.getResult(valueObject, null));
     }
 
     /**
@@ -61,6 +61,6 @@ public class LifeCycleJSR303ActionImplTest extends AbstractTest {
         // required field
         valueObject.setNb(null);
 
-        assertEquals(Boolean.FALSE.toString(), action.getResult(valueObject));
+        assertEquals(Boolean.FALSE.toString(), action.getResult(valueObject, null));
     }
 }
