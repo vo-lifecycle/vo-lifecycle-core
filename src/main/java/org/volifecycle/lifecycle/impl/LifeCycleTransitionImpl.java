@@ -2,6 +2,7 @@ package org.volifecycle.lifecycle.impl;
 
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.volifecycle.utils.CommonUtils.implode;
 
 import java.util.ArrayList;
@@ -249,7 +250,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                         LOGGER.debug("Case 1.1");
 
                         rtn = Boolean.FALSE.toString();
-                        String message = "Failed action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
+                        String message = buildMessageAction("Failed", null, valueObject, adapter, action, failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), failedSimpleActions));
 
                         if (null != stopIfFailed && stopIfFailed) {
@@ -260,20 +261,20 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                         LOGGER.debug("Case 1.2");
 
                         rtn = compositeAction.getTargetState();
-                        String message = "Forced action : " + action.getId() + ", sub actions : " + implode(",", failedSimpleActions);
+                        String message = buildMessageAction("Forced", null, valueObject, adapter, action, failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), failedSimpleActions));
                         break;
                     } else if (isNotEmpty(targetStates) && targetStates.size() == 1) {
                         LOGGER.debug("Case 1.3");
 
                         rtn = targetStates.get(0);
-                        String message = "Forced action : " + action.getId() + " (only one target state), sub actions : " + implode(",", failedSimpleActions);
+                        String message = buildMessageAction("Forced", "only one target state", valueObject, adapter, action, failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), failedSimpleActions));
                     } else {
                         LOGGER.debug("Case 1.4");
 
                         rtn = Boolean.FALSE.toString();
-                        String message = "Failed action : " + action.getId() + " (no target state), sub actions : " + implode(",", failedSimpleActions);
+                        String message = buildMessageAction("Failed", "no target state", valueObject, adapter, action, failedSimpleActions);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), failedSimpleActions));
 
                         if (null != stopIfFailed && stopIfFailed) {
@@ -286,7 +287,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 
                     rtn = compositeAction.getTargetState();
                     if (isNotEmpty(forcedActionsInReality)) {
-                        String message = "Forced action : " + action.getId() + ", forced sub actions : " + implode(",", forcedActionsInReality);
+                        String message = buildMessageAction("Forced", null, valueObject, adapter, action, forcedActionsInReality);
                         logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations, buildListFailedIds(action.getId(), forcedActionsInReality));
                     }
 
@@ -314,6 +315,26 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
         }
 
         return rtn;
+    }
+
+    /**
+     * Build log message for a failed or forced action.
+     * 
+     * @param actionStatus
+     * @param valueObject
+     * @param adapter
+     * @param action
+     * @param failedSimpleActions
+     * @return String
+     */
+    private String buildMessageAction(String actionStatus, String details, T valueObject, LifeCycleAdapter<T> adapter, LifeCycleAction<T> action, List<String> failedSimpleActions) {
+        if (isNotEmpty(details)) {
+            details = String.format(" (%s) ", details);
+        } else {
+            details = "";
+        }
+
+        return actionStatus + " action : " + action.getId() + details + ", sub actions : " + implode(",", failedSimpleActions) + ", object id = " + adapter.getId(valueObject) + ", object type = " + adapter.getType(valueObject);
     }
 
     /**
