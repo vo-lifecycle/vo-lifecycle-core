@@ -151,14 +151,6 @@ public class LifeCycleCompositeActionImpl<T> extends AbstractLifeCycle<T> implem
      * {@inheritDoc}
      */
     @Override
-    public String getResult(T valueObject) {
-        return getResult(valueObject, (List<String>) null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getResult(T valueObject, List<String> failedPredicate) {
         return getResult(valueObject, failedPredicate, null);
     }
