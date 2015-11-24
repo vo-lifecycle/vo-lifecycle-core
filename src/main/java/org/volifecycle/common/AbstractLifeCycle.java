@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.volifecycle.event.EventManager;
-import org.volifecycle.event.impl.Log4jEventManagerImpl;
+import org.volifecycle.event.impl.LogEventManagerImpl;
 import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 
@@ -35,7 +35,7 @@ public abstract class AbstractLifeCycle<T> {
         setCustomEvent(event, valueObject, adapter, typeEvent, details, additionnalInformations, failedActions);
 
         if (null == evtManager) {
-            evtManager = new Log4jEventManagerImpl();
+            evtManager = new LogEventManagerImpl();
         }
 
         evtManager.logEvent(event);

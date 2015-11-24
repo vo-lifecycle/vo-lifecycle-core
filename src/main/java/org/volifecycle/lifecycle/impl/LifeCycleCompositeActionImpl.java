@@ -5,8 +5,8 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
@@ -20,7 +20,7 @@ import org.volifecycle.lifecycle.LifeCycleCompositeAction;
  *            valueObject
  */
 public class LifeCycleCompositeActionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleCompositeAction<T> {
-    private static final Logger LOGGER = LogManager.getLogger(LifeCycleCompositeActionImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LifeCycleCompositeActionImpl.class);
 
     /**
      * Id which is used for forced the result of this action

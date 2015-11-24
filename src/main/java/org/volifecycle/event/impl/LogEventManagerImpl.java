@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.vo.DiffEvent;
 import org.volifecycle.event.vo.Event;
@@ -20,8 +20,8 @@ import org.volifecycle.event.vo.Event;
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
  */
-public class Log4jEventManagerImpl implements EventManager {
-    private static final Logger LOGGER = LogManager.getLogger(Log4jEventManagerImpl.class);
+public class LogEventManagerImpl implements EventManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogEventManagerImpl.class);
 
     /**
      * {@inheritDoc}
@@ -39,13 +39,13 @@ public class Log4jEventManagerImpl implements EventManager {
             DiffEvent de = (DiffEvent) e;
             logLine.put("parentId", de.getParentId());
             logLine.put("parentType", de.getParentType());
-            
+
             LOGGER.info(map2jsonQuietly(logLine));
-            
+
             if (isNotEmpty(de.getDiffProperties())) {
                 Map<String, List<?>> logLineDiff = new HashMap<String, List<?>>();
                 logLineDiff.put("diffs", de.getDiffProperties());
-                
+
                 LOGGER.info(map2jsonQuietly(logLineDiff));
             }
         } else {

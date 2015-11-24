@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.volifecycle.event.EventManager;
-import org.volifecycle.event.impl.Log4jEventManagerImpl;
+import org.volifecycle.event.impl.LogEventManagerImpl;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleChangeSaver;
 import org.volifecycle.lifecycle.LifeCycleManager;
@@ -84,7 +84,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
 
         // Default EventManager
         if (null == eManager) {
-            eManager = new Log4jEventManagerImpl();
+            eManager = new LogEventManagerImpl();
         }
 
         if (null == valueObject) {

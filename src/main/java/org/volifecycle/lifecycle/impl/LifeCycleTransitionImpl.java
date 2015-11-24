@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
@@ -30,7 +30,7 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  *            value object type
  */
 public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleTransition<T> {
-    private static final Logger LOGGER = LogManager.getLogger(LifeCycleTransitionImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LifeCycleTransitionImpl.class);
 
     /**
      * List of composite actions.
