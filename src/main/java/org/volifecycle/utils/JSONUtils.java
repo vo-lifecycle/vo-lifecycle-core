@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.volifecycle.common.LifeCycleConstants;
 
 /**
@@ -24,7 +24,7 @@ import org.volifecycle.common.LifeCycleConstants;
  * 
  */
 public class JSONUtils {
-    private static final Logger LOGGER = LogManager.getLogger(JSONUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtils.class);
 
     /**
      * Convert map to JSON string

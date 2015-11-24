@@ -54,7 +54,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
         EventManager evtManager = getEvtManager();
 
         if (null == evtManager) {
-            evtManager = new Log4jEventManagerImpl();
+            evtManager = new LogEventManagerImpl();
         }
 
         DiffEvent event = new DiffEvent();
