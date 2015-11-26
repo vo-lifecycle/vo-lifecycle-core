@@ -231,7 +231,7 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     public void logChangeCustom(T valueObject, String transitionId, String stateIn, LifeCycleAdapter<T> adapter, String stateOut) {
         LifeCycleChangeSaver s = getSaver();
         if (null == s) {
-            s = new Log4jLifeCycleChangeSaverImpl();
+            s = new LogLifeCycleChangeSaverImpl();
         }
 
         LifeCycleChange c = new LifeCycleChange();

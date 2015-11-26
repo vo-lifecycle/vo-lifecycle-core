@@ -9,6 +9,8 @@ import javax.validation.Validator;
 import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
+import org.volifecycle.event.impl.LogEventManagerImpl;
+import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 
 /**
@@ -83,6 +85,10 @@ public class LifeCycleJSR303ActionImpl<T, A extends LifeCycleAdapter<T>> extends
         Validator validator = CustomValidatorFactory.SINGLE_INSTANCE.getValidator();
         Set<ConstraintViolation<T>> violations = validator.validate(valueObject);
 
+        if (null == evtManager) {
+            evtManager = new LogEventManagerImpl();
+        }
+
         if (violations.size() > 0) {
             if (null != constraintViolations) {
                 constraintViolations.addAll(violations);
@@ -90,7 +96,8 @@ public class LifeCycleJSR303ActionImpl<T, A extends LifeCycleAdapter<T>> extends
 
             for (ConstraintViolation<T> violation : violations) {
                 String message = violation.getRootBeanClass().getSimpleName() + "." + violation.getPropertyPath() + " " + violation.getMessage();
-                logCustomEvent(valueObject, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_JSR303_FAILURE, message, additionnalInformations);
+                Event evt = buildCustomEvent(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_JSR303_FAILURE, message, additionnalInformations, null, null);
+                evtManager.logEvent(evt);
             }
 
             return Boolean.FALSE.toString();
