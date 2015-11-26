@@ -8,7 +8,7 @@ import org.volifecycle.lifecycle.LifeCycleChangeSaver;
 import org.volifecycle.lifecycle.vo.LifeCycleChange;
 
 /**
- * Log4j implementation of saver
+ * Slf4j implementation of saver.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
