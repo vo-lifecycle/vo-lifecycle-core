@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
 
@@ -19,7 +18,7 @@ import org.volifecycle.lifecycle.LifeCycleCompositeAction;
  * @param <T>
  *            valueObject
  */
-public class LifeCycleCompositeActionImpl<T> extends AbstractLifeCycle<T> implements LifeCycleCompositeAction<T> {
+public class LifeCycleCompositeActionImpl<T> implements LifeCycleCompositeAction<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(LifeCycleCompositeActionImpl.class);
 
     /**

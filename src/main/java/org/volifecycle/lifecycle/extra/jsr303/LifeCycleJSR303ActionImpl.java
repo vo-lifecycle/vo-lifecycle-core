@@ -1,12 +1,13 @@
 package org.volifecycle.lifecycle.extra.jsr303;
 
+import static org.volifecycle.event.EventBuilder.build;
+
 import java.util.Map;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.impl.LogEventManagerImpl;
@@ -19,7 +20,7 @@ import org.volifecycle.lifecycle.LifeCycleAdapter;
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
  */
-public class LifeCycleJSR303ActionImpl<T, A extends LifeCycleAdapter<T>> extends AbstractLifeCycle<T> implements LifeCycleActionJSR303<T> {
+public class LifeCycleJSR303ActionImpl<T, A extends LifeCycleAdapter<T>> implements LifeCycleActionJSR303<T> {
     /**
      * The adapter
      */
@@ -96,7 +97,7 @@ public class LifeCycleJSR303ActionImpl<T, A extends LifeCycleAdapter<T>> extends
 
             for (ConstraintViolation<T> violation : violations) {
                 String message = violation.getRootBeanClass().getSimpleName() + "." + violation.getPropertyPath() + " " + violation.getMessage();
-                Event evt = buildCustomEvent(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_JSR303_FAILURE, message, additionnalInformations, null, null);
+                Event evt = build(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_JSR303_FAILURE, message, additionnalInformations, null, null);
                 evtManager.logEvent(evt);
             }
 
