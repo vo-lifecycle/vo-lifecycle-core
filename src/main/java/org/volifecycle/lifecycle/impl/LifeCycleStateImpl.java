@@ -10,7 +10,8 @@ import org.volifecycle.lifecycle.LifeCycleTransition;
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
- * @param <T> value object type
+ * @param <T>
+ *            value object type
  */
 public class LifeCycleStateImpl<T> implements LifeCycleState<T> {
     /**
@@ -31,7 +32,8 @@ public class LifeCycleStateImpl<T> implements LifeCycleState<T> {
     }
 
     /**
-     * @param transitionsById the transitionsById to set
+     * @param transitionsById
+     *            the transitionsById to set
      */
     public void setTransitionsById(Map<String, LifeCycleTransition<T>> transitionsById) {
         this.transitionsById = transitionsById;
@@ -46,7 +48,8 @@ public class LifeCycleStateImpl<T> implements LifeCycleState<T> {
     }
 
     /**
-     * @param id the id to set
+     * @param id
+     *            the id to set
      */
     public void setId(String id) {
         this.id = id;
@@ -61,17 +64,10 @@ public class LifeCycleStateImpl<T> implements LifeCycleState<T> {
     }
 
     /**
-     * @param description the description to set
+     * @param description
+     *            the description to set
      */
     public void setDescription(String description) {
         this.description = description;
     }
-
-    /**
-     * TODO task trash
-     */
-
-    /**
-     * TODO allowed fields
-     */
 }

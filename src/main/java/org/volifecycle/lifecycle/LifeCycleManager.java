@@ -6,7 +6,7 @@ import java.util.Map;
 import org.volifecycle.event.EventManager;
 
 /**
- * Manager interface
+ * Manager interface.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
@@ -17,7 +17,7 @@ import org.volifecycle.event.EventManager;
  */
 public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
     /**
-     * Run a transition on valueObject from a transition configuration id
+     * Run a transition on valueObject from a transition configuration id.
      * 
      * @param transitionId
      * @param valueObject
@@ -27,7 +27,7 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
 
     /**
      * Run a transition on valueObject from a transition configuration id and
-     * forced actions list
+     * forced actions list.
      * 
      * @param idTransition
      * @param valueObject
@@ -38,7 +38,7 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
 
     /**
      * Run a transition on valueObject from a transition configuration id and
-     * forced actions list and pre-storage
+     * forced actions list and pre-storage.
      * 
      * @param idTransition
      * @param valueObject
@@ -113,5 +113,4 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
      * @return List<String>
      */
     List<String> getIdsTransitionsFromType(String type, String stateId);
-
 }
