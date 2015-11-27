@@ -11,20 +11,20 @@ import java.util.List;
 public class LifeCycleTransitionEvent extends Event {
     private static final long serialVersionUID = 1L;
 
-    List<Event> subActionsEvents;
+    List<Event> actionsEvents;
 
     /**
      * @return the subActionsEvents
      */
-    public List<Event> getSubActionsEvents() {
-        return subActionsEvents;
+    public List<Event> getActionsEvents() {
+        return actionsEvents;
     }
 
     /**
      * @param subActionsEvents
      *            the subActionsEvents to set
      */
-    public void setSubActionsEvents(List<Event> subActionsEvents) {
-        this.subActionsEvents = subActionsEvents;
+    public void setActionsEvents(List<Event> subActionsEvents) {
+        this.actionsEvents = subActionsEvents;
     }
 }

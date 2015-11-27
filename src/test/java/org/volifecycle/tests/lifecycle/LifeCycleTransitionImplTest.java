@@ -116,8 +116,8 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
         verify(evtManagerMock, times(1)).logEvent(eventCaptor.capture());
         LifeCycleTransitionEvent e = (LifeCycleTransitionEvent) eventCaptor.getAllValues().get(0);
         assertNotNull(e);
-        assertNotNull(e.getSubActionsEvents().get(0).getFailedActionsIds());
-        assertTrue(e.getSubActionsEvents().get(0).getFailedActionsIds().contains(idAction));
+        assertNotNull(e.getActionsEvents().get(0).getFailedActionsIds());
+        assertTrue(e.getActionsEvents().get(0).getFailedActionsIds().contains(idAction));
     }
 
     /**

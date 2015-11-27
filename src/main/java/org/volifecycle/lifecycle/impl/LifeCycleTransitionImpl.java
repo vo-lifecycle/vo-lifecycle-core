@@ -333,7 +333,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
             String message = "Failed transition : id=" + this.getId() + ", targetStates = " + implode(",", targetStates);
             Event evt = buildCustomEvent(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_FAILED_TRANSITION, message, additionnalInformations, null, null);
             LifeCycleTransitionEvent trEvt = dozerBeanMapper.map(evt, LifeCycleTransitionEvent.class);
-            trEvt.setSubActionsEvents(listEvent);
+            trEvt.setActionsEvents(listEvent);
 
             evtManager.logEvent(trEvt);
 
