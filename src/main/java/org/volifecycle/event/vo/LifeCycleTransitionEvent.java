@@ -3,7 +3,7 @@ package org.volifecycle.event.vo;
 import java.util.List;
 
 /**
- * Transition event.
+ * Transition events.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
