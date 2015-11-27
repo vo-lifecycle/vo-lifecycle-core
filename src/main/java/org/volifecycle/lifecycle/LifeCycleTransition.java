@@ -6,7 +6,7 @@ import java.util.Map;
 import org.volifecycle.event.EventManager;
 
 /**
- * Transition interface
+ * Transition interface.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
