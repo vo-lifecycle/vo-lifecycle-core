@@ -1,7 +1,7 @@
 package org.volifecycle.common;
 
 /**
- * Constants
+ * Constants interface.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
@@ -30,4 +30,9 @@ public interface LifeCycleConstants {
      */
     String DIFF_TYPE_VALUE = "value";
     String DIFF_TYPE_SIZE = "size";
+
+    /**
+     * Key in additionnals informations
+     */
+    String KEY_ADDI_SOURCE_ACTION_ID = "SOURCE_ACTION_ID";
 }

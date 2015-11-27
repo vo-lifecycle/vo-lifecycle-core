@@ -1,6 +1,7 @@
 package org.volifecycle.event.impl;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.volifecycle.event.EventBuilder.build;
 import static org.volifecycle.utils.DateUtils.FORMAT_DATE_HOUR;
 import static org.volifecycle.utils.DateUtils.calendarToString;
 
@@ -12,7 +13,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.volifecycle.common.AbstractLifeCycle;
 import org.volifecycle.common.LifeCycleConstants;
 import org.volifecycle.event.ClassListener;
 import org.volifecycle.event.DiffDetector;
@@ -29,7 +29,7 @@ import org.volifecycle.lifecycle.LifeCycleAdapter;
  * 
  * @param <T>
  */
-public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends AbstractLifeCycle<T> implements DiffDetector<T, A> {
+public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffDetector<T, A> {
     /**
      * Event manager
      */
@@ -60,7 +60,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
 
         DiffEvent event = new DiffEvent();
         String details = "There are some changes...";
-        setCustomEvent(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details, additionalInformations);
+        build(event, vo1, adapter, LifeCycleConstants.EVENT_TYPE_DIFF_VO, details, additionalInformations, null, null);
         List<DiffProperty> diffs = logDiffs(vo2, vo1, vo2, new ArrayList<DiffProperty>(), null);
         event.setDiffProperties(diffs);
         event.setParentId(parentId);
@@ -186,7 +186,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                         so = getter.invoke(o);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         String message = "Reflexion error : " + e.getMessage();
-                        Event evt = buildCustomEvent(original, adapter, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null, null, null);
+                        Event evt = build(original, adapter, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null, null, null);
                         evtManager.logEvent(evt);
                         continue;
                     }
@@ -261,7 +261,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                     o2 = getter.invoke(vo2);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     String message = "Reflexion error : " + e.getMessage();
-                    Event evt = buildCustomEvent(original, adapter, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null, null, null);
+                    Event evt = build(original, adapter, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null, null, null);
                     evtManager.logEvent(evt);
                     continue;
                 }
