@@ -5,13 +5,11 @@ import static org.volifecycle.utils.DateUtils.getCurrentTime;
 import java.util.List;
 import java.util.Map;
 
-import org.volifecycle.event.EventManager;
-import org.volifecycle.event.impl.LogEventManagerImpl;
 import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 
 /**
- * Abstract methods
+ * Abstract methods.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
@@ -20,7 +18,7 @@ import org.volifecycle.lifecycle.LifeCycleAdapter;
  */
 public abstract class AbstractLifeCycle<T> {
     /**
-     * Log custom event
+     * Build custom event.
      * 
      * @param event
      * @param valueObject
@@ -28,34 +26,24 @@ public abstract class AbstractLifeCycle<T> {
      * @param typeEvent
      * @param details
      * @param List
+     *            <Event> listEvent
+     * @param List
      *            <String> failedActions
+     * @return event
      */
-    public void logCustomEvent(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, String typeEvent, String details, Map<String, String> additionnalInformations, List<String> failedActions) {
+    public Event buildCustomEvent(T valueObject, LifeCycleAdapter<T> adapter, String typeEvent, String details, Map<String, String> additionnalInformations, List<Event> listEvent, List<String> failedActions) {
         Event event = new Event();
         setCustomEvent(event, valueObject, adapter, typeEvent, details, additionnalInformations, failedActions);
 
-        if (null == evtManager) {
-            evtManager = new LogEventManagerImpl();
+        if (null != listEvent) {
+            listEvent.add(event);
         }
 
-        evtManager.logEvent(event);
+        return event;
     }
 
     /**
-     * Log custom event
-     * 
-     * @param event
-     * @param valueObject
-     * @param adapter
-     * @param typeEvent
-     * @param details
-     */
-    public void logCustomEvent(T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, String typeEvent, String details, Map<String, String> additionnalInformations) {
-        logCustomEvent(valueObject, adapter, evtManager, typeEvent, details, additionnalInformations, null);
-    }
-
-    /**
-     * Set Custom event
+     * Set Custom event.
      * 
      * @param event
      * @param valueObject
@@ -64,7 +52,6 @@ public abstract class AbstractLifeCycle<T> {
      * @param details
      * @param List
      *            <String> failedActions
-     * @return Event
      */
     public void setCustomEvent(Event event, T valueObject, LifeCycleAdapter<T> adapter, String typeEvent, String details, Map<String, String> additionnalInformations, List<String> failedActions) {
         event.setTypeEvent(typeEvent);
@@ -79,14 +66,13 @@ public abstract class AbstractLifeCycle<T> {
     }
 
     /**
-     * Set Custom event
+     * Set Custom event.
      * 
      * @param event
      * @param valueObject
      * @param adapter
      * @param typeEvent
      * @param details
-     * @return Event
      */
     public void setCustomEvent(Event event, T valueObject, LifeCycleAdapter<T> adapter, String typeEvent, String details, Map<String, String> additionnalInformations) {
         setCustomEvent(event, valueObject, adapter, typeEvent, details, additionnalInformations, null);

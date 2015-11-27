@@ -8,13 +8,13 @@ import org.volifecycle.lifecycle.LifeCycleChangeSaver;
 import org.volifecycle.lifecycle.vo.LifeCycleChange;
 
 /**
- * Log4j implementation of saver
+ * Slf4j implementation of saver.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
  */
-public class Log4jLifeCycleChangeSaverImpl implements LifeCycleChangeSaver {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Log4jLifeCycleChangeSaverImpl.class);
+public class LogLifeCycleChangeSaverImpl implements LifeCycleChangeSaver {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogLifeCycleChangeSaverImpl.class);
 
     /**
      * {@inheritDoc}

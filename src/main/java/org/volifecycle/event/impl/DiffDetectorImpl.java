@@ -19,6 +19,7 @@ import org.volifecycle.event.DiffDetector;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.vo.DiffEvent;
 import org.volifecycle.event.vo.DiffProperty;
+import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 
 /**
@@ -161,11 +162,14 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
      */
     public List<DiffProperty> logDiffsWhereNull(T original, Object o, List<DiffProperty> diffs, String parent, boolean isBefore) {
         if (o instanceof Calendar || null != getPrimitifType(o)) {
-            diffs.add(createDiffProperty((null == parent) ? o.getClass().getSimpleName() : parent, object2string((!isBefore) ? null : o), object2string((isBefore) ? null : o), parent,
-                    LifeCycleConstants.DIFF_TYPE_VALUE));
+            diffs.add(createDiffProperty((null == parent) ? o.getClass().getSimpleName() : parent, object2string((!isBefore) ? null : o), object2string((isBefore) ? null : o), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
         } else {
             if (!isClassListened(o)) {
                 return diffs;
+            }
+
+            if (null == evtManager) {
+                evtManager = new LogEventManagerImpl();
             }
 
             List<Method> getters = getCommonGetter(o, o);
@@ -182,7 +186,8 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                         so = getter.invoke(o);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         String message = "Reflexion error : " + e.getMessage();
-                        logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null);
+                        Event evt = buildCustomEvent(original, adapter, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null, null, null);
+                        evtManager.logEvent(evt);
                         continue;
                     }
 
@@ -236,6 +241,10 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
             return diffs;
         }
 
+        if (null == evtManager) {
+            evtManager = new LogEventManagerImpl();
+        }
+
         List<Method> getters = getCommonGetter(vo1, vo2);
         if (isNotEmpty(getters)) {
             Object o1, o2;
@@ -252,7 +261,8 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> extends Abstract
                     o2 = getter.invoke(vo2);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     String message = "Reflexion error : " + e.getMessage();
-                    logCustomEvent(original, adapter, evtManager, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null);
+                    Event evt = buildCustomEvent(original, adapter, LifeCycleConstants.EVENT_TYPE_REFLEXION_ERROR, message, null, null, null);
+                    evtManager.logEvent(evt);
                     continue;
                 }
 

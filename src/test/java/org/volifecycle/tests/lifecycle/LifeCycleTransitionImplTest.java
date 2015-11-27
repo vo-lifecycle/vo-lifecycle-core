@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.volifecycle.event.EventManager;
 import org.volifecycle.event.vo.Event;
+import org.volifecycle.event.vo.LifeCycleTransitionEvent;
 import org.volifecycle.lifecycle.LifeCycleAction;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.impl.LifeCycleCompositeActionImpl;
@@ -112,11 +113,11 @@ public class LifeCycleTransitionImplTest extends AbstractTest {
         when(actionMock.getResult(any(ValueObjectStub.class), anyMapOf(String.class, Object.class))).thenReturn(Boolean.FALSE.toString());
         String result = transition.changeState(valueObject, adapterMock, evtManagerMock);
         assertEquals(Boolean.FALSE.toString(), result);
-        verify(evtManagerMock, times(2)).logEvent(eventCaptor.capture());
-        Event e = eventCaptor.getAllValues().get(0);
+        verify(evtManagerMock, times(1)).logEvent(eventCaptor.capture());
+        LifeCycleTransitionEvent e = (LifeCycleTransitionEvent) eventCaptor.getAllValues().get(0);
         assertNotNull(e);
-        assertNotNull(e.getFailedActionsIds());
-        assertTrue(e.getFailedActionsIds().contains(idAction));
+        assertNotNull(e.getActionsEvents().get(0).getFailedActionsIds());
+        assertTrue(e.getActionsEvents().get(0).getFailedActionsIds().contains(idAction));
     }
 
     /**
