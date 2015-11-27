@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
@@ -41,10 +39,6 @@ public class JSONUtils {
         try {
             ObjectMapper mapper = new ObjectMapper();
             rtn = mapper.writeValueAsString(map);
-        } catch (JsonGenerationException e) {
-            LOGGER.error("Parsing error", e);
-        } catch (JsonMappingException e) {
-            LOGGER.error("Parsing error", e);
         } catch (IOException e) {
             LOGGER.error("Parsing error", e);
         }
@@ -68,10 +62,6 @@ public class JSONUtils {
         try {
             ObjectMapper mapper = new ObjectMapper();
             rtn = mapper.writeValueAsString(list);
-        } catch (JsonGenerationException e) {
-            LOGGER.error("Parsing error", e);
-        } catch (JsonMappingException e) {
-            LOGGER.error("Parsing error", e);
         } catch (IOException e) {
             LOGGER.error("Parsing error", e);
         }
@@ -124,5 +114,6 @@ public class JSONUtils {
      * Static class
      */
     private JSONUtils() {
+
     }
 }

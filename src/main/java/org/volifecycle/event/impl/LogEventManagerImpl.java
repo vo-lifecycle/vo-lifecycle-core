@@ -15,7 +15,7 @@ import org.volifecycle.event.vo.DiffEvent;
 import org.volifecycle.event.vo.Event;
 
 /**
- * Slf4j implement of Event manager
+ * Slf4j implement of Event manager.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
