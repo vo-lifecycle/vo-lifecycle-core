@@ -3,14 +3,13 @@ package org.volifecycle.lifecycle.impl;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.volifecycle.utils.CommonUtils.implode;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dozer.DozerBeanMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.volifecycle.common.AbstractLifeCycle;
@@ -24,9 +23,10 @@ import org.volifecycle.lifecycle.LifeCycleActionStorage;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
 import org.volifecycle.lifecycle.LifeCycleTransition;
+import org.volifecycle.utils.DozerBeanMapperFactory;
 
 /**
- * Transition implementation
+ * Transition implementation.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
@@ -70,18 +70,6 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
      * Setting with true if you want stop when a predicate failed.
      */
     protected Boolean stopIfFailed;
-
-    /**
-     * Dozer bean mapping.
-     */
-    protected DozerBeanMapper dozerBeanMapper;
-
-    /**
-     * Constructor.
-     */
-    public LifeCycleTransitionImpl() {
-        dozerBeanMapper = new DozerBeanMapper();
-    }
 
     /**
      * @return the actions
@@ -235,20 +223,9 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
         List<Event> listEvent = new ArrayList<Event>();
         if (isNotEmpty(actions)) {
             for (LifeCycleAction<T> action : actions) {
-                boolean filter = false;
+                boolean filter = isAnActionToIgnore(forcedActions, action);
 
-                // Searching if is an action to ignore
-                if (isNotEmpty(forcedActions)) {
-                    for (String idForcedAction : forcedActions) {
-                        if (null != action.getId() && idForcedAction.equalsIgnoreCase(action.getId())) {
-                            LOGGER.info("Skipping result : " + action.getId());
-                            filter = true;
-                            break;
-                        }
-                    }
-                }
-
-                LOGGER.info("Testing action : " + action.getId());
+                LOGGER.info("[changeState] Testing action : " + action.getId());
 
                 additionnalInformations = action.getAdditionnalInformations();
                 List<String> failedSimpleActions = new ArrayList<String>();
@@ -262,49 +239,49 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
                     result = action.getResult(valueObject, storage);
                 }
 
-                LOGGER.info("Action result : id = " + action.getId() + ", result = " + result);
+                LOGGER.info("[changeState] Action result : id = " + action.getId() + ", result = " + result);
 
                 if (null == result || Boolean.FALSE.toString().equalsIgnoreCase(result)) {
-                    LOGGER.debug("Case 1.X");
+                    LOGGER.debug("[changeState] Case 1.X");
 
                     if (!filter) {
-                        LOGGER.debug("Case 1.1");
+                        LOGGER.debug("[changeState] Case 1.1");
 
                         rtn = Boolean.FALSE.toString();
                         String message = buildMessageAction("Failed", null, valueObject, adapter, action, failedSimpleActions);
                         buildCustomEvent(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations, listEvent, buildListFailedIds(action.getId(), failedSimpleActions));
 
                         if (null != stopIfFailed && stopIfFailed) {
-                            LOGGER.info("stopIfFailed is enabled : skipping next actions...");
+                            LOGGER.info("[changeState] stopIfFailed is enabled : skipping next actions...");
                             break;
                         }
                     } else if (null != compositeAction) {
-                        LOGGER.debug("Case 1.2");
+                        LOGGER.debug("[changeState] Case 1.2");
 
                         rtn = compositeAction.getTargetState();
                         String message = buildMessageAction("Forced", null, valueObject, adapter, action, failedSimpleActions);
                         buildCustomEvent(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations, listEvent, buildListFailedIds(action.getId(), failedSimpleActions));
                         break;
                     } else if (isNotEmpty(targetStates) && targetStates.size() == 1) {
-                        LOGGER.debug("Case 1.3");
+                        LOGGER.debug("[changeState] Case 1.3");
 
                         rtn = targetStates.get(0);
                         String message = buildMessageAction("Forced", "only one target state", valueObject, adapter, action, failedSimpleActions);
                         buildCustomEvent(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_FORCED_ACTION, message, additionnalInformations, listEvent, buildListFailedIds(action.getId(), failedSimpleActions));
                     } else {
-                        LOGGER.debug("Case 1.4");
+                        LOGGER.debug("[changeState] Case 1.4");
 
                         rtn = Boolean.FALSE.toString();
                         String message = buildMessageAction("Failed", "no target state", valueObject, adapter, action, failedSimpleActions);
                         buildCustomEvent(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_FAILED_ACTION, message, additionnalInformations, listEvent, buildListFailedIds(action.getId(), failedSimpleActions));
 
                         if (null != stopIfFailed && stopIfFailed) {
-                            LOGGER.info("stopIfFailed is enabled : skipping next actions...");
+                            LOGGER.info("[changeState] stopIfFailed is enabled : skipping next actions...");
                             break;
                         }
                     }
                 } else if (null != compositeAction) {
-                    LOGGER.debug("Case 2.X");
+                    LOGGER.debug("[changeState] Case 2.X");
 
                     rtn = compositeAction.getTargetState();
                     if (isNotEmpty(forcedActionsInReality)) {
@@ -314,7 +291,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 
                     break;
                 } else if (!Boolean.FALSE.toString().equalsIgnoreCase(rtn)) {
-                    LOGGER.debug("Case 3.X");
+                    LOGGER.debug("[changeState] Case 3.X");
 
                     rtn = result;
                 }
@@ -323,24 +300,45 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
 
         if (Boolean.TRUE.toString().equalsIgnoreCase(rtn) && isNotEmpty(targetStates) && targetStates.size() == 1) {
             rtn = targetStates.get(0);
-            LOGGER.info("[1] Transition result : id = " + this.getId() + ", result = " + rtn);
+            LOGGER.info("[changeState][1] Transition result : id = " + this.getId() + ", result = " + rtn);
         } else if (isEmpty(targetStates) || null == rtn || Boolean.FALSE.toString().equals(rtn) || !targetStates.contains(rtn)) {
             if (!Boolean.FALSE.toString().equals(rtn) && !targetStates.contains(rtn)) {
-                LOGGER.error("The state " + rtn + " is not expected by transition : id = " + this.getId() + ", targetStates = " + implode(",", targetStates));
+                LOGGER.error("[changeState] The state " + rtn + " is not expected by transition : id = " + this.getId() + ", targetStates = " + join(",", targetStates));
             }
 
             rtn = Boolean.FALSE.toString();
-            String message = "Failed transition : id=" + this.getId() + ", targetStates = " + implode(",", targetStates);
+            String message = "Failed transition : id=" + this.getId() + ", targetStates = " + join(",", targetStates);
             Event evt = buildCustomEvent(valueObject, adapter, LifeCycleConstants.EVENT_TYPE_FAILED_TRANSITION, message, additionnalInformations, null, null);
-            LifeCycleTransitionEvent trEvt = dozerBeanMapper.map(evt, LifeCycleTransitionEvent.class);
+            LifeCycleTransitionEvent trEvt = DozerBeanMapperFactory.getInstance().map(evt, LifeCycleTransitionEvent.class);
             trEvt.setActionsEvents(listEvent);
 
             evtManager.logEvent(trEvt);
 
-            LOGGER.info("[2] Transition result : id = " + this.getId() + ", result = " + rtn);
+            LOGGER.info("[changeState][2] Transition result : id = " + this.getId() + ", result = " + rtn);
         }
 
         return rtn;
+    }
+
+    /**
+     * Searching if it's an action to ignore
+     * 
+     * @param forcedActions
+     * @param action
+     * @param filter
+     * @return boolean
+     */
+    private boolean isAnActionToIgnore(List<String> forcedActions, LifeCycleAction<T> action) {
+        if (isNotEmpty(forcedActions)) {
+            for (String idForcedAction : forcedActions) {
+                if (null != action.getId() && idForcedAction.equalsIgnoreCase(action.getId())) {
+                    LOGGER.info("[isAnActionToIgnore] Skipping result : " + action.getId());
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -360,7 +358,7 @@ public class LifeCycleTransitionImpl<T> extends AbstractLifeCycle<T> implements 
             details = "";
         }
 
-        return actionStatus + " action : " + action.getId() + details + ", sub actions : " + implode(",", failedSimpleActions) + ", object id = " + adapter.getId(valueObject) + ", object type = " + adapter.getType(valueObject);
+        return actionStatus + " action : " + action.getId() + details + ", sub actions : " + join(",", failedSimpleActions) + ", object id = " + adapter.getId(valueObject) + ", object type = " + adapter.getType(valueObject);
     }
 
     /**

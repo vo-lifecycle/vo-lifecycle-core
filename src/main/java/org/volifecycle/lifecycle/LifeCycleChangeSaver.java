@@ -9,11 +9,11 @@ import org.volifecycle.lifecycle.vo.LifeCycleChange;
  * 
  */
 public interface LifeCycleChangeSaver {
-	/**
-	 * Saving change
-	 * 
-	 * @param c
-	 *            lifeCycleChange instance
-	 */
-	void logChange(LifeCycleChange c);
+    /**
+     * Saving change.
+     * 
+     * @param c
+     *            lifeCycleChange instance
+     */
+    void logChange(LifeCycleChange c);
 }

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.volifecycle.common.LifeCycleConstants;
 
 /**
- * Utils class in order to Serialize and Deserialize JSON content
+ * Utils class in order to Serialize and Deserialize JSON content.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
@@ -27,10 +27,9 @@ public class JSONUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtils.class);
 
     /**
-     * Convert map to JSON string
+     * Convert map to JSON string.
      * 
      * @param map
-     * @return String
      */
     public static String map2jsonQuietly(Map<?, ?> map) {
         if (!isNotEmpty(map)) {
@@ -54,7 +53,7 @@ public class JSONUtils {
     }
 
     /**
-     * Convert JSON String to list
+     * Convert JSON String to list.
      * 
      * @param list
      * @return String
@@ -81,10 +80,10 @@ public class JSONUtils {
     }
 
     /**
-     * Convert JSON to map
+     * Convert JSON to map.
      * 
      * @param json
-     * @return
+     * @return Map<String, String>
      */
     public static Map<String, String> json2mapQuietly(String json) {
         Map<String, String> rtn = null;
@@ -103,7 +102,7 @@ public class JSONUtils {
     }
 
     /**
-     * Convert object to JSON
+     * Convert object to JSON.
      * 
      * @param obj
      * @param clazz

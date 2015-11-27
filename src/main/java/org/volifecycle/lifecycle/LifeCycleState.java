@@ -3,11 +3,12 @@ package org.volifecycle.lifecycle;
 import java.util.Map;
 
 /**
- * State interface
+ * State interface.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
- * @param <T> value object type
+ * @param <T>
+ *            value object type
  *
  */
 public interface LifeCycleState<T> {
