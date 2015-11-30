@@ -21,6 +21,7 @@ public interface LifeCycleConstants {
     String EVENT_TYPE_FORCED_ACTION = "forced_action";
     String EVENT_TYPE_FAILED_ACTION = "failed_action";
     String EVENT_TYPE_FAILED_TRANSITION = "failed_transition";
+    String EVENT_TYPE_SUCCESS_TRANSITION = "success_transition";
     String EVENT_TYPE_REFLEXION_ERROR = "reflexion_error";
     String EVENT_TYPE_DIFF_VO = "diff_vo";
     String EVENT_TYPE_JSR303_FAILURE = "jsr303_failure";
