@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.volifecycle.common.LifeCycleConstants.EVENT_TYPE_FAILED_ACTION;
 import static org.volifecycle.common.LifeCycleConstants.EVENT_TYPE_FAILED_TRANSITION;
 import static org.volifecycle.common.LifeCycleConstants.EVENT_TYPE_FORCED_ACTION;
+import static org.volifecycle.common.LifeCycleConstants.EVENT_TYPE_SUCCESS_TRANSITION;
 import static org.volifecycle.common.LifeCycleConstants.KEY_ADDI_SOURCE_ACTION_ID;
 import static org.volifecycle.event.EventBuilder.build;
 
@@ -310,17 +311,17 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
         if (Boolean.TRUE.toString().equalsIgnoreCase(rtn) && isNotEmpty(targetStates) && targetStates.size() == 1) {
             rtn = targetStates.get(0);
             LOGGER.info("[changeState][1] Transition result : id = " + this.getId() + ", result = " + rtn);
-            logTransitionEvent("Success", valueObject, adapter, evtManager, rtn, additionnalInformations, listEvent);
+            logTransitionEvent(EVENT_TYPE_SUCCESS_TRANSITION, valueObject, adapter, evtManager, rtn, additionnalInformations, listEvent);
         } else if (isEmpty(targetStates) || null == rtn || Boolean.FALSE.toString().equals(rtn) || !targetStates.contains(rtn)) {
             if (!Boolean.FALSE.toString().equals(rtn) && !targetStates.contains(rtn)) {
                 LOGGER.error("[changeState] The state " + rtn + " is not expected by transition : id = " + this.getId() + ", targetStates = " + join(",", targetStates));
             }
 
             rtn = Boolean.FALSE.toString();
-            logTransitionEvent("Failed", valueObject, adapter, evtManager, rtn, additionnalInformations, listEvent);
+            logTransitionEvent(EVENT_TYPE_FAILED_TRANSITION, valueObject, adapter, evtManager, rtn, additionnalInformations, listEvent);
             LOGGER.info("[changeState][2] Transition result : id = " + this.getId() + ", result = " + rtn);
         } else {
-            logTransitionEvent("Success", valueObject, adapter, evtManager, rtn, additionnalInformations, listEvent);
+            logTransitionEvent(EVENT_TYPE_SUCCESS_TRANSITION, valueObject, adapter, evtManager, rtn, additionnalInformations, listEvent);
             LOGGER.info("[changeState][3] Transition result : id = " + this.getId() + ", result = " + rtn);
         }
 
@@ -338,9 +339,9 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
      * @param additionnalInformations
      * @param listEvent
      */
-    private void logTransitionEvent(String transitionState, T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, String rtn, Map<String, String> additionnalInformations, List<Event> listEvent) {
-        String message = transitionState + " transition : id=" + this.getId() + ", targetStates = " + join(",", targetStates) + ", result = " + rtn;
-        Event evt = build(valueObject, adapter, EVENT_TYPE_FAILED_TRANSITION, message, additionnalInformations, null, null);
+    private void logTransitionEvent(String typeTransiton, T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, String rtn, Map<String, String> additionnalInformations, List<Event> listEvent) {
+        String message = typeTransiton + " : id=" + this.getId() + ", targetStates = " + join(",", targetStates) + ", result = " + rtn;
+        Event evt = build(valueObject, adapter, typeTransiton, message, additionnalInformations, null, null);
         LifeCycleTransitionEvent trEvt = DozerBeanMapperFactory.getInstance().map(evt, LifeCycleTransitionEvent.class);
         trEvt.setActionsEvents(listEvent);
         evtManager.logEvent(trEvt);
