@@ -76,6 +76,11 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
     protected Boolean stopIfFailed;
 
     /**
+     * Additionnal informations
+     */
+    protected Map<String, String> additionnalInformations;
+
+    /**
      * @return the actions
      */
     public List<LifeCycleAction<T>> getActions() {
@@ -407,5 +412,21 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
         }
 
         return rtn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getAdditionnalInformations() {
+        return additionnalInformations;
+    }
+
+    /**
+     * @param additionnalInformations
+     *            the additionnalInformations to set
+     */
+    public void setAdditionnalInformations(Map<String, String> additionnalInformations) {
+        this.additionnalInformations = additionnalInformations;
     }
 }

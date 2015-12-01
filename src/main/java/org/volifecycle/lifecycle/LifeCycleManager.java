@@ -113,4 +113,11 @@ public interface LifeCycleManager<T, A extends LifeCycleAdapter<T>> {
      * @return List<String>
      */
     List<String> getIdsTransitionsFromType(String type, String stateId);
+
+    /**
+     * Getting the additionnal informations for lifecycle.
+     * 
+     * @return Map<String, String>
+     */
+    Map<String, String> getAdditionnalInformations();
 }

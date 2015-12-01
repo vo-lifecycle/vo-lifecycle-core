@@ -60,6 +60,11 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
     protected String description;
 
     /**
+     * Additionnal informations
+     */
+    protected Map<String, String> additionnalInformations;
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -338,5 +343,21 @@ public class LifeCycleManagerImpl<T, A extends LifeCycleAdapter<T>> implements L
      */
     public void setSaver(LifeCycleChangeSaver saver) {
         this.saver = saver;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getAdditionnalInformations() {
+        return additionnalInformations;
+    }
+
+    /**
+     * @param additionnalInformations
+     *            the additionnalInformations to set
+     */
+    public void setAdditionnalInformations(Map<String, String> additionnalInformations) {
+        this.additionnalInformations = additionnalInformations;
     }
 }
