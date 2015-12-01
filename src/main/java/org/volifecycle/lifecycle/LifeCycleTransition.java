@@ -74,4 +74,11 @@ public interface LifeCycleTransition<T> {
      *            the targetStates to set
      */
     void setTargetStates(List<String> targetStates);
+
+    /**
+     * Getting the additionnal informations for transition.
+     * 
+     * @return Map<String, String>
+     */
+    Map<String, String> getAdditionnalInformations();
 }
