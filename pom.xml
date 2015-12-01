@@ -31,7 +31,6 @@
 
 		<!-- Maven plugins -->
 		<jacoco-maven-plugin.version>0.7.4.201502262128</jacoco-maven-plugin.version>
-		<sql-maven-plugin.version>1.5</sql-maven-plugin.version>
 		<maven-idea-plugin.version>2.2</maven-idea-plugin.version>
 		<maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
 		<maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
