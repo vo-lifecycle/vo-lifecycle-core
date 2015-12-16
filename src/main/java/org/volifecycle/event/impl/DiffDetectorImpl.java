@@ -266,10 +266,18 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
                     continue;
                 }
 
+                // If one of both is null.
+                Object ref = o1;
+                Object ref2 = o2;
+                if (null == ref) {
+                    ref = o2;
+                    ref2 = o1;
+                }
+
                 // Not implemented type
-                if (null != getNotImplementedType(o1) || null != getNotImplementedType(o2)) {
+                if ((null == ref && null == ref2) || null != getNotImplementedType(o1) || null != getNotImplementedType(o2)) {
                     continue;
-                } else if (o1 instanceof List && o2 instanceof List) {
+                } else if (ref instanceof List) {
                     List<?> l1 = (List<?>) o1;
                     List<?> l2 = (List<?>) o2;
 
@@ -308,15 +316,13 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
                             diffs = logDiffs(original, null, l2.get(i), diffs, property);
                         }
                     }
-                } else if (null != (clazz = getPrimitifType(o1))) {
-                    if (!clazz.cast(o1).equals(clazz.cast(o2))) {
+                } else if (null != (clazz = getPrimitifType(ref))) {
+                    if (!clazz.cast(ref).equals(clazz.cast(ref2))) {
                         diffs.add(createDiffProperty(property, object2string(o1), object2string(o2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
                     }
-                } else if (o1 instanceof Calendar && o2 instanceof Calendar) {
-                    Calendar c1 = (Calendar) o1;
-                    Calendar c2 = (Calendar) o2;
-                    if (!c1.equals(c2)) {
-                        diffs.add(createDiffProperty(property, object2string(c1), object2string(c2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
+                } else if (ref instanceof Calendar) {
+                    if (!((Calendar) ref).equals(((Calendar) ref2))) {
+                        diffs.add(createDiffProperty(property, object2string((Calendar) o1), object2string((Calendar) o2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
                     }
                 } else {
                     // Recursive
