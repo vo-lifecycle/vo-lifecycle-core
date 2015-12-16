@@ -23,7 +23,7 @@ import org.volifecycle.event.vo.Event;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 
 /**
- * DiffDetector implementation
+ * DiffDetector implementation.
  * 
  * @author Idriss Neumann <neumann.idriss@gmail.com>
  * 
@@ -90,7 +90,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Convert objectToString
+     * Convert objectToString.
      * 
      * @param o
      * @return String
@@ -101,7 +101,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
             return "null";
         } else if (o instanceof Calendar) {
             return calendarToString((Calendar) o, FORMAT_DATE_HOUR);
-        } else if (null != (clazz = getPrimitifType(o))) {
+        } else if (null != (clazz = getSimpleType(o))) {
             return String.valueOf(clazz.cast(o));
         } else {
             return o.toString();
@@ -109,7 +109,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Get listener for object class
+     * Get listener for object class.
      * 
      * @param o
      * @return ClassListener
@@ -129,7 +129,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Testing if a class exist in the listener list
+     * Testing if a class exist in the listener list.
      * 
      * @param o
      * @return boolean
@@ -139,7 +139,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Testing if a property exists in the listener list
+     * Testing if a property exists in the listener list.
      * 
      * @param o
      * @param property
@@ -151,17 +151,17 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Logs when one of two vo is NULL
+     * Logs when one of two vo is NULL.
      * 
      * @param original
      * @param o
      * @param diffs
      * @param parent
      * @param isBefore
-     * @return
+     * @return List<DiffProperty>
      */
     public List<DiffProperty> logDiffsWhereNull(T original, Object o, List<DiffProperty> diffs, String parent, boolean isBefore) {
-        if (o instanceof Calendar || null != getPrimitifType(o)) {
+        if (o instanceof Calendar || null != getSimpleType(o)) {
             diffs.add(createDiffProperty((null == parent) ? o.getClass().getSimpleName() : parent, object2string((!isBefore) ? null : o), object2string((isBefore) ? null : o), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
         } else {
             if (!isClassListened(o)) {
@@ -193,7 +193,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
 
                     if (null != getNotImplementedType(so)) {
                         continue;
-                    } else if (so instanceof Calendar || null != getPrimitifType(so)) {
+                    } else if (null != getSimpleType(so)) {
                         diffs.add(createDiffProperty(property, object2string((!isBefore) ? null : so), object2string((isBefore) ? null : so), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
                     } else {
                         diffs = logDiffsWhereNull(original, so, diffs, property, isBefore);
@@ -206,7 +206,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Get property from getter
+     * Get property from getter.
      * 
      * @param getter
      * @return String
@@ -219,7 +219,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Logs diff
+     * Logs differences.
      * 
      * @param original
      * @param vo1
@@ -316,13 +316,9 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
                             diffs = logDiffs(original, null, l2.get(i), diffs, property);
                         }
                     }
-                } else if (null != (clazz = getPrimitifType(ref))) {
+                } else if (null != (clazz = getSimpleType(ref))) {
                     if (!clazz.cast(ref).equals(clazz.cast(ref2))) {
                         diffs.add(createDiffProperty(property, object2string(o1), object2string(o2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
-                    }
-                } else if (ref instanceof Calendar) {
-                    if (!((Calendar) ref).equals(((Calendar) ref2))) {
-                        diffs.add(createDiffProperty(property, object2string((Calendar) o1), object2string((Calendar) o2), parent, LifeCycleConstants.DIFF_TYPE_VALUE));
                     }
                 } else {
                     // Recursive
@@ -335,7 +331,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Create diff property
+     * Create diff property.
      * 
      * @param name
      * @param before
@@ -355,11 +351,11 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Get list of primitif type
+     * Get list of simple type.
      * 
      * @return List<Class<?>>
      */
-    private List<Class<?>> getPrimitifTypes() {
+    private List<Class<?>> getSimpleTypes() {
         List<Class<?>> rtn = new ArrayList<Class<?>>();
         rtn.add(Number.class);
         rtn.add(String.class);
@@ -370,11 +366,12 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
         rtn.add(Short.class);
         rtn.add(Float.class);
         rtn.add(BigDecimal.class);
+        rtn.add(Calendar.class);
         return rtn;
     }
 
     /**
-     * Get list of not allowed type
+     * Get list of not allowed type.
      * 
      * @return List<Class<?>>
      */
@@ -385,7 +382,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Get primitif type
+     * Get not implemented type.
      * 
      * @param o
      * @return Class<?>
@@ -395,17 +392,17 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Get primitif type
+     * Get simple type.
      * 
      * @param o
      * @return Class<?>
      */
-    public Class<?> getPrimitifType(Object o) {
-        return getClassFromObject(o, getPrimitifTypes());
+    public Class<?> getSimpleType(Object o) {
+        return getClassFromObject(o, getSimpleTypes());
     }
 
     /**
-     * Get class from object
+     * Get class from object.
      * 
      * @param o
      * @param lstClass
@@ -422,7 +419,7 @@ public class DiffDetectorImpl<T, A extends LifeCycleAdapter<T>> implements DiffD
     }
 
     /**
-     * Get common methods of two value object
+     * Get common methods of two value object.
      * 
      * @param vo1
      * @param vo2
