@@ -9,20 +9,7 @@ import org.dozer.DozerBeanMapper;
  *
  */
 public class DozerBeanMapperFactory {
-    private static DozerBeanMapper mapper;
-
-    /**
-     * Return a single instance of DozerBeanMapper.
-     * 
-     * @return DozerBeanMapper
-     */
-    public static DozerBeanMapper getInstance() {
-        if (null == mapper) {
-            mapper = new DozerBeanMapper();
-        }
-
-        return mapper;
-    }
+    private static final DozerBeanMapper MAPPER = new DozerBeanMapper();
 
     /**
      * Private constructor.
@@ -30,4 +17,14 @@ public class DozerBeanMapperFactory {
     private DozerBeanMapperFactory() {
 
     }
+
+    /**
+     * Return a single instance of DozerBeanMapper.
+     * 
+     * @return DozerBeanMapper
+     */
+    public static DozerBeanMapper getInstance() {
+        return MAPPER;
+    }
+
 }
