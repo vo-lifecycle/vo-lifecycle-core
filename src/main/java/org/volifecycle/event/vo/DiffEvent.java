@@ -1,7 +1,6 @@
 package org.volifecycle.event.vo;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Diff event class
@@ -70,34 +69,36 @@ public class DiffEvent extends Event {
   }
 
   public static class Builder extends Event.Builder {
-    private DiffEvent event;
-
     public Builder() {
-      event = new DiffEvent();
+      super(new DiffEvent());
     }
 
     public Builder(DiffEvent event) {
-      this.event = Objects.requireNonNull(event, "event must not be null");
+      super(event);
     }
 
     public Builder diffProperties(List<DiffProperty> diffProperties) {
-      event.setDiffProperties(diffProperties);
+      getCastedEvent().setDiffProperties(diffProperties);
       return this;
     }
 
     public Builder parentId(String parentId) {
-      event.setParentId(parentId);
+      getCastedEvent().setParentId(parentId);
       return this;
     }
 
     public Builder parentType(String parentType) {
-      event.setParentType(parentType);
+      getCastedEvent().setParentType(parentType);
       return this;
+    }
+
+    private DiffEvent getCastedEvent() {
+      return ((DiffEvent) super.event);
     }
 
     @Override
     public DiffEvent build() {
-      return event;
+      return getCastedEvent();
     }
   }
 }

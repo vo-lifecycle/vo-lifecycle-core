@@ -168,7 +168,7 @@ public class Event implements Serializable {
   }
 
   public static class Builder {
-    private Event event;
+    Event event;
 
     public Builder() {
       event = new Event();
