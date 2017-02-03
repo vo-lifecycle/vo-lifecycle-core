@@ -27,7 +27,7 @@ import org.volifecycle.lifecycle.LifeCycleActionStorage;
 import org.volifecycle.lifecycle.LifeCycleAdapter;
 import org.volifecycle.lifecycle.LifeCycleCompositeAction;
 import org.volifecycle.lifecycle.LifeCycleTransition;
-import org.volifecycle.utils.DozerBeanMapperFactory;
+import org.volifecycle.utils.BeanMapperFactory;
 
 /**
  * Transition implementation.
@@ -347,7 +347,7 @@ public class LifeCycleTransitionImpl<T> implements LifeCycleTransition<T> {
     private void logTransitionEvent(String typeTransiton, T valueObject, LifeCycleAdapter<T> adapter, EventManager evtManager, String rtn, Map<String, String> additionnalInformations, List<Event> listEvent) {
         String message = typeTransiton + " : id=" + this.getId() + ", targetStates=" + join(targetStates,",") + ", result=" + rtn;
         Event evt = build(valueObject, adapter, typeTransiton, message, additionnalInformations, null, null);
-        LifeCycleTransitionEvent trEvt = DozerBeanMapperFactory.getInstance().map(evt, LifeCycleTransitionEvent.class);
+        LifeCycleTransitionEvent trEvt = BeanMapperFactory.getInstance().map(evt, LifeCycleTransitionEvent.class);
         trEvt.setActionsEvents(listEvent);
         evtManager.logEvent(trEvt);
     }
