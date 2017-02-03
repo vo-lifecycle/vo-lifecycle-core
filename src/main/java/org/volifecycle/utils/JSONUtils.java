@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.volifecycle.common.LifeCycleConstants;
 
 /**
  * Utils class in order to Serialize and Deserialize JSON content.
@@ -23,45 +23,54 @@ import org.volifecycle.common.LifeCycleConstants;
  */
 public class JSONUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtils.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    /**
+     * Static class
+     */
+    private JSONUtils() {
+
+    }
 
     /**
      * Convert map to JSON string.
      * 
      * @param map
+     * @return String
      */
     public static String map2jsonQuietly(Map<?, ?> map) {
         if (!isNotEmpty(map)) {
-            return LifeCycleConstants.EMPTY_STRING;
+            return StringUtils.EMPTY;
         }
 
-        String rtn = LifeCycleConstants.EMPTY_STRING;
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            rtn = mapper.writeValueAsString(map);
-        } catch (IOException e) {
-            LOGGER.error("Parsing error", e);
-        }
-
-        return rtn;
+        return writeQuietly(map);
     }
 
     /**
-     * Convert JSON String to list.
+     * Convert list to JSON string.
      * 
      * @param list
      * @return String
      */
     public static String list2jsonQuietly(List<? extends List<String>> list) {
         if (!isNotEmpty(list)) {
-            return LifeCycleConstants.EMPTY_STRING;
+            return StringUtils.EMPTY;
         }
 
-        String rtn = LifeCycleConstants.EMPTY_STRING;
+        return writeQuietly(list);
+    }
+
+    /**
+     * Convert Object to JSON String.
+     * 
+     * @param list
+     * @return
+     */
+    private static String writeQuietly(Object list) {
+        String rtn = StringUtils.EMPTY;
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            rtn = mapper.writeValueAsString(list);
+            rtn = MAPPER.writeValueAsString(list);
         } catch (IOException e) {
             LOGGER.error("Parsing error", e);
         }
@@ -80,8 +89,7 @@ public class JSONUtils {
 
         if (isNotEmpty(json)) {
             try {
-                ObjectMapper mapper = new ObjectMapper();
-                rtn = mapper.readValue(json, new TypeReference<HashMap<String, String>>() {
+                rtn = MAPPER.readValue(json, new TypeReference<HashMap<String, String>>() {
                 });
             } catch (Exception e) {
                 LOGGER.error("Parsing error", e);
@@ -99,10 +107,9 @@ public class JSONUtils {
      * @return String
      */
     public static String object2jsonQuietly(Object obj, Class<?> clazz) {
-        ObjectMapper mapper = new ObjectMapper();
         String json = null;
         try {
-            json = mapper.writeValueAsString(clazz.cast(obj));
+            json = MAPPER.writeValueAsString(clazz.cast(obj));
         } catch (Exception e) {
             LOGGER.error("Parsing error", e);
         }
@@ -110,10 +117,4 @@ public class JSONUtils {
         return json;
     }
 
-    /**
-     * Static class
-     */
-    private JSONUtils() {
-
-    }
 }
