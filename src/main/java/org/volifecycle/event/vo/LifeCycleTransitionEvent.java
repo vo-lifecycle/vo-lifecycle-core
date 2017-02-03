@@ -9,22 +9,45 @@ import java.util.List;
  *
  */
 public class LifeCycleTransitionEvent extends Event {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    List<Event> actionsEvents;
+  List<Event> actionsEvents;
 
-    /**
-     * @return the subActionsEvents
-     */
-    public List<Event> getActionsEvents() {
-        return actionsEvents;
+  /**
+   * @return the subActionsEvents
+   */
+  public List<Event> getActionsEvents() {
+    return actionsEvents;
+  }
+
+  /**
+   * @param actionsEvents the actionsEvents to set
+   */
+  public void setActionsEvents(List<Event> actionsEvents) {
+    this.actionsEvents = actionsEvents;
+  }
+
+  public static class Builder extends Event.Builder {
+    public Builder() {
+      super(new LifeCycleTransitionEvent());
     }
 
-    /**
-     * @param subActionsEvents
-     *            the subActionsEvents to set
-     */
-    public void setActionsEvents(List<Event> subActionsEvents) {
-        this.actionsEvents = subActionsEvents;
+    public Builder(LifeCycleTransitionEvent event) {
+      super(event);
     }
+
+    public Builder actionsEvents(List<Event> actionsEvents) {
+      getCastedEvent().setActionsEvents(actionsEvents);
+      return this;
+    }
+
+    private LifeCycleTransitionEvent getCastedEvent() {
+      return ((LifeCycleTransitionEvent) super.event);
+    }
+
+    @Override
+    public LifeCycleTransitionEvent build() {
+      return getCastedEvent();
+    }
+  }
 }
