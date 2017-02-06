@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vo-lifecycle</groupId>
 	<artifactId>vo-lifecycle-core</artifactId>
-	<version>3.0.0</version>
+	<version>3.0.1</version>
 	<name>VO LifeCycle</name>
 	<description>A value object lifecycle framework</description>
 	<packaging>jar</packaging>
@@ -45,6 +45,10 @@
 		<github.global.server>github</github.global.server>
 
 		<javancss-maven-plugin.version>2.1</javancss-maven-plugin.version>
+		
+		<findbugs.skip>false</findbugs.skip>
+		<checkstyle.skip>false</checkstyle.skip>
+		<jacoco.skip>false</jacoco.skip>
 	</properties>
 
 	<dependencies>
@@ -268,6 +272,7 @@
 						<configuration>
 							<propertyName>surefireArgLine</propertyName>
 							<destFile>${basedir}/target/jacoco.exec</destFile>
+							<skip>${jacoco.skip}</skip>
 						</configuration>
 					</execution>
 					<execution>
@@ -278,6 +283,7 @@
 						</goals>
 						<configuration>
 							<dataFile>${basedir}/target/jacoco.exec</dataFile>
+							<skip>${jacoco.skip}</skip>
 						</configuration>
 					</execution>
 				</executions>
@@ -293,6 +299,7 @@
 					<includeFilterFile>${basedir}/FindBugs.xml</includeFilterFile>
 					<xmlOutput>true</xmlOutput>
 					<failOnError>false</failOnError>
+					<skip>${findbugs.skip}</skip>
 				</configuration>
 				<executions>
 					<execution>
@@ -310,6 +317,7 @@
 				<version>${maven-checkstyle-plugin.version}</version>
 				<configuration>
 					<configLocation>${basedir}/checkStyle.xml</configLocation>
+					<skip>${checkstyle.skip}</skip>
 				</configuration>
 				<executions>
 					<execution>
